@@ -1,66 +1,73 @@
+
+<template>
+    <el-container direction="vertical">
+      <el-header>
+        <my-header></my-header>
+      </el-header>
+      <el-main>
+        <my-main></my-main>
+      </el-main>
+      <my-footer></my-footer>
+    </el-container>
+
+</template>
+
 <script lang="ts">
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import { defineComponent } from 'vue'
-import {
-  MetaMaskConnector,
-  WalletConnectConnector,
-  CoinbaseWalletConnector,
-  useBoard,
-  useEthers
-} from "vue-dapp"
+import  myHeader  from './components/myHeader.vue'
+import myMain from './components/myMain.vue'
+import myFooter from './components/myFooter.vue'
+import zhCn from 'element-plus/lib/locale/lang/zh-cn'
+import en from 'element-plus/lib/locale/lang/en'
+import  store  from './store' //store存放语言配置
+
 
 
 export default defineComponent({
-
-setup() {
-  const { open } = useBoard();
-  const {address} = useEthers();
-  const infuraId = "";
-  const connectors = [
-    new MetaMaskConnector({
-      appUrl: "http://localhost:3000",
-    }),
-    new WalletConnectConnector({
-      qrcode: true,
-      rpc: {
-        1: `https://mainnet.infura.io/v3/${infuraId}`,
-        4: `https://rinkeby.infura.io/v3/${infuraId}`,
-      },
-    }),
-    new CoinbaseWalletConnector({
-      appName: "Vue Dapp",
-      jsonRpcUrl: `https://mainnet.infura.io/v3/${infuraId}`,
-    }),
-  ];
-  return {
-    connectors,
-    open,
-    address
-  };
-}
+  name:'App',
+  components: { myHeader, myMain, myFooter},
+  setup() {
+    return{
+      data: store.state
+    }
+  }
 })
+
 </script>
-<template>
-  <button @click="open">Connect Wallet</button>
-  {{ address }}
-  <vd-board :connectors="connectors" dark />
-  
-</template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
+<style >
+#app {
+  padding: 0px;
+}
+html,
+body,
+#app,
+.el-container {
+  /*设置内部填充为0，几个布局元素之间没有间距*/
+  padding: 0px!important;
+  /*外部间距也是如此设置*/
+  margin: 0px;
+  /*统一设置高度为100%*/
+  height: 100%;
+  width: 100%;
+  max-width: 2888px;
 }
 
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+.el-header,
+.el-footer {
+  background-color: #b3c0d1;
+  color: #333;
+  text-align: center;
+  line-height: 60px;
 }
 
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+.el-main {
+  background-color: #e9eef3;
+  color: #333;
+  text-align: center;
+  line-height: 160px;
 }
 </style>
 

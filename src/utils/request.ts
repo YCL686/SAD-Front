@@ -2,7 +2,7 @@ import axios from 'axios'
 import { ElMessage } from 'element-plus'
 
 const instance = axios.create({
-  baseURL: '',
+  baseURL: import.meta.env.VITE_BASE_URL,
   timeout: 5000
 })
 
