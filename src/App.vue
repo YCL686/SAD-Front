@@ -7,7 +7,7 @@
       <el-main>
         <my-main></my-main>
       </el-main>
-      <my-footer></my-footer>
+      <!-- <my-footer></my-footer> -->
     </el-container>
 
 </template>
@@ -37,7 +37,7 @@ export default defineComponent({
 
 </script>
 
-<style >
+<style>
 #app {
   padding: 0px;
 }

@@ -1,58 +1,68 @@
 <template>
-  <div id="header">
-    <el-row :gutter="24">
-      <el-col :span="4">
-        <div style="font-style: oblique;font-weight: 900;font-size:20px">SharableAD</div>
-      </el-col>
-      <el-col :span="12">
-      </el-col>
-      <el-col :span="8">
-        <el-dropdown trigger="click" @command='handleLocaleChange'>
-          <el-button size="small" circle>
-            <el-icon class="el-icon--right">
-              <Switch />
-            </el-icon>
-          </el-button>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item v-for="item in lanOptions" :key="item.value" :label="item.label" :value="item.value"
-                :command="item.value">{{item.label}}</el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
-        <el-button v-if="!isActivated" type="primary" @click="open" round>
+    <el-menu
+    :default-active="activeIndex"
+    class="el-menu-demo"
+    mode="horizontal"
+    :ellipsis="false"
+  >
+    <el-menu-item index="0"><router-link to="/index">LOGO</router-link></el-menu-item>
+    <div class="flex-grow-1"> </div>
+
+    <el-menu-item index="1"><router-link to="/index">首页</router-link></el-menu-item>
+    <el-menu-item index="2"><router-link to="/recommand">推荐</router-link></el-menu-item>
+    <el-menu-item index="3"><router-link to="/hot">热门</router-link></el-menu-item>
+    <el-menu-item index="4"><router-link to="/NFT">NFT</router-link></el-menu-item>
+    <el-menu-item index="5"><router-link to="/DeFi">DeFi</router-link></el-menu-item>
+    <div class="flex-grow-2">
+    <el-input
+      v-model="searchKey"
+      class="search-style"
+      placeholder="Please Input"
+      :prefix-icon="Search"
+    />
+    </div>
+  
+    <el-menu-item index="6"><router-link to="/publish">Publish</router-link></el-menu-item>
+    <el-menu-item index="7">Help</el-menu-item>
+    <el-sub-menu index="8" >
+      <template #title>Aa</template>
+      <el-menu-item @click.native="handleLocaleChange(item.value)" v-for="item in lanOptions" :key="item.value" :label="item.label" :value="item.value"
+                :command="item.value">{{item.label}}</el-menu-item>
+    </el-sub-menu>
+    <div  class="flex-grow-3">
+    <el-button v-if="!isActivated" type="primary" @click="open" round>
           <el-icon class="el-icon--right">
             <Wallet />
           </el-icon>{{$t('buttons.connectWallet')}}
         </el-button>
-        {{ shortAddress }}
-        {{ balance }}
         <vd-board :connectors="connectors" dark />
-
-        <el-dropdown v-if="isActivated" trigger="hover">
-          <el-button size="small" circle>
-            <el-icon class="el-icon--right">
-              <Switch />
-            </el-icon>
-          </el-button>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item>My Opus</el-dropdown-item>
-              <el-dropdown-item>My Collect</el-dropdown-item>
-              <el-dropdown-item>My Foucus</el-dropdown-item>
-              <el-dropdown-item>My Message</el-dropdown-item>
-              <el-dropdown-item>Log Out</el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
-
-      </el-col>
-    </el-row>
-
-
+    <el-sub-menu v-if="isActivated" index="9">
+      <template #title>{{ shortAddress }}</template>
+      <el-menu-item index="9-0"><router-link to="/admin">Admin</router-link></el-menu-item>
+      <el-menu-item index="9-1"><router-link to="/MyCenter">MyCenter</router-link></el-menu-item>
+      <el-menu-item index="9-2"><router-link to="/MyCrypotoProperty">MyCrypotoProperty</router-link></el-menu-item>
+      <el-menu-item index="9-3">LogOut</el-menu-item>
+    </el-sub-menu>
   </div>
+
+  </el-menu>
 </template>
 <style scoped>
+.search-style {
+  width: 15%;
+  height: 50%
+}
+.flex-grow-1 {
+  flex-grow: 1;
+}
+
+.flex-grow-2 {
+  flex-grow: 8;
+}
+
+.flex-grow-3 {
+  flex-grow: 1;
+}
 .el-row {
   margin-bottom: 20px;
 }
@@ -89,7 +99,8 @@ import {
 } from 'vue-dapp'
 import { ref, watch } from 'vue'
 import { useStore } from 'vuex'
-import { useI18n } from "vue-i18n";
+import { useI18n } from "vue-i18n"
+import {useRoute} from 'vue-router'
 
 
 
@@ -111,6 +122,9 @@ export default defineComponent({
 
   },
   setup() {
+    const route = useRoute()
+    const searchKey = ref('')
+    const activeIndex = ref('1')
     const store = useStore();
     var isLogined = store.state.isLogined;
     const { locale: locale } = useI18n({ useScope: "global" })
@@ -238,6 +252,7 @@ export default defineComponent({
       }
     })
     return {
+      route,
       connectors,
       open,
       address,
@@ -249,6 +264,8 @@ export default defineComponent({
       lanOptions,
       isLogined,
       isActivated,
+      searchKey,
+      activeIndex,
       handleLocaleChange
     }
   }
