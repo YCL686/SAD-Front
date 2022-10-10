@@ -25,6 +25,7 @@ import  store  from './store' //store存放语言配置
 
 
 
+
 export default defineComponent({
   name:'App',
   components: { myHeader, myMain, myFooter},
