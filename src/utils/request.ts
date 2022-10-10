@@ -3,7 +3,14 @@ import { ElMessage } from 'element-plus'
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
-  timeout: 5000
+  timeout: 5000, // 请求超时时间毫秒
+  withCredentials: true, // 异步请求携带cookie
+  headers: {
+    // 设置后端需要的传参类型
+    'Content-Type': 'application/json',
+    'token': 'your token',
+    'X-Requested-With': 'XMLHttpRequest'
+  }
 })
 
 instance.interceptors.request.use(
@@ -19,7 +26,7 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   response => {
     const res = response.data
-    if (res.status !== 0) {
+    if (res.code !== 0) {
       ElMessage({
         message: res.message || 'Error',
         type: 'error',

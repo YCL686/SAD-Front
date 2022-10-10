@@ -1,16 +1,17 @@
-# Vue 3 + TypeScript + Vite
+多环境配置：
+npm run dev 使用.env.dev文件配置运行
+npm run build 使用.env.pro打包
+至于test环境 随意
+package.json配置启动命令所有示例如下：
+"scripts": {
+    "serve": "vite",   // 未指定模式的默认取 .env.development 文件中的配置
+    "dev": "vite --mode dev",   // 取 .env.dev文件中的配置
+    "stg": "vite --mode stg",  // 取 .env.stg文件中的配置
+    "pro": "vite --mode pro",   // 取 .env.pro文件中的配置
+    "build": "vue-tsc --noEmit && vite build",    // 未指定模式的默认取 .env.development 文件中的配置
+    "build:dev": "vue-tsc --noEmit && vite build --mode dev",    // build的时候取dev的配置
+    "build:stg": "vue-tsc --noEmit && vite build --mode stg",      // build的时候取stg的配置
+    "build:pro": "vue-tsc --noEmit && vite build --mode pro", 	// build的时候取pro的配置
+    "preview": "vite preview"
+  },
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
-
-## Recommended IDE Setup
-
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
-
-## Type Support For `.vue` Imports in TS
-
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's Take Over mode by following these steps:
-
-1. Run `Extensions: Show Built-in Extensions` from VS Code's command palette, look for `TypeScript and JavaScript Language Features`, then right click and select `Disable (Workspace)`. By default, Take Over mode will enable itself if the default TypeScript extension is disabled.
-2. Reload the VS Code window by running `Developer: Reload Window` from the command palette.
-
-You can learn more about Take Over mode [here](https://github.com/johnsoncodehk/volar/discussions/471).

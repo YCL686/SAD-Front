@@ -129,6 +129,8 @@ export default defineComponent({
     var isLogined = store.state.isLogined;
     const { locale: locale } = useI18n({ useScope: "global" })
     function handleLocaleChange(lang: string) {
+      console.log(import.meta.env)
+      console.log(import.meta.env.VITE_DEPOSIT_WITHDRAW_ADDRESS)
       console.log(lang)
       locale.value = lang
       store.dispatch('setLocale', lang)
