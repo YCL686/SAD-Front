@@ -5,7 +5,7 @@ import i18n from '../locales/index'
 const store = createStore({
   state: () => {
     return {
-      isLogined: false,
+      isLogined: localStorage.getItem('token') != null ? true : false,
       locale: localStorage.getItem('locale') || 'en'
     }
   },
@@ -16,7 +16,7 @@ const store = createStore({
       i18n.global.locale = locale;
     },
     SET_IS_LOGINED: (state, isLogined) => {
-      
+
       state.isLogined = isLogined;
       console.log("state.isLogined:", isLogined, state.isLogined)
     },

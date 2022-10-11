@@ -1,49 +1,59 @@
 <template>
-    <el-menu
-    :default-active="activeIndex"
-    class="el-menu-demo"
-    mode="horizontal"
-    :ellipsis="false"
-  >
-    <el-menu-item index="0"><router-link to="/index">LOGO</router-link></el-menu-item>
+  <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false">
+    <el-menu-item index="0">
+      <router-link to="/index">LOGO</router-link>
+    </el-menu-item>
     <div class="flex-grow-1"> </div>
 
-    <el-menu-item index="1"><router-link to="/index">首页</router-link></el-menu-item>
-    <el-menu-item index="2"><router-link to="/recommand">推荐</router-link></el-menu-item>
-    <el-menu-item index="3"><router-link to="/hot">热门</router-link></el-menu-item>
-    <el-menu-item index="4"><router-link to="/NFT">NFT</router-link></el-menu-item>
-    <el-menu-item index="5"><router-link to="/DeFi">DeFi</router-link></el-menu-item>
+    <el-menu-item index="1">
+      <router-link to="/index">首页</router-link>
+    </el-menu-item>
+    <el-menu-item index="2">
+      <router-link to="/recommand">推荐</router-link>
+    </el-menu-item>
+    <el-menu-item index="3">
+      <router-link to="/hot">热门</router-link>
+    </el-menu-item>
+    <el-menu-item index="4">
+      <router-link to="/NFT">NFT</router-link>
+    </el-menu-item>
+    <el-menu-item index="5">
+      <router-link to="/DeFi">DeFi</router-link>
+    </el-menu-item>
     <div class="flex-grow-2">
-    <el-input
-      v-model="searchKey"
-      class="search-style"
-      placeholder="Please Input"
-      :prefix-icon="Search"
-    />
+      <el-input v-model="searchKey" class="search-style" placeholder="Please Input" :prefix-icon="Search" />
     </div>
-  
-    <el-menu-item index="6"><router-link to="/publish">Publish</router-link></el-menu-item>
+
+    <el-menu-item index="6">
+      <router-link to="/publish">Publish</router-link>
+    </el-menu-item>
     <el-menu-item index="7">Help</el-menu-item>
-    <el-sub-menu index="8" >
+    <el-sub-menu index="8">
       <template #title>Aa</template>
-      <el-menu-item @click.native="handleLocaleChange(item.value)" v-for="item in lanOptions" :key="item.value" :label="item.label" :value="item.value"
-                :command="item.value">{{item.label}}</el-menu-item>
+      <el-menu-item @click.native="handleLocaleChange(item.value)" v-for="item in lanOptions" :key="item.value"
+        :label="item.label" :value="item.value" :command="item.value">{{item.label}}</el-menu-item>
     </el-sub-menu>
-    <div  class="flex-grow-3">
-    <el-button v-if="!isActivated" type="primary" @click="open" round>
-          <el-icon class="el-icon--right">
-            <Wallet />
-          </el-icon>{{$t('buttons.connectWallet')}}
-        </el-button>
-        <vd-board :connectors="connectors" dark />
-    <el-sub-menu v-if="isActivated" index="9">
-      <template #title>{{ shortAddress }}</template>
-      <el-menu-item index="9-0"><router-link to="/admin">Admin</router-link></el-menu-item>
-      <el-menu-item index="9-1"><router-link to="/MyCenter">MyCenter</router-link></el-menu-item>
-      <el-menu-item index="9-2"><router-link to="/MyCrypotoProperty">MyCrypotoProperty</router-link></el-menu-item>
-      <el-menu-item index="9-3">LogOut</el-menu-item>
-    </el-sub-menu>
-  </div>
+    <div class="flex-grow-3">
+      <el-button v-if="!isLogined" type="primary" @click="open" round>
+        <el-icon class="el-icon--right">
+          <Wallet />
+        </el-icon>{{$t('buttons.connectWallet')}}
+      </el-button>
+      <vd-board :connectors="connectors" dark />
+      <el-sub-menu v-if="isLogined" index="9">
+        <template #title>{{ shortAddress }}</template>
+        <el-menu-item index="9-0">
+          <router-link to="/admin">Admin</router-link>
+        </el-menu-item>
+        <el-menu-item index="9-1">
+          <router-link to="/MyCenter">MyCenter</router-link>
+        </el-menu-item>
+        <el-menu-item index="9-2">
+          <router-link to="/MyCrypotoProperty">MyCrypotoProperty</router-link>
+        </el-menu-item>
+        <el-menu-item index="9-3">LogOut</el-menu-item>
+      </el-sub-menu>
+    </div>
 
   </el-menu>
 </template>
@@ -52,6 +62,7 @@
   width: 15%;
   height: 50%
 }
+
 .flex-grow-1 {
   flex-grow: 1;
 }
@@ -63,6 +74,7 @@
 .flex-grow-3 {
   flex-grow: 1;
 }
+
 .el-row {
   margin-bottom: 20px;
 }
@@ -96,11 +108,13 @@ import {
   MetaMaskConnector,
   WalletConnectConnector,
   CoinbaseWalletConnector,
+Web3Provider,
 } from 'vue-dapp'
 import { ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useI18n } from "vue-i18n"
-import {useRoute} from 'vue-router'
+import { useRoute } from 'vue-router'
+import { login, logout } from '../api/user'
 
 
 
@@ -109,6 +123,7 @@ import {
   Search,
   Switch
 } from '@element-plus/icons-vue'
+import { from } from 'rxjs'
 
 
 export default defineComponent({
@@ -125,8 +140,9 @@ export default defineComponent({
     const route = useRoute()
     const searchKey = ref('')
     const activeIndex = ref('1')
-    const store = useStore();
-    var isLogined = store.state.isLogined;
+    const store = useStore()
+    const isLogined = ref(false)
+    isLogined.value = store.state.isLogined
     const { locale: locale } = useI18n({ useScope: "global" })
     function handleLocaleChange(lang: string) {
       console.log(import.meta.env)
@@ -182,17 +198,17 @@ export default defineComponent({
 
     const { wallet, disconnect, onDisconnect, onAccountsChanged, onChainChanged } =
       useWallet()
-    const { address, balance, chainId, isActivated, dnsAlias } = useEthers()
+    const { address, balance, chainId, isActivated, dnsAlias, signer } = useEthers()
     const shortAddress = ref('');
     function handleAddress(str: string) {
-        var str1 = str.substring(0, 2)
-        var str2 = "****"
-        var str3 = str.substring(32, 36)
-        shortAddress.value = str1+ str2 + str3;
-      }
+      var str1 = str.substring(0, 2)
+      var str2 = "****"
+      var str3 = str.substring(32, 36)
+      shortAddress.value = str1 + str2 + str3;
+    }
     const { onActivated, onChanged } = useEthersHooks()
     onDisconnect(() => {
-      isLogined = false;
+      isLogined.value = false;
       store.dispatch('setIsLogined', false)
       console.log('disconnect')
     })
@@ -224,11 +240,18 @@ export default defineComponent({
     )
     const selectedChainId = ref(0)
     onActivated(() => {
-      isLogined = true
-      store.dispatch('setIsLogined', true)
       selectedChainId.value = chainId.value as number
       console.log("isLogined:", isLogined)
       handleAddress(address.value);
+      signer.value.signMessage(import.meta.env.VITE_SIGN_MESSAGE).then(signature => {
+        console.log(signature)
+        const param = { address: address.value, signature: signature, message: import.meta.env.VITE_SIGN_MESSAGE }
+        login(param).then((res) => {
+          localStorage.setItem("token", res.token)
+          isLogined.value = true
+          store.dispatch('setIsLogined', true)
+        })
+      })
     })
     const isChainChanged = ref(false)
     onChanged(() => {
@@ -260,6 +283,7 @@ export default defineComponent({
       address,
       shortAddress,
       balance,
+      signer,
       availableNetworks,
       selectedChainId,
       supportedChainId,

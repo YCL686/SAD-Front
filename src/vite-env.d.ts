@@ -7,6 +7,7 @@ interface ImportMetaEnv {
   readonly VITE_CONTRACT_OWNER_ADDRESS: string
   readonly VITE_CONTRACT_ADDRESS: string
   readonly VITE_DEPOSIT_WITHDRAW_ADDRESS: string
+  readonly VITE_SIGN_MESSAGE: string
 }
 
 
