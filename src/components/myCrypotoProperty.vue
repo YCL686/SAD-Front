@@ -84,12 +84,12 @@ chainId: 97
 };
 
 function depositFunction(){
-    contract.transfer(import.meta.env.VITE_DEPOSIT_WITHDRAW_ADDRESS, overrides)
+    contract.transfer(import.meta.env.VITE_DEPOSIT_WITHDRAW_ADDRESS, 1000)
       .then(function(gas) {
           // 必须关联一个有过签名钱包对象
           let contractWithSigner = contract.connect(signer.value);
           //  发起交易，前面 2 个参数是函数的参数，第 3 个是交易参数
-          contractWithSigner.transfer(import.meta.env.VITE_DEPOSIT_WITHDRAW_ADDRESS, overrides).then(function(tx) {
+          contractWithSigner.transfer(import.meta.env.VITE_DEPOSIT_WITHDRAW_ADDRESS, 1000).then(function(tx) {
                 console.log(tx);
                 // 介绍刷新上面的 Token 余额，重置输入框
             });  
