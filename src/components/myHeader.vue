@@ -241,7 +241,6 @@ export default defineComponent({
     const selectedChainId = ref(0)
     onActivated(() => {
       selectedChainId.value = chainId.value as number
-      console.log("isLogined:", isLogined)
       handleAddress(address.value);
       signer.value.signMessage(import.meta.env.VITE_SIGN_MESSAGE).then(signature => {
         console.log(signature)
