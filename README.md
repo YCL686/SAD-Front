@@ -14,4 +14,3 @@ package.json配置启动命令所有示例如下：
     "build:pro": "vue-tsc --noEmit && vite build --mode pro", 	// build的时候取pro的配置
     "preview": "vite preview"
   },
-
