@@ -9,10 +9,9 @@ export function login(data: any) {
   })
 }
 
-export function logout(data: any) {
+export function logout() {
   return request({
     url: '/user/logout',
-    method: 'post',
-    data
+    method: 'get'
   })
 }

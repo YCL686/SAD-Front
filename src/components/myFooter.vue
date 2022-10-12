@@ -1,33 +1,16 @@
 <template>
-<div id = "footer">
-    <el-row :gutter="24">
-    <el-col :span="4"><div class="grid-content ep-bg-purple" />
+<div class="footer" id = "footer">
     
-    </el-col>
-    <el-col :span="8"><div class="grid-content ep-bg-purple" />
     Copyright2022
-    </el-col>
-    <el-col :span="12"><div class="grid-content ep-bg-purple" />
-      </el-col>
-  </el-row>
     
       
 </div>
 </template>
 <style scoped>
-.el-row {
-  margin-bottom: 20px;
-}
-.el-row:last-child {
-  margin-bottom: 0;
-}
-.el-col {
-  border-radius: 4px;
-  padding: 18px;
-}
-
-.grid-content {
-  border-radius: 4px;
+.footer {
+  line-height: 60px;
+  background-color: #333;
+  color: #b3c0d1;
 }
 </style>
 

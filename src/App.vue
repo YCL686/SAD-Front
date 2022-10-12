@@ -2,12 +2,12 @@
 <template>
     <el-container direction="vertical">
       <el-header>
-        <my-header></my-header>
+        <my-header v-if="!data.isMobile"></my-header>
       </el-header>
       <el-main>
         <my-main></my-main>
       </el-main>
-      <!-- <my-footer></my-footer> -->
+      <my-footer v-if="!data.isMobile"></my-footer>
     </el-container>
 
 </template>
@@ -58,10 +58,11 @@ body,
 
 .el-header,
 .el-footer {
-  background-color: #b3c0d1;
-  color: #333;
+  background-color: #333;
+  color: #b3c0d1;
   text-align: center;
   line-height: 60px;
+  --el-header-padding: 0 0px!important
 }
 
 .el-main {

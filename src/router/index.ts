@@ -44,8 +44,12 @@ const routes = [{
 }, {
   path: '/myCenter',
   name: 'myCenter',
-  component: myCrypotoProperty
+  component: myCenter
 }, {
+  path: '/myCrypotoProperty',
+  name: 'myCrypotoProperty',
+  component: myCrypotoProperty
+},{
   path: '/NFT',
   name: 'NFT',
   component: NFT
