@@ -1,5 +1,6 @@
 <template>
-  <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false">
+  <el-menu background-color="#545c64" text-color="#fff" active-text-color="#ffd04b" :default-active="activeIndex"
+    class="el-menu-demo" mode="horizontal" :ellipsis="false">
     <el-menu-item index="0">
       <router-link to="/index">LOGO</router-link>
     </el-menu-item>
@@ -41,7 +42,7 @@
       </el-button>
       <vd-board :connectors="connectors" dark />
       <el-sub-menu v-if="isLogined" index="9">
-        <template #title>{{ shortAddress }}</template>
+        <template #title>{{ shortenAddress(address) }}</template>
         <el-menu-item index="9-0">
           <router-link to="/admin">Admin</router-link>
         </el-menu-item>
@@ -51,7 +52,7 @@
         <el-menu-item index="9-2">
           <router-link to="/MyCrypotoProperty">MyCrypotoProperty</router-link>
         </el-menu-item>
-        <el-menu-item index="9-3">LogOut</el-menu-item>
+        <el-menu-item @click.native="logoutFunction()" index="9-3">LogOut</el-menu-item>
       </el-sub-menu>
     </div>
 
@@ -92,7 +93,7 @@
 }
 </style>
 
-<script lang="ts">
+<script lang="ts" setup>
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import { defineComponent } from 'vue'
@@ -108,13 +109,14 @@ import {
   MetaMaskConnector,
   WalletConnectConnector,
   CoinbaseWalletConnector,
-Web3Provider,
+  Web3Provider,
 } from 'vue-dapp'
 import { ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useI18n } from "vue-i18n"
 import { useRoute } from 'vue-router'
 import { login, logout } from '../api/user'
+import { ElMessage } from 'element-plus'
 
 
 
@@ -123,20 +125,7 @@ import {
   Search,
   Switch
 } from '@element-plus/icons-vue'
-import { from } from 'rxjs'
 
-
-export default defineComponent({
-  name: 'myHeader',
-  data() {
-  },
-  methods: {
-
-  },
-  created() {
-
-  },
-  setup() {
     const route = useRoute()
     const searchKey = ref('')
     const activeIndex = ref('1')
@@ -199,17 +188,20 @@ export default defineComponent({
     const { wallet, disconnect, onDisconnect, onAccountsChanged, onChainChanged } =
       useWallet()
     const { address, balance, chainId, isActivated, dnsAlias, signer } = useEthers()
-    const shortAddress = ref('');
-    function handleAddress(str: string) {
-      var str1 = str.substring(0, 2)
-      var str2 = "****"
-      var str3 = str.substring(32, 36)
-      shortAddress.value = str1 + str2 + str3;
+
+
+    function logoutFunction() {
+      logout().then((res) => {
+        isActivated.value = false
+        isLogined.value = false;
+        store.dispatch('setIsLogined', false)
+        localStorage.removeItem('token')
+        //TODO 跳转首页
+      })
     }
     const { onActivated, onChanged } = useEthersHooks()
     onDisconnect(() => {
-      isLogined.value = false;
-      store.dispatch('setIsLogined', false)
+      logoutFunction();
       console.log('disconnect')
     })
     onAccountsChanged(() => {
@@ -241,8 +233,14 @@ export default defineComponent({
     const selectedChainId = ref(0)
     onActivated(() => {
       selectedChainId.value = chainId.value as number
-      console.log("isLogined:", isLogined)
-      handleAddress(address.value);
+      if (selectedChainId.value != import.meta.env.VITE_CHAIN_ID) {
+        ElMessage({
+          message: 'invalid chain',
+          type: 'error',
+          duration: 5 * 1000
+        })
+        return;
+      }
       signer.value.signMessage(import.meta.env.VITE_SIGN_MESSAGE).then(signature => {
         console.log(signature)
         const param = { address: address.value, signature: signature, message: import.meta.env.VITE_SIGN_MESSAGE }
@@ -276,24 +274,5 @@ export default defineComponent({
         console.error(e)
       }
     })
-    return {
-      route,
-      connectors,
-      open,
-      address,
-      shortAddress,
-      balance,
-      signer,
-      availableNetworks,
-      selectedChainId,
-      supportedChainId,
-      lanOptions,
-      isLogined,
-      isActivated,
-      searchKey,
-      activeIndex,
-      handleLocaleChange
-    }
-  }
-})
+    
 </script>

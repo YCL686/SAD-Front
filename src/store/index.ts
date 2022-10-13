@@ -5,6 +5,7 @@ import i18n from '../locales/index'
 const store = createStore({
   state: () => {
     return {
+      isMobile: navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i),
       isLogined: localStorage.getItem('token') != null ? true : false,
       locale: localStorage.getItem('locale') || 'en'
     }
