@@ -1,46 +1,61 @@
 <template>
-    <el-descriptions class="margin-top" title="My $SAD Token" :column="3" :size="large" border>
-        <template #extra>
-            <el-button type="primary" @click="depositFunction">Deposit</el-button>
-            <el-button>Withdraw</el-button>
-            <el-button>Entry</el-button>
-        </template>
-        <el-descriptions-item>
-            <template #label>
-                <div class="cell-item">
-                    OffChainToken
-                </div>
-            </template>
-            
-<count-to :startVal="0" :endVal="3000.22" :decimals="5" :duration="3000"></count-to>
+  <el-descriptions class="margin-top" title="My $SAD Token" :column="3" :size="large" border>
+    <template #extra>
+      <el-input-number v-model="num" :min="1" :max="10" />
+      <el-button-group>
+        <el-button type="primary" @click="depositFunction">Deposit</el-button>
+        <el-button>Withdraw</el-button>
+      </el-button-group>
+    </template>
+    <el-descriptions-item>
+      <template #label>
+        <div class="cell-item">OffChainToken</div>
+      </template>
 
-        </el-descriptions-item>
-        <el-descriptions-item>
-            <template #label>
-                <div class="cell-item">
-                    OnChainToken
-                </div>
-            </template>
-            
-<count-to :startVal="0" :endVal="onChainToken" :decimals="5" :duration="3000"></count-to>
+      <count-to :startVal="0" :endVal="offChainToken" :decimals="5" :duration="3000"></count-to>
+    </el-descriptions-item>
+    <el-descriptions-item>
+      <template #label>
+        <div class="cell-item">OnChainToken</div>
+      </template>
 
-        </el-descriptions-item>
-        <el-descriptions-item>
-            <template #label>
-                <div class="cell-item">
-                    BNB
-                </div>
-            </template>
-            
-<count-to :startVal="0" :endVal="Number(balance)/Math.pow(10,18)" :decimals="5" :duration="3000"></count-to>
+      <count-to :startVal="0" :endVal="onChainToken" :decimals="5" :duration="3000"></count-to>
+    </el-descriptions-item>
+    <el-descriptions-item>
+      <template #label>
+        <div class="cell-item">BNB</div>
+      </template>
 
-        </el-descriptions-item>
-    </el-descriptions>
+      <count-to
+        :startVal="0"
+        :endVal="Number(balance) / Math.pow(10, 18)"
+        :decimals="5"
+        :duration="3000"
+      ></count-to>
+    </el-descriptions-item>
+  </el-descriptions>
+  <el-table :data="tableData" height="250" style="width: 100%">
+      <el-table-column prop="entryTypeName" label="entryTypeName" width="180" />
+    <el-table-column prop="entryAmount" label="entryAmount" width="180" />
+    <el-table-column prop="entryBalance" label="entryBalance" width="180" />
+    <el-table-column prop="entryEventName" label="entryEventname" width="180"/>
+    <el-table-column prop="statusName" label="statusName" width="180"/>
+    <el-table-column prop="txHash" label="txHash" width="180"/>
+    <el-table-column prop="gmtCreated" label="operationTime" width="180"/>
+  </el-table>
+  <el-pagination
+    small
+    background
+    layout="prev, pager, next"
+    :total="50"
+    class="mt-4"
+  />
 </template>
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { defineComponent } from 'vue'
-import { CountTo } from 'vue3-count-to';
+import { CountTo } from 'vue3-count-to'
+import { ElMessage } from 'element-plus'
 import {
   useBoard,
   useEthers,
@@ -53,62 +68,93 @@ import {
   MetaMaskConnector,
   WalletConnectConnector,
   CoinbaseWalletConnector,
-  Web3Provider,
+  Web3Provider
 } from 'vue-dapp'
-import { ContractFactory, ethers, utils } from 'ethers';
+import { ContractFactory, ethers, utils } from 'ethers'
+import { getAccount, deposit } from '../api/account'
+import { pageAccountEntry } from '../api/accountEntry'
+
+const num = ref(1)
 const onChainToken = ref(0)
+const offChainToken = ref(0)
+const bnb = ref(0)
+const pageSize = ref(5)
+const pageNo = ref(1)
+const currentNo = ref(1)
+const total = ref(0)
+const tableData = ref([])
 const { address, balance, chainId, isActivated, dnsAlias, signer, provider } = useEthers()
-let contract = new ethers.Contract(import.meta.env.VITE_CONTRACT_ADDRESS, import.meta.env.VITE_CONTRACT_ABI, signer.value);
-contract.balanceOf("0x912379C36D054913AF29cCBadd2Fd5251110bd0e").then((res)=>{
-    onChainToken.value = Number(res)/Math.pow(10,18)
+const { wallet } = useWallet()
+ onMounted( async()=>{
+     await getAccountFunction()
+     let param = {pageSize:pageSize.value, pageNo:pageNo.value}
+     await pageAccountEntryFunction(param)
+  })
+let contract = new ethers.Contract(
+  import.meta.env.VITE_CONTRACT_ADDRESS,
+  import.meta.env.VITE_CONTRACT_ABI,
+  signer.value
+)
+contract.balanceOf(address.value).then(res => {
+  onChainToken.value = Number(res) / Math.pow(10, 18)
 })
 
-// All overrides are optional
-let overrides = {
-
-// The maximum units of gas for the transaction to use
-gasLimit: 23000,
-
-// The price (in wei) per unit of gas
-gasPrice: utils.parseUnits('9.0', 'gwei'),
-
-// The nonce to use in the transaction
-nonce: 123,
-
-// The amount to send with the transaction (i.e. msg.value)
-value: 10*Math.pow(10,18),
-
-// The chain ID (or network ID) to use
-chainId: 97
-
-};
-
-function depositFunction(){
-    contract.transfer(import.meta.env.VITE_DEPOSIT_WITHDRAW_ADDRESS, 1000)
-      .then(function(gas) {
-          // 必须关联一个有过签名钱包对象
-          let contractWithSigner = contract.connect(signer.value);
-          //  发起交易，前面 2 个参数是函数的参数，第 3 个是交易参数
-          contractWithSigner.transfer(import.meta.env.VITE_DEPOSIT_WITHDRAW_ADDRESS, 1000).then(function(tx) {
-                console.log(tx);
-                // 介绍刷新上面的 Token 余额，重置输入框
-            });  
-      });
+function getAccountFunction(){
+    getAccount().then(res=>{
+        offChainToken.value = res.balance
+    })
 }
 
+function pageAccountEntryFunction(param:any){
+    pageAccountEntry(param).then(res=>{
+        tableData.value = res.list
+    })
+}
+
+function depositFunction() {
+  if (num.value < 0 || num.value > onChainToken.value) {
+    ElMessage({
+      message: 'InSufficent onChainToken Amount',
+      type: 'error'
+    })
+    return
+  }
+  signer.value?.signMessage(import.meta.env.VITE_DEPOSIT_MESSAGE).then(signature => {
+    let contractWithSigner = contract.connect(signer.value)
+    //  发起交易
+    contractWithSigner
+      .transfer(
+        import.meta.env.VITE_DEPOSIT_WITHDRAW_ADDRESS,
+        utils.parseUnits(num.value.toString(), 18)
+      )
+      .then(transaction => {
+        let param = {address: transaction.from, amount:num.value,hash:transaction.hash,message:import.meta.env.VITE_DEPOSIT_MESSAGE, signature:signature}
+        deposit(param).then(res=>{
+            getAccountFunction()
+            let param = {pageSize:pageSize.value, pageNo:pageNo.value}
+             pageAccountEntryFunction(param)
+            console.log(res)
+        })
+        // 介绍刷新上面的 Token 余额，重置输入框
+      })
+  })
+
+ 
+
+  }
 
 </script>
 <style scoped>
 .el-descriptions {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .cell-item {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .margin-top {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 </style>

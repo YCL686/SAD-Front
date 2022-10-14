@@ -125,6 +125,7 @@ import {
   Search,
   Switch
 } from '@element-plus/icons-vue'
+import router from '../router'
 
     const route = useRoute()
     const searchKey = ref('')
@@ -196,6 +197,7 @@ import {
         isLogined.value = false;
         store.dispatch('setIsLogined', false)
         localStorage.removeItem('token')
+        router.push('/index')
         //TODO 跳转首页
       })
     }
