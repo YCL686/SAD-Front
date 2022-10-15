@@ -35,7 +35,7 @@ const load = () => {
 }
 function getPageOpusList(pageNo: number, pageSize: number) {
   
-  const param = { pageSize: pageSize, pageNo: pageNo }
+  const param = { pageSize: pageSize, pageNo: pageNo, orderType:0 }
   pageOpusList(param).then((res) => {
     currentPageList = res;
     console.log(currentPageList)

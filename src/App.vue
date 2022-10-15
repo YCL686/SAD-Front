@@ -3,6 +3,7 @@
     <el-container direction="vertical">
       <el-header>
         <my-header v-if="!data.isMobile"></my-header>
+        <my-header-mobile v-else></my-header-mobile>
       </el-header>
       <el-main>
         <my-main></my-main>
@@ -17,6 +18,7 @@
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import { defineComponent } from 'vue'
 import  myHeader  from './components/myHeader.vue'
+import myHeaderMobile from './components/mobile/myHeaderMobile.vue'
 import myMain from './components/myMain.vue'
 import myFooter from './components/myFooter.vue'
 import zhCn from 'element-plus/lib/locale/lang/zh-cn'
@@ -28,7 +30,7 @@ import  store  from './store' //store存放语言配置
 
 export default defineComponent({
   name:'App',
-  components: { myHeader, myMain, myFooter},
+  components: { myHeader, myMain, myFooter, myHeaderMobile},
   setup() {
     return{
       data: store.state
