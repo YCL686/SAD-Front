@@ -16,6 +16,18 @@
           <el-skeleton :rows="5" animated />
           </el-card>
         </el-scrollbar> -->
+        <el-menu
+    :default-active="1"
+    class="el-menu-demo"
+    mode="horizontal"
+    v-if="data.isMobile"
+  >
+  <el-menu-item index="1"><router-link to="/index">首页</router-link></el-menu-item>
+  <el-menu-item index="2"><router-link to="/recommand">recommand</router-link></el-menu-item>
+  <el-menu-item index="3"><router-link to="/hot">热门</router-link></el-menu-item>
+  <el-menu-item index="4"><router-link to="/nft">NFT</router-link></el-menu-item>
+  <el-menu-item index="5"><router-link to="/defi">DeFi</router-link></el-menu-item>
+  </el-menu>
         <RouterView></RouterView>
     </el-col>
     <el-col :xs="2" :sm="4" :md="6" :lg="6" :xl="6" class="hidden-sm-and-down">
@@ -92,6 +104,7 @@ import { defineComponent } from 'vue'
 import { ref } from 'vue'
 import ad from './ad.vue'
 import 'element-plus/theme-chalk/display.css'
+import store from '../store/index'
 
 
 
@@ -106,8 +119,10 @@ export default defineComponent({
 }
 const tableData = ref(Array.from({ length: 100 }).fill(item))
 
+
 return{
-  tableData
+  tableData,
+  data: store.state
 }
   }
 })

@@ -1,7 +1,7 @@
 <template>
   <el-descriptions class="margin-top" title="My $SAD Token" :column="3" :size="large" border>
     <template #extra>
-      <el-input-number v-model="num" :min="1" :max="10" />
+      <el-input-number v-model="num" :min="1" :max="100000" />
       <el-button-group>
         <el-button type="primary" @click="depositFunction">Deposit</el-button>
         <el-button>Withdraw</el-button>

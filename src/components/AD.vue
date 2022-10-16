@@ -1,6 +1,6 @@
 <template>
-    <el-carousel indicator-position="none" :interval="4000" type="card" height="200px">
-    <el-carousel-item v-for="item in 6" :key="item">
+    <el-carousel  :interval="4000"  height="150px">
+    <el-carousel-item  trigger="click" v-for="item in 4" :key="item">
       <h3 text="2xl" justify="center">{{ item }}号广告位招租</h3>
     </el-carousel-item>
   </el-carousel>
@@ -10,7 +10,7 @@
 .el-carousel__item h3 {
   color: #475669;
   opacity: 0.75;
-  line-height: 200px;
+  line-height: 150px;
   margin: 0;
   text-align: center;
 }
