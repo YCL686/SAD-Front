@@ -23,7 +23,7 @@
     v-if="data.isMobile"
   >
   <el-menu-item index="1"><router-link to="/index">首页</router-link></el-menu-item>
-  <el-menu-item index="2"><router-link to="/recommand">recommand</router-link></el-menu-item>
+  <el-menu-item index="2"><router-link to="/recommand">推荐</router-link></el-menu-item>
   <el-menu-item index="3"><router-link to="/hot">热门</router-link></el-menu-item>
   <el-menu-item index="4"><router-link to="/nft">NFT</router-link></el-menu-item>
   <el-menu-item index="5"><router-link to="/defi">DeFi</router-link></el-menu-item>

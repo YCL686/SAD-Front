@@ -26,30 +26,19 @@
         <div class="cell-item">BNB</div>
       </template>
 
-      <count-to
-        :startVal="0"
-        :endVal="Number(balance) / Math.pow(10, 18)"
-        :decimals="5"
-        :duration="3000"
-      ></count-to>
+      <count-to :startVal="0" :endVal="Number(balance) / Math.pow(10, 18)" :decimals="5" :duration="3000"></count-to>
     </el-descriptions-item>
   </el-descriptions>
   <el-table :data="tableData" height="250" style="width: 100%">
-      <el-table-column prop="entryTypeName" label="entryTypeName" width="180" />
+    <el-table-column prop="entryTypeName" label="entryTypeName" width="180" />
     <el-table-column prop="entryAmount" label="entryAmount" width="180" />
     <el-table-column prop="entryBalance" label="entryBalance" width="180" />
-    <el-table-column prop="entryEventName" label="entryEventname" width="180"/>
-    <el-table-column prop="statusName" label="statusName" width="180"/>
-    <el-table-column prop="txHash" label="txHash" width="180"/>
-    <el-table-column prop="gmtCreated" label="operationTime" width="180"/>
+    <el-table-column prop="entryEventName" label="entryEventname" width="180" />
+    <el-table-column prop="statusName" label="statusName" width="180" />
+    <el-table-column prop="txHash" label="txHash" width="180" />
+    <el-table-column prop="gmtCreated" label="operationTime" width="180" />
   </el-table>
-  <el-pagination
-    small
-    background
-    layout="prev, pager, next"
-    :total="50"
-    class="mt-4"
-  />
+  <el-pagination small background layout="prev, pager, next" :total="50" class="mt-4" />
 </template>
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref } from 'vue'
@@ -83,32 +72,42 @@ const pageNo = ref(1)
 const currentNo = ref(1)
 const total = ref(0)
 const tableData = ref([])
+
+function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+ 
+(async function() {
+  await sleep(1000);
+})();
+  
 const { address, balance, chainId, isActivated, dnsAlias, signer, provider } = useEthers()
 const { wallet } = useWallet()
- onMounted( async()=>{
-     await getAccountFunction()
-     let param = {pageSize:pageSize.value, pageNo:pageNo.value}
-     await pageAccountEntryFunction(param)
-  })
+onMounted(async () => {
+  await getAccountFunction()
+  let param = { pageSize: pageSize.value, pageNo: pageNo.value }
+  await pageAccountEntryFunction(param)
+})
 let contract = new ethers.Contract(
   import.meta.env.VITE_CONTRACT_ADDRESS,
   import.meta.env.VITE_CONTRACT_ABI,
   signer.value
 )
+
 contract.balanceOf(address.value).then(res => {
   onChainToken.value = Number(res) / Math.pow(10, 18)
 })
 
-function getAccountFunction(){
-    getAccount().then(res=>{
-        offChainToken.value = res.balance
-    })
+function getAccountFunction() {
+  getAccount().then(res => {
+    offChainToken.value = res.balance
+  })
 }
 
-function pageAccountEntryFunction(param:any){
-    pageAccountEntry(param).then(res=>{
-        tableData.value = res.list
-    })
+function pageAccountEntryFunction(param: any) {
+  pageAccountEntry(param).then(res => {
+    tableData.value = res.list
+  })
 }
 
 function depositFunction() {
@@ -128,20 +127,18 @@ function depositFunction() {
         utils.parseUnits(num.value.toString(), 18)
       )
       .then(transaction => {
-        let param = {address: transaction.from, amount:num.value,hash:transaction.hash,message:import.meta.env.VITE_DEPOSIT_MESSAGE, signature:signature}
-        deposit(param).then(res=>{
-            getAccountFunction()
-            let param = {pageSize:pageSize.value, pageNo:pageNo.value}
-             pageAccountEntryFunction(param)
-            console.log(res)
+        let param = { address: transaction.from, amount: num.value, hash: transaction.hash, message: import.meta.env.VITE_DEPOSIT_MESSAGE, signature: signature }
+        deposit(param).then(res => {
+          getAccountFunction()
+          let param = { pageSize: pageSize.value, pageNo: pageNo.value }
+          pageAccountEntryFunction(param)
+          console.log(res)
         })
         // 介绍刷新上面的 Token 余额，重置输入框
       })
   })
 
- 
-
-  }
+}
 
 </script>
 <style scoped>
