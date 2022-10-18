@@ -153,8 +153,8 @@
           </p>
         </template>
         <template #datetime>
-          <a-tooltip :title="dayjs().format(subComment.gmtCreated)">
-            <span>{{ dayjs().fromNow() }}</span>
+          <a-tooltip :title="subComment.gmtCreated">
+            <span>{{ dayjs(subComment.gmtCreated).fromNow() }}</span>
           </a-tooltip>
         </template>
       </a-comment>
