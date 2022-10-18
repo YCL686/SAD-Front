@@ -43,6 +43,7 @@ export default defineComponent({
 <style>
 #app {
   padding: 0px;
+  text-align: left;
 }
 html,
 body,
@@ -62,7 +63,7 @@ body,
 .el-footer {
   background-color: #333;
   color: #b3c0d1;
-  text-align: center;
+  /* text-align: center; */
   line-height: 60px;
   --el-header-padding: 0 0px!important
 }
@@ -70,7 +71,7 @@ body,
 .el-main {
   background-color: #e9eef3;
   color: #333;
-  text-align: center;
+  /* //text-align: center; */
 }
 </style>
 

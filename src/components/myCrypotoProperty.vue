@@ -83,6 +83,11 @@ function sleep(ms: number) {
   
 const { address, balance, chainId, isActivated, dnsAlias, signer, provider } = useEthers()
 const { wallet } = useWallet()
+
+const web3 = window.ethereum as any;
+const { connectWith } = useWallet()
+
+
 onMounted(async () => {
   await getAccountFunction()
   let param = { pageSize: pageSize.value, pageNo: pageNo.value }

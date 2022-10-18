@@ -260,7 +260,7 @@ onActivated(() => {
     return;
   }
 
-  //if (localStorage.getItem("token") == null) {
+  if (localStorage.getItem("token") == null) {
     signer.value.signMessage(import.meta.env.VITE_SIGN_MESSAGE).then(signature => {
       console.log(signature)
       const param = { address: address.value, signature: signature, message: import.meta.env.VITE_SIGN_MESSAGE }
@@ -270,7 +270,10 @@ onActivated(() => {
         store.dispatch('setIsLogined', true)
       })
     })
-  //}
+  }else{
+    console.log(signer)
+    console.log(pro)
+  }
 })
 const isChainChanged = ref(false)
 onChanged(() => {
