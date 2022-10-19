@@ -23,11 +23,13 @@
       content: '',
       editorOption: {
         modules: {
+          theme:'bubble',
           toolbar: [
           	['bold', 'italic', 'underline', 'strike'],
           	[{'size': ['small', false, 'large', 'huge']}],
           	[{'font': []}],
           	[{'align': []}],
+            ['code-block'],
           	[{'list': 'ordered'}, {'list': 'bullet'}],
           	[{'indent': '-1'}, {'indent': '+1'}],
           	[{'header': 1}, {'header': 2}], 
