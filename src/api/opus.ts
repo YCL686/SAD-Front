@@ -7,3 +7,11 @@ export function pageOpusList(param: any) {
     data:{}
   })
 }
+
+export function publish(param: any) {
+  return request({
+    url: '/opus/saveOrUpdateOpus',
+    method: 'post',
+    data: param
+  })
+}

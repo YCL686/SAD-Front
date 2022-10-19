@@ -1,68 +1,54 @@
 <template>
   <div infinite-scroll-distance="1" v-infinite-scroll="load">
 
-    <el-card class="opus-card" style="overflow: auto" v-for="(opus, index) in pageList" :key="index">
-      <el-row>
-        <el-col class="opus-header" :span="24">
-          <el-image style="width: 4em; height: 4em; border-radius:3em;margin-right: 1em;" :src="opus.avatarUrl"
-            :fit="fit" />
-          <div class="opus-header-name">
-            <span>{{opus.nickName}}</span><br />
-            <span>{{opus.characterSign}}</span>
-          </div>
-        </el-col>
-      </el-row>
-      <el-divider />
-      <el-row class="opus-content">
-        <el-col span="24">{{opus.content}}</el-col>
-      </el-row>
-      <div v-if="opus.resourceUrls != undefined && opus.resourceUrls != null && opus.resourceUrls.length > 0">
-        <el-image v-for="(image, index) in opus.resourceUrls" :key="index" style="width: 100px; height: 100px"
-          :src="image" :preview-src-list="opus.resourceUrls" :initial-index="index" fit="cover" />
-      </div>
-      <el-divider />
-      <el-row class="opus-nums">
-        <el-col :span="7">
-          <a>
-            <el-icon>
-              <Pointer />
-            </el-icon>
-            {{opus.likeNum}}
-          </a>
-        </el-col>
-        <el-divider direction="vertical" />
-        <el-col :span="7">
-          <a @click="openComment(opus.id)">
-            <el-icon>
-              <ChatDotSquare />
-            </el-icon>
-            {{opus.replyNum}}
-          </a>
-        </el-col>
-        <el-divider direction="vertical" />
-        <el-col :span="7">
-          <a>
-            <el-icon>
-              <Star />
-            </el-icon>
-            {{opus.collectNum}}
-          </a>
-        </el-col>
-      </el-row>
-      <el-skeleton :loading="loading" style="--el-skeleton-circle-size: 75px">
-        <template #template>
-          <el-skeleton-item variant="circle" />
-        </template>
-        <template #default>
-
-        </template>
-      </el-skeleton>
-
-    </el-card>
+    <a-list style="background-color: #fff;border-radius: 10px;" item-layout="vertical" size="large" :data-source="pageList">
+      <template #renderItem="{ item }">
+        <a-list-item key="item.title">
+          <template #actions>
+            <span>
+              <StarOutlined style="margin-right: 8px" />{{ 10 }}
+            </span>
+            <a-tooltip title="Comment">
+              <span>
+                <MessageOutlined @click="openComment(item.id)" style="margin-right: 8px" />{{ 30 }}
+              </span>
+            </a-tooltip>
+            <span>
+              <LikeOutlined style="margin-right: 8px" />{{ 10 }}
+            </span>
+          </template>
+          <!-- <template #extra>
+          <img
+            width="272"
+            alt="logo"
+            src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
+          />
+        </template> -->
+        <a-skeleton :loading="loading" active avatar>
+          <a-badge-ribbon v-if="item.minted === 1" text="Minted"></a-badge-ribbon>
+          <a-list-item-meta   :description="item.characterSign">
+            <template #title>
+              <a>{{ item.nickName }}</a>
+            </template>
+            <template #avatar>
+              <a-avatar :size="64" :src="item.avatarUrl" />
+            </template>
+          </a-list-item-meta>
+          <p style="text-indent: 2em">
+          {{ item.summary }}
+        </p>
+          <a-image-preview-group v-if="item.resourceUrls != null && item.resourceUrls != undefined && item.resourceUrls.length > 0">
+            <a-image :width="200" v-for="image in item.resourceUrls" :src="image" />
+          </a-image-preview-group>
+        </a-skeleton>
+        </a-list-item>
+      </template>
+    </a-list>
   </div>
 
   <el-drawer class="comment-drawer" v-model="commentDraw" title="Comment:" direction="rtl">
     <el-input v-model="comment" :rows="3" type="textarea" placeholder="Please input" />
+    <Picker :data="emojiIndex" set="apple" @select="showEmoji" />
     <el-button @click="addCommentFunction(openOpusComment)" type="primary">
       add comment
     </el-button>
@@ -107,8 +93,8 @@
         </p>
       </template>
       <template #datetime>
-        <a-tooltip :title="dayjs().format(comment.gmtCreated)">
-          <span>{{ dayjs().fromNow() }}</span>
+        <a-tooltip :title="comment.gmtCreated">
+          <span>{{ dayjs(comment.gmtCreated).fromNow() }}</span>
         </a-tooltip>
       </template>
       <a-comment v-if="comment.children != null && comment.children != undefined && comment.children.length > 0"
@@ -159,7 +145,8 @@
         </template>
       </a-comment>
     </a-comment>
-    <a @click="showMoreCommentsFunction(openOpusComment)" v-if="showMoreComments>0">show more {{showMoreComments}} comments</a>
+    <a @click="showMoreCommentsFunction(openOpusComment)" v-if="showMoreComments>0">show more {{showMoreComments}}
+      comments</a>
   </el-drawer>
 </template>
 <script lang="ts" setup>
@@ -169,8 +156,14 @@ import { pageOpusList } from '../api/opus' //这里引入的就是刚刚添加�
 import { pageCommentList, addComment, showAllCommentList } from '../api/comment'
 import { Pointer, ChatDotSquare, Star } from '@element-plus/icons-vue'
 import dayjs from 'dayjs';
-import { LikeFilled, LikeOutlined, DislikeFilled, DislikeOutlined, SendOutlined } from '@ant-design/icons-vue';
+import { StarOutlined, LikeFilled, LikeOutlined, DislikeFilled, DislikeOutlined, SendOutlined, MessageOutlined } from '@ant-design/icons-vue';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import data from "emoji-mart-vue-fast/data/all.json";
+// Note: component needs to be imported from /src subfolder:
+import { Picker, EmojiIndex } from "emoji-mart-vue-fast/src";
+import "emoji-mart-vue-fast/css/emoji-mart.css";
+let emojiIndex = new EmojiIndex(data);
+
 dayjs.extend(relativeTime);
 
 const subCommentInputVisible = ref(false)
@@ -191,26 +184,26 @@ const likes = ref<number>(0);
 const dislikes = ref<number>(0);
 const action = ref<string>();
 
-const addCommentFunction = (opusId: number) =>{
-  if(comment.value == null || comment.value == undefined || comment.value == ''){
+const addCommentFunction = (opusId: number) => {
+  if (comment.value == null || comment.value == undefined || comment.value == '') {
     return;
   }
 
   const param = {
     content: comment.value,
-    fromUserId:0,
-    opusId:opusId,
-    toUserId:0
+    fromUserId: 0,
+    opusId: opusId,
+    toUserId: 0
   }
-  addComment(param).then((res)=>{
-    if(res){
+  addComment(param).then((res) => {
+    if (res) {
       comment.value = ''
       openComment(opusId);
     }
   })
 }
 
-const showMoreCommentsFunction = (opusId: number) =>{
+const showMoreCommentsFunction = (opusId: number) => {
   const param = { pageNo: 1, pageSize: 5, opusId: opusId, showAllComments: true }
   pageCommentList(param).then((res) => {
     if (res.list != null && res.list != undefined && res.list.length > 0) {
@@ -243,6 +236,10 @@ const load = () => {
   }
 }
 
+const showEmoji = (e) => {
+  comment.value += e.native
+}
+
 function openComment(opusId: number) {
   const param = { pageNo: 1, pageSize: 5, opusId: opusId }
   openOpusComment.value = opusId;
@@ -250,7 +247,7 @@ function openComment(opusId: number) {
     if (res.list != null && res.list != undefined && res.list.length > 0) {
       commentDraw.value = true;
       pageCommentListResult.value = res.list;
-      if(res.remainCommentNum > 0){
+      if (res.remainCommentNum > 0) {
         showMoreComments.value = res.remainCommentNum
       }
     }
@@ -259,7 +256,7 @@ function openComment(opusId: number) {
 }
 
 function getPageOpusList(pageNo: number, pageSize: number) {
-
+  loading.value = true
   const param = { pageSize: pageSize, pageNo: pageNo, orderType: 0 }
   pageOpusList(param).then((res) => {
     currentPageList = res;

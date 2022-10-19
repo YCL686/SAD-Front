@@ -11,6 +11,8 @@ import i18n from './locales'
 import InfiniteScroll from "element-plus"
 import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
+import { QuillEditor } from '@vueup/vue-quill'
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
 
 const app = createApp(App)
@@ -21,6 +23,7 @@ app.use(VueDapp)
 app.use(i18n)
 app.use(InfiniteScroll)
 app.use(Antd)
+app.component('QuillEditor', QuillEditor)
 app.mount('#app')
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
