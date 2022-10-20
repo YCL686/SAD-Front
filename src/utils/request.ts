@@ -8,7 +8,7 @@ const instance = axios.create({
   headers: {
     // 设置后端需要的传参类型
     'Content-Type': 'application/json',
-    'token': 'your token',
+    'token': '',
     'X-Requested-With': 'XMLHttpRequest'
   }
 })

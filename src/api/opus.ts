@@ -15,3 +15,10 @@ export function publish(param: any) {
     data: param
   })
 }
+
+export function getOpusById(param: any){
+  return request({
+    url: '/opus/getOpusById?' + qs.stringify(param),
+    method:'get'
+  })
+}

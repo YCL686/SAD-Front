@@ -23,7 +23,7 @@
       content: '',
       editorOption: {
         modules: {
-          theme:'bubble',
+          // theme:'snow',
           toolbar: [
           	['bold', 'italic', 'underline', 'strike'],
           	[{'size': ['small', false, 'large', 'huge']}],

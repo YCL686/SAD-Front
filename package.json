@@ -19,6 +19,7 @@
     "element-plus": "^2.2.17",
     "emoji-mart-vue-fast": "^11.2.0",
     "ethers": "^5.7.1",
+    "nprogress": "^0.2.0",
     "pinia": "^2.0.0-rc.10",
     "postcss-px-to-viewport": "^1.1.1",
     "prettier": "^2.7.1",

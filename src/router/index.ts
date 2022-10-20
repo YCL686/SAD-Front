@@ -22,7 +22,7 @@ import DeFi from '../components/DeFi.vue'
 import admin from '../components/admin/index.vue'
 
 const routes = [{
-  path: '/:opusId',
+  path: '/opus/:opusId',
   name: 'opus',
   component: opus
 }, {
