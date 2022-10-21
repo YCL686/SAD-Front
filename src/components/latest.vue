@@ -31,7 +31,7 @@
             <a-list-item-meta :description="item.characterSign">
               <template #title>
                 <a-space>
-                <a>{{ item.nickName }}</a>
+                <a @click="getUserProfile(item.userId)">{{ item.nickName }}</a>
                 <a-button @click="item.focused = operateFocusFunction(item.userId, item.focused)" v-if="!item.focused" type="primary" size="small" danger>
                 <template #icon>
                   <PlusOutlined />
@@ -303,13 +303,19 @@ const getOpusByIdFunction = (opusId: string) => {
 }
 
 const operateFocusFunction = (focusedId: any, focused: boolean) => {
-  debugger
   let param = {focusedId: focusedId}
   operateFocus(param).then(res =>{
     if(res){
       return !focused
     }
   })
+}
+
+const getUserProfile = (userId: any) =>{
+  const profilePage = router.resolve({
+    path: '/profile/' + userId
+  })
+  window.open(profilePage.href, '_blank') // 打开新的窗口(跳转路径，跳转类型)
 }
 
 function openComment(opusId: number) {

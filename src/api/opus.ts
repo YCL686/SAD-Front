@@ -22,3 +22,10 @@ export function getOpusById(param: any){
     method:'get'
   })
 }
+
+export function pageProfileOpusList(param: any){
+  return request({
+    url: '/opus/pageProfileOpusList?' + qs.stringify(param),
+    method: 'get'
+  })
+}

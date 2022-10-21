@@ -11,14 +11,16 @@
   </template>
   
   <script lang="ts" setup>
-    import { defineComponent, ref, reactive, watch } from 'vue'
+    import { defineComponent, ref, reactive, watch, onMounted } from 'vue'
     import { publish } from '../api/opus'
+    import {useRouter} from 'vue-router'
     
     const resourceUrl = ref('')
     const title = ref('')
     const quillRef = ref();
     const desc = ref('')
     const content = ref('')
+    const router = useRouter()
     const data = reactive({
       content: '',
       editorOption: {
@@ -61,8 +63,15 @@
       publish(param).then(res=>{
         console.log(res)
       })
-
     }
+
+    //const 
+
+    onMounted( ()=>{
+      if(router.currentRoute.value.params.userId != null && router.currentRoute.value.params.userId != undefined && router.currentRoute.value.params.userId != ''){
+
+      }
+    })
 
     
 

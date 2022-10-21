@@ -21,7 +21,14 @@ import DeFi from '../components/DeFi.vue'
 //admin页面 子页面包括配置管理 审核管理 统计管理 用户管理等
 import admin from '../components/admin/index.vue'
 
+import profile from '../components/profile.vue'
+
 const routes = [{
+  path: '/profile/:userId',
+  name: 'profile',
+  component: profile
+},
+  {
   path: '/opus/:opusId',
   name: 'opus',
   component: opus
@@ -30,7 +37,7 @@ const routes = [{
   name: 'index',
   component: index
 }, {
-  path: '/publish',
+  path: '/publish/":opusId',
   name: 'publish',
   component: publish
 }, {

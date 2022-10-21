@@ -15,3 +15,10 @@ export function logout() {
     method: 'get'
   })
 }
+
+export function getProfile(param: any){
+  return request({
+    url: '/user/getProfile?'+qs.stringify(param),
+    method: 'get'
+  })
+}
