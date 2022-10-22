@@ -29,3 +29,10 @@ export function pageProfileOpusList(param: any){
     method: 'get'
   })
 }
+
+export function getOpusByIdForPublish(param: any){
+  return request({
+    url: '/opus/getOpusByIdForPublish?' + qs.stringify(param),
+    method: 'get'
+  })
+}

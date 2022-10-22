@@ -37,7 +37,7 @@ const routes = [{
   name: 'index',
   component: index
 }, {
-  path: '/publish/":opusId',
+  path: '/publish',
   name: 'publish',
   component: publish
 }, {

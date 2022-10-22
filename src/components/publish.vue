@@ -3,7 +3,7 @@
     <template #extra><a-button type="primary" @click="pubilshFunction(0)">Publish</a-button>
   <a-button @click="pubilshFunction(1)">Stage</a-button>
     </template>
-    <a-input v-model="title" placeholder="title is optional" />
+    <a-input v-model:value="title" placeholder="title is optional" />
     <quill-editor ref="quillRef" v-model="content" style="min-height: 900px" :disabled="true" theme="snow" :options="data.editorOption" content-type="html" enable :content="desc" />
   </a-card>
   <br />
@@ -12,7 +12,7 @@
   
   <script lang="ts" setup>
     import { defineComponent, ref, reactive, watch, onMounted } from 'vue'
-    import { publish } from '../api/opus'
+    import { publish, getOpusByIdForPublish } from '../api/opus'
     import {useRouter} from 'vue-router'
     
     const resourceUrl = ref('')
@@ -21,6 +21,7 @@
     const desc = ref('')
     const content = ref('')
     const router = useRouter()
+    const opusId = ref('')
     const data = reactive({
       content: '',
       editorOption: {
@@ -57,19 +58,28 @@
         content:quillRef.value.getContents(),
         title:title.value,
         resourceUrl:resourceUrl.value,
-        type:type
+        type:type,
+        id:opusId.value
       }
-
+      
       publish(param).then(res=>{
         console.log(res)
       })
     }
 
-    //const 
+    const getOpusByIdForPublishFunction = () =>{
+      let param = {opusId: router.currentRoute.value.query.opusId}
+      getOpusByIdForPublish(param).then(res=>{
+        title.value = res.title;
+        quillRef.value.setContents(res.content)
+        opusId.value = res.opusId;
+      })
+    }
 
     onMounted( ()=>{
-      if(router.currentRoute.value.params.userId != null && router.currentRoute.value.params.userId != undefined && router.currentRoute.value.params.userId != ''){
-
+      console.log(router.currentRoute.value)
+      if(router.currentRoute.value.query.opusId != null && router.currentRoute.value.query.opusId != undefined && router.currentRoute.value.query.opusId != ''){
+        getOpusByIdForPublishFunction()
       }
     })
 

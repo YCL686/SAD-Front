@@ -54,7 +54,7 @@
     <template #renderItem="{ item }">
       <a-list-item>
         <template #actions>
-          <a v-if="opusStatus!=0 &&self" key="list-loadmore-edit">edit</a>
+          <a v-if="opusStatus!=0 &&self" key="list-loadmore-edit" @click="goToPubilsh(item.id)">edit</a>
           <a v-if="opusStatus == 2 && self" key="list-loadmore-more">publish</a>
           <a v-if="self" key="list-loadmore-more">delete</a>
           <a key="list-loadmore-more">more</a>
@@ -144,9 +144,18 @@
       pageProfileOpusListFunction()
     };
 
+    const goToPubilsh = (opusId :any) =>{
+      const publishPage = router.resolve({
+    path: '/publish',
+    query:{opusId: opusId}
+  })
+  window.open(publishPage.href, '_blank') // 打开新的窗口(跳转路径，跳转类型)
+    }
+
   onMounted(() =>{
     getProfileFunction();
     pageProfileOpusListFunction();
   })
+
 
   </script>
