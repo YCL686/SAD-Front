@@ -239,7 +239,7 @@ const action = ref<string>();
 const router = useRouter()
 
 
-const addCommentFunction = () => {
+const addCommentFunction = (opusId: any) => {
   if (comment.value == null || comment.value == undefined || comment.value == '') {
     return;
   }
