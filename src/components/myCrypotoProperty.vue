@@ -76,11 +76,11 @@ const tableData = ref([])
 function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
- 
-(async function() {
+
+(async function () {
   await sleep(1000);
 })();
-  
+
 const { address, balance, chainId, isActivated, dnsAlias, signer, provider } = useEthers()
 const { wallet } = useWallet()
 
@@ -123,23 +123,21 @@ function depositFunction() {
     })
     return
   }
-  signer.value?.signMessage(import.meta.env.VITE_DEPOSIT_MESSAGE).then(signature => {
+  signer.value?.signMessage(import.meta.env.VITE_DEPOSIT_MESSAGE).then(signature => { //链上钱包签名
     let contractWithSigner = contract.connect(signer.value)
-    //  发起交易
     contractWithSigner
-      .transfer(
+      .transfer( //发起交易
         import.meta.env.VITE_DEPOSIT_WITHDRAW_ADDRESS,
         utils.parseUnits(num.value.toString(), 18)
       )
       .then(transaction => {
         let param = { address: transaction.from, amount: num.value, hash: transaction.hash, message: import.meta.env.VITE_DEPOSIT_MESSAGE, signature: signature }
-        deposit(param).then(res => {
+        deposit(param).then(res => { //web2后端记录
           getAccountFunction()
           let param = { pageSize: pageSize.value, pageNo: pageNo.value }
           pageAccountEntryFunction(param)
           console.log(res)
         })
-        // 介绍刷新上面的 Token 余额，重置输入框
       })
   })
 

@@ -1,44 +1,54 @@
 <template>
-  <div infinite-scroll-distance="1" v-infinite-scroll="load">
-
+  <a-skeleton v-if="whileLoading" v-for="i in 10" :key="i" style="padding: 20px;background-color: #fff;border-radius: 10px; margin-bottom: 5px;" :loading="loading" active avatar></a-skeleton>
+  <div v-else infinite-scroll-distance="1" v-infinite-scroll="load">
     <a-list style="background-color: #fff;border-radius: 10px;" item-layout="vertical" size="large"
       :data-source="pageList">
       <template #renderItem="{ item }">
         <a-list-item key="item.title">
           <template #actions>
+            <a-tooltip title="share">
             <span>
               <ShareAltOutlined style="margin-right: 8px" />
             </span>
-            <span>
-              <StarOutlined style="margin-right: 8px" />{{ 10 }}
+          </a-tooltip>
+            <span style="cursor: pointer;" @click="item.collected = !item.collected; item.collectNum++; operateCollectFunction(item.id)" v-if="!item.collected">
+              <StarOutlined style="margin-right: 8px" />{{ item.collectNum }}
+            </span>
+            <span style="cursor: pointer; " @click="item.collected = !item.collected;item.collectNum--; operateCollectFunction(item.id)" v-if="item.collected">
+              <StarTwoTone two-tone-color="#FFD700" style="margin-right: 8px" />{{ item.collectNum }}
             </span>
             <a-tooltip title="Comment">
               <span>
-                <MessageOutlined @click="openComment(item.id)" style="margin-right: 8px" />{{ 30 }}
+                <MessageOutlined @click="openComment(item.id)" style="margin-right: 8px" />{{ item.commentNum }}
               </span>
             </a-tooltip>
-            <span>
-              <LikeOutlined style="margin-right: 8px" />{{ 10 }}
+            <span style="cursor: pointer;" @click="item.liked = !item.liked; item.likeNum++; operateLikeFunction(item.id, 0)" v-if="!item.liked">
+              <LikeOutlined style="margin-right: 8px" />{{ item.likeNum }}
             </span>
-            <span>
+            <span style="cursor: pointer;" @click="item.liked = !item.liked; item.likeNum--; operateLikeFunction(item.id, 0)" v-if="item.liked">
+              <LikeTwoTone two-tone-color="#FF0000" style="margin-right: 8px" />{{ item.likeNum }}
+            </span>
+            <a-tooltip title="Daily Staking">
+            <span style="cursor: pointer;">
               <DollarCircleOutlined />
               <count-to :startVal="0" :endVal="1000" :decimals="2" :duration="3000"></count-to>
             </span>
+          </a-tooltip>
 
           </template>
-          <a-skeleton :loading="loading" active avatar>
+          
             <a-badge-ribbon v-if="item.minted === 1" text="Minted"></a-badge-ribbon>
             <a-list-item-meta :description="item.characterSign">
               <template #title>
                 <a-space>
                 <a @click="getUserProfile(item.userId)">{{ item.nickName }}</a>
-                <a-button @click="item.focused = operateFocusFunction(item.userId, item.focused)" v-if="!item.focused" type="primary" size="small" danger>
+                <a-button @click="item.focused = !item.focused; operateFocusFunction(item.userId)" v-if="!item.focused" type="primary" size="small" danger>
                 <template #icon>
                   <PlusOutlined />
                 </template>
                 Focus
               </a-button>
-              <a-button @click="item.focused = operateFocusFunction(item.userId, item.focused)" v-if="item.focused"  size="small" >
+              <a-button @click="item.focused = !item.focused; operateFocusFunction(item.userId)" v-if="item.focused"  size="small" >
                 <template #icon>
                   <CheckOutlined />
                 </template>
@@ -74,14 +84,14 @@
               v-if="item.resourceUrls != null && item.resourceUrls != undefined && item.resourceUrls.length > 0">
               <a-image :width="200" v-for="image in item.resourceUrls" :src="image" />
             </a-image-preview-group>
-          </a-skeleton>
         </a-list-item>
       </template>
+      <a-skeleton v-for="i in 5" :key="i" style="padding: 20px;" :loading="loading" active avatar></a-skeleton>
     </a-list>
   </div>
 
   <el-drawer class="comment-drawer" v-model="commentDraw" title="Comment:" direction="rtl">
-    <el-input style="margin-bottom: 10px;" v-model="comment" :rows="3" type="textarea" placeholder="Please input" />
+    <el-input style="margin-bottom: 10px;" v-model="commentContent" :rows="3" type="textarea" placeholder="Please input" />
     <div style="display: flex;">
       <a-space style="margin-left: auto;">
         <a-popover title="emoji" trigger="click">
@@ -93,7 +103,7 @@
             </template></a-button>
         </a-popover>
 
-        <el-button @click="addCommentFunction(openOpusComment)" type="primary">
+        <el-button @click="addCommentFunction(openOpusComment, null, commentContent, 0)" type="primary">
           add comment
         </el-button>
         <el-button>
@@ -106,36 +116,38 @@
       :description="null" />
     <a-comment v-else v-for="(comment, index) in pageCommentListResult" :key="index">
       <template #actions>
-        <span key="comment-basic-like">
+        
           <a-tooltip title="Like">
-            <template v-if="action === 'liked'">
-              <LikeFilled @click="like" />
-            </template>
-            <template v-else>
-              <LikeOutlined @click="like" />
-            </template>
+            <span style="cursor: pointer;" @click="comment.liked = !comment.liked; comment.likedNum++; operateLikeFunction(comment.id, 1)" v-if="!comment.liked">
+              <LikeOutlined style="margin-right: 8px" />{{ comment.likedNum }}
+            </span>
+            <span style="cursor: pointer;" @click="comment.liked = !comment.liked; comment.likedNum--; operateLikeFunction(comment.id, 1)" v-if="comment.liked">
+              <LikeTwoTone two-tone-color="#FF0000" style="margin-right: 8px" />{{ comment.likedNum }}
+            </span>
           </a-tooltip>
-          <span style="padding-left: 8px; cursor: auto">
-            {{ likes }}
-          </span>
-        </span>
-        <span key="comment-basic-dislike">
-          <a-tooltip title="Dislike">
-            <template v-if="action === 'disliked'">
-              <DislikeFilled @click="dislike" />
-            </template>
-            <template v-else>
-              <DislikeOutlined @click="dislike" />
-            </template>
-          </a-tooltip>
-          <span style="padding-left: 8px; cursor: auto">
-            {{ dislikes }}
-          </span>
-        </span>
-        <span key="comment-basic-reply-to">Reply to</span>
-
+        <span @click="commentIndex[index] = !commentIndex[index]" key="comment-basic-reply-to">Reply to</span>
       </template>
-      <template #author><a>{{comment.fromNickName}}</a></template>
+      <el-input v-if="commentIndex[index] == true" style="margin-bottom: 10px;" v-model="subCommentContent" :rows="3" type="textarea" placeholder="Please input" />
+    <div v-if="commentIndex[index] == true" style="display: flex;">
+      <a-space style="margin-left: auto;">
+        <a-popover title="emoji" trigger="click">
+          <template #content>
+            <Picker :data="emojiIndex" set="apple" @select="showEmoji" />
+          </template>
+          <a-button shape="circle"><template #icon>
+              <SmileOutlined />
+            </template></a-button>
+        </a-popover>
+
+        <el-button @click="addCommentFunction(comment.opusId, comment.id, subCommentContent, comment.fromUserId);commentIndex[index] = false" type="primary">
+          add comment
+        </el-button>
+        <el-button>
+          clear
+        </el-button>
+      </a-space>
+    </div>      
+    <template #author><a>{{comment.fromNickName}}</a></template>
       <template #avatar>
         <a-avatar :src="comment.fromAvatarUrl" :alt="comment.fromNickName" />
       </template>
@@ -152,35 +164,36 @@
       <a-comment v-if="comment.children != null && comment.children != undefined && comment.children.length > 0"
         v-for="(subComment, subIndex) in comment.children" :key="subIndex">
         <template #actions>
-          <span key="comment-basic-like">
-            <a-tooltip title="Like">
-              <template v-if="action === 'liked'">
-                <LikeFilled @click="like" />
-              </template>
-              <template v-else>
-                <LikeOutlined @click="like" />
-              </template>
-            </a-tooltip>
-            <span style="padding-left: 8px; cursor: auto">
-              {{ likes }}
+          <a-tooltip title="Like">
+            <span style="cursor: pointer;" @click="subComment.liked = !subComment.liked; subComment.likedNum++; operateLikeFunction(subComment.id, 1)" v-if="!subComment.liked">
+              <LikeOutlined style="margin-right: 8px" />{{ subComment.likedNum }}
             </span>
-          </span>
-          <span key="comment-basic-dislike">
-            <a-tooltip title="Dislike">
-              <template v-if="action === 'disliked'">
-                <DislikeFilled @click="dislike" />
-              </template>
-              <template v-else>
-                <DislikeOutlined @click="dislike" />
-              </template>
-            </a-tooltip>
-            <span style="padding-left: 8px; cursor: auto">
-              {{ dislikes }}
+            <span style="cursor: pointer;" @click="subComment.liked = !subComment.liked; subComment.likedNum--; operateLikeFunction(subComment.id, 1)" v-if="subComment.liked">
+              <LikeTwoTone two-tone-color="#FF0000" style="margin-right: 8px" />{{ subComment.likedNum }}
             </span>
-          </span>
-          <span @click="" key="comment-basic-reply-to">Reply to</span>
-          <!-- <el-input v-if="subCommentInputVisible = false" v-model="subComment" :rows="3" type="textarea" placeholder="Please input" /> -->
+          </a-tooltip>
+          <span @click="subComment.showReply = !subComment.showReply" key="comment-basic-reply-to">Reply to</span>
         </template>
+        <el-input v-if="subComment.showReply == true" style="margin-bottom: 10px;" v-model="subCommentContent" :rows="3" type="textarea" placeholder="Please input" />
+    <div v-if="subComment.showReply == true" style="display: flex;">
+      <a-space style="margin-left: auto;">
+        <a-popover title="emoji" trigger="click">
+          <template #content>
+            <Picker :data="emojiIndex" set="apple" @select="showEmoji" />
+          </template>
+          <a-button shape="circle"><template #icon>
+              <SmileOutlined />
+            </template></a-button>
+        </a-popover>
+
+        <el-button @click="addCommentFunction(comment.opusId, comment.id, subCommentContent, subComment.fromUserId);subComment.showReply = false" type="primary">
+          add comment
+        </el-button>
+        <el-button>
+          clear
+        </el-button>
+      </a-space>
+    </div>
         <template #author><a>{{subComment.fromNickName}}</a> @ <a>{{subComment.toNickName}}</a></template>
         <template #avatar>
           <a-avatar :src="subComment.fromAvatarUrl" :alt="subComment.fromNickName" />
@@ -202,14 +215,16 @@
   </el-drawer>
 </template>
 <script lang="ts" setup>
-import { onMounted } from 'vue'
-import { ref, reactive } from 'vue'
+import { onMounted,onUpdated } from 'vue'
+import { ref, reactive, toRaw } from 'vue'
 import { pageOpusList } from '../api/opus' //这里引入的就是刚刚添加的接口
 import { pageCommentList, addComment, showAllCommentList } from '../api/comment'
 import { operateFocus } from '../api/focus'
+import { operateCollect } from '../api/collect'
+import { operateLike } from '../api/like'
 import { useRouter } from 'vue-router'
 import dayjs from 'dayjs';
-import { StarOutlined, LikeFilled, LikeOutlined, DislikeFilled, DislikeOutlined, SendOutlined, MessageOutlined, DollarCircleOutlined, SmileOutlined, ShareAltOutlined, PlusOutlined, CheckOutlined } from '@ant-design/icons-vue';
+import { StarOutlined, StarTwoTone, LikeTwoTone, LikeOutlined, MessageOutlined, DollarCircleOutlined, SmileOutlined, ShareAltOutlined, PlusOutlined, CheckOutlined, Loading3QuartersOutlined } from '@ant-design/icons-vue';
 import { CountTo } from 'vue3-count-to'
 import relativeTime from 'dayjs/plugin/relativeTime';
 import data from "emoji-mart-vue-fast/data/all.json";
@@ -220,6 +235,7 @@ let emojiIndex = new EmojiIndex(data);
 
 dayjs.extend(relativeTime);
 
+const whileLoading = ref(true)
 const count = ref(5)
 const loading = ref(true)
 const pageList = ref([])
@@ -227,32 +243,31 @@ let currentPageList: any = reactive([])
 const pageSize = ref(5)
 const pageNo = ref(1)
 const commentDraw = ref(false)
-const comment = ref('')
-const subComment = ref('')
+const commentContent = ref('')
+const subCommentContent = ref('')
 const pageCommentListResult = ref([])
 const openOpusComment = ref(0)
 const showMoreComments = ref(0)
-const showMoreSubComments = ref(0)
-const likes = ref<number>(0);
-const dislikes = ref<number>(0);
-const action = ref<string>();
 const router = useRouter()
+const commentIndex = ref([])
 
 
-const addCommentFunction = (opusId: any) => {
-  if (comment.value == null || comment.value == undefined || comment.value == '') {
+const addCommentFunction = (opusId: any, parentId: any, comment: any, toUserId: any) => {
+  if (comment == null || comment == undefined || comment == '') {
     return;
   }
 
   const param = {
-    content: comment.value,
+    content: comment,
     fromUserId: 0,
     opusId: opusId,
-    toUserId: 0
+    toUserId: toUserId,
+    parentId: parentId
   }
   addComment(param).then((res) => {
     if (res) {
-      comment.value = ''
+      commentContent.value = ''
+      subCommentContent.value = ''
       openComment(opusId);
     }
   })
@@ -264,21 +279,13 @@ const showMoreCommentsFunction = (opusId: number) => {
     if (res.list != null && res.list != undefined && res.list.length > 0) {
       pageCommentListResult.value = res.list;
       showMoreComments.value = 0
+      res.list.forEach(() => {
+        commentIndex.value.push(false)
+      });
     }
   })
 }
 
-const like = () => {
-  likes.value = 1;
-  dislikes.value = 0;
-  action.value = 'liked';
-};
-
-const dislike = () => {
-  likes.value = 0;
-  dislikes.value = 1;
-  action.value = 'disliked';
-};
 
 const load = () => {
   loading.value = true;
@@ -302,12 +309,29 @@ const getOpusByIdFunction = (opusId: string) => {
   window.open(opusPage.href, '_blank') // 打开新的窗口(跳转路径，跳转类型)
 }
 
-const operateFocusFunction = (focusedId: any, focused: boolean) => {
+const operateFocusFunction = (focusedId: any) => {
   let param = {focusedId: focusedId}
   operateFocus(param).then(res =>{
     if(res){
-      return !focused
+      console.log(res.data)
     }
+  })
+}
+
+const operateCollectFunction = (opusId: any) =>{
+  let param = {opusId: opusId}
+  operateCollect(param).then(res =>{
+    console.log(res)
+  })
+}
+
+const operateLikeFunction = (likedId: any, likedType: any) => {
+  let param = {
+    likedId: likedId,
+    likedType: likedType
+  }
+  operateLike(param).then(res => {
+    console.log(res)
   })
 }
 
@@ -326,6 +350,10 @@ function openComment(opusId: number) {
   pageCommentList(param).then((res) => {
     if (res.list != null && res.list != undefined && res.list.length > 0) {
       pageCommentListResult.value = res.list;
+      res.list.forEach(() => {
+        commentIndex.value.push(false)
+      });
+
       if (res.remainCommentNum > 0) {
         showMoreComments.value = res.remainCommentNum
       }
@@ -346,6 +374,10 @@ function getPageOpusList(pageNo: number, pageSize: number) {
 
 onMounted(() => {
   getPageOpusList(pageNo.value, pageSize.value)
+})
+
+onUpdated(() => {
+  whileLoading.value = false;
 })
 </script>
 <style scoped>

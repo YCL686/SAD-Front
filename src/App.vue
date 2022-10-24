@@ -7,6 +7,7 @@
       </el-header>
       <el-main>
         <my-main></my-main>
+        <a-back-top target = "app"/>
       </el-main>
       <my-footer v-if="!data.isMobile"></my-footer>
     </el-container>
