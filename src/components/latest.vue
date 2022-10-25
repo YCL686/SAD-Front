@@ -28,6 +28,11 @@
             <span style="cursor: pointer;" @click="item.liked = !item.liked; item.likeNum--; operateLikeFunction(item.id, 0)" v-if="item.liked">
               <LikeTwoTone two-tone-color="#FF0000" style="margin-right: 8px" />{{ item.likeNum }}
             </span>
+
+            <span>
+              <FireTwoTone two-tone-color="#FF4500" style="margin-right: 8px"/>{{item.hotScore}}
+            </span>
+
             <a-tooltip title="Daily Staking">
             <span style="cursor: pointer;">
               <DollarCircleOutlined />
@@ -36,7 +41,6 @@
           </a-tooltip>
 
           </template>
-          
             <a-badge-ribbon v-if="item.minted === 1" text="Minted"></a-badge-ribbon>
             <a-list-item-meta :description="item.characterSign">
               <template #title>
@@ -54,6 +58,12 @@
                 </template>
                 Focused
               </a-button>
+
+              <!-- <template #datetime> -->
+                <a-tooltip :title="item.publishTime">
+                <span style="color: #ccc;font-size: 12px;line-height: 18px;white-space: nowrap;">{{ dayjs(item.publishTime).fromNow() }}</span>
+              </a-tooltip>
+            <!-- </template> -->
             </a-space>
               </template>
             
@@ -64,12 +74,12 @@
                   {{item.nickName}}
                 </a-avatar>
               </template>
+
+              
             </a-list-item-meta>
-            <template #datetime>
-              <a-tooltip :title="item.gmtCreated">
-                <span>{{ dayjs(item.gmtCreated).fromNow() }}</span>
-              </a-tooltip>
-            </template>
+
+            
+            
             <a-typography-title @click="getOpusByIdFunction(item.id)" style="text-align: center;cursor: pointer;"
               v-if="item.title != null && item.title != '' && item.title != undefined" :level="4">{{item.title}}
             </a-typography-title>
@@ -88,152 +98,28 @@
       </template>
       <a-skeleton v-for="i in 5" :key="i" style="padding: 20px;" :loading="loading" active avatar></a-skeleton>
     </a-list>
+    <el-drawer v-model="commentDraw" title="Comment:" direction="rtl">
+    <comment :value="opusId"></comment>
+  </el-drawer>
   </div>
 
-  <el-drawer class="comment-drawer" v-model="commentDraw" title="Comment:" direction="rtl">
-    <el-input style="margin-bottom: 10px;" v-model="commentContent" :rows="3" type="textarea" placeholder="Please input" />
-    <div style="display: flex;">
-      <a-space style="margin-left: auto;">
-        <a-popover title="emoji" trigger="click">
-          <template #content>
-            <Picker :data="emojiIndex" set="apple" @select="showEmoji" />
-          </template>
-          <a-button shape="circle"><template #icon>
-              <SmileOutlined />
-            </template></a-button>
-        </a-popover>
-
-        <el-button @click="addCommentFunction(openOpusComment, null, commentContent, 0)" type="primary">
-          add comment
-        </el-button>
-        <el-button>
-          clear
-        </el-button>
-      </a-space>
-    </div>
-    <a-empty
-      v-if="pageCommentListResult == null || pageCommentListResult == undefined || pageCommentListResult.length == 0"
-      :description="null" />
-    <a-comment v-else v-for="(comment, index) in pageCommentListResult" :key="index">
-      <template #actions>
-        
-          <a-tooltip title="Like">
-            <span style="cursor: pointer;" @click="comment.liked = !comment.liked; comment.likedNum++; operateLikeFunction(comment.id, 1)" v-if="!comment.liked">
-              <LikeOutlined style="margin-right: 8px" />{{ comment.likedNum }}
-            </span>
-            <span style="cursor: pointer;" @click="comment.liked = !comment.liked; comment.likedNum--; operateLikeFunction(comment.id, 1)" v-if="comment.liked">
-              <LikeTwoTone two-tone-color="#FF0000" style="margin-right: 8px" />{{ comment.likedNum }}
-            </span>
-          </a-tooltip>
-        <span @click="commentIndex[index] = !commentIndex[index]" key="comment-basic-reply-to">Reply to</span>
-      </template>
-      <el-input v-if="commentIndex[index] == true" style="margin-bottom: 10px;" v-model="subCommentContent" :rows="3" type="textarea" placeholder="Please input" />
-    <div v-if="commentIndex[index] == true" style="display: flex;">
-      <a-space style="margin-left: auto;">
-        <a-popover title="emoji" trigger="click">
-          <template #content>
-            <Picker :data="emojiIndex" set="apple" @select="showEmoji" />
-          </template>
-          <a-button shape="circle"><template #icon>
-              <SmileOutlined />
-            </template></a-button>
-        </a-popover>
-
-        <el-button @click="addCommentFunction(comment.opusId, comment.id, subCommentContent, comment.fromUserId);commentIndex[index] = false" type="primary">
-          add comment
-        </el-button>
-        <el-button>
-          clear
-        </el-button>
-      </a-space>
-    </div>      
-    <template #author><a>{{comment.fromNickName}}</a></template>
-      <template #avatar>
-        <a-avatar :src="comment.fromAvatarUrl" :alt="comment.fromNickName" />
-      </template>
-      <template #content>
-        <p>
-          {{comment.content}}
-        </p>
-      </template>
-      <template #datetime>
-        <a-tooltip :title="comment.gmtCreated">
-          <span>{{ dayjs(comment.gmtCreated).fromNow() }}</span>
-        </a-tooltip>
-      </template>
-      <a-comment v-if="comment.children != null && comment.children != undefined && comment.children.length > 0"
-        v-for="(subComment, subIndex) in comment.children" :key="subIndex">
-        <template #actions>
-          <a-tooltip title="Like">
-            <span style="cursor: pointer;" @click="subComment.liked = !subComment.liked; subComment.likedNum++; operateLikeFunction(subComment.id, 1)" v-if="!subComment.liked">
-              <LikeOutlined style="margin-right: 8px" />{{ subComment.likedNum }}
-            </span>
-            <span style="cursor: pointer;" @click="subComment.liked = !subComment.liked; subComment.likedNum--; operateLikeFunction(subComment.id, 1)" v-if="subComment.liked">
-              <LikeTwoTone two-tone-color="#FF0000" style="margin-right: 8px" />{{ subComment.likedNum }}
-            </span>
-          </a-tooltip>
-          <span @click="subComment.showReply = !subComment.showReply" key="comment-basic-reply-to">Reply to</span>
-        </template>
-        <el-input v-if="subComment.showReply == true" style="margin-bottom: 10px;" v-model="subCommentContent" :rows="3" type="textarea" placeholder="Please input" />
-    <div v-if="subComment.showReply == true" style="display: flex;">
-      <a-space style="margin-left: auto;">
-        <a-popover title="emoji" trigger="click">
-          <template #content>
-            <Picker :data="emojiIndex" set="apple" @select="showEmoji" />
-          </template>
-          <a-button shape="circle"><template #icon>
-              <SmileOutlined />
-            </template></a-button>
-        </a-popover>
-
-        <el-button @click="addCommentFunction(comment.opusId, comment.id, subCommentContent, subComment.fromUserId);subComment.showReply = false" type="primary">
-          add comment
-        </el-button>
-        <el-button>
-          clear
-        </el-button>
-      </a-space>
-    </div>
-        <template #author><a>{{subComment.fromNickName}}</a> @ <a>{{subComment.toNickName}}</a></template>
-        <template #avatar>
-          <a-avatar :src="subComment.fromAvatarUrl" :alt="subComment.fromNickName" />
-        </template>
-        <template #content>
-          <p>
-            {{subComment.content}}
-          </p>
-        </template>
-        <template #datetime>
-          <a-tooltip :title="subComment.gmtCreated">
-            <span>{{ dayjs(subComment.gmtCreated).fromNow() }}</span>
-          </a-tooltip>
-        </template>
-      </a-comment>
-    </a-comment>
-    <a @click="showMoreCommentsFunction(openOpusComment)" v-if="showMoreComments>0">show more {{showMoreComments}}
-      comments</a>
-  </el-drawer>
+  
 </template>
 <script lang="ts" setup>
 import { onMounted,onUpdated } from 'vue'
-import { ref, reactive, toRaw } from 'vue'
+import { ref, reactive } from 'vue'
 import { pageOpusList } from '../api/opus' //这里引入的就是刚刚添加的接口
-import { pageCommentList, addComment, showAllCommentList } from '../api/comment'
 import { operateFocus } from '../api/focus'
 import { operateCollect } from '../api/collect'
 import { operateLike } from '../api/like'
 import { useRouter } from 'vue-router'
 import dayjs from 'dayjs';
-import { StarOutlined, StarTwoTone, LikeTwoTone, LikeOutlined, MessageOutlined, DollarCircleOutlined, SmileOutlined, ShareAltOutlined, PlusOutlined, CheckOutlined, Loading3QuartersOutlined } from '@ant-design/icons-vue';
+import { StarOutlined, StarTwoTone, LikeTwoTone, LikeOutlined, MessageOutlined, DollarCircleOutlined, ShareAltOutlined, PlusOutlined, CheckOutlined, FireTwoTone } from '@ant-design/icons-vue';
 import { CountTo } from 'vue3-count-to'
 import relativeTime from 'dayjs/plugin/relativeTime';
-import data from "emoji-mart-vue-fast/data/all.json";
-// Note: component needs to be imported from /src subfolder:
-import { Picker, EmojiIndex } from "emoji-mart-vue-fast/src";
-import "emoji-mart-vue-fast/css/emoji-mart.css";
-let emojiIndex = new EmojiIndex(data);
-
+import comment from './comment.vue'
 dayjs.extend(relativeTime);
+
 
 const whileLoading = ref(true)
 const count = ref(5)
@@ -243,48 +129,8 @@ let currentPageList: any = reactive([])
 const pageSize = ref(5)
 const pageNo = ref(1)
 const commentDraw = ref(false)
-const commentContent = ref('')
-const subCommentContent = ref('')
-const pageCommentListResult = ref([])
-const openOpusComment = ref(0)
-const showMoreComments = ref(0)
 const router = useRouter()
-const commentIndex = ref([])
-
-
-const addCommentFunction = (opusId: any, parentId: any, comment: any, toUserId: any) => {
-  if (comment == null || comment == undefined || comment == '') {
-    return;
-  }
-
-  const param = {
-    content: comment,
-    fromUserId: 0,
-    opusId: opusId,
-    toUserId: toUserId,
-    parentId: parentId
-  }
-  addComment(param).then((res) => {
-    if (res) {
-      commentContent.value = ''
-      subCommentContent.value = ''
-      openComment(opusId);
-    }
-  })
-}
-
-const showMoreCommentsFunction = (opusId: number) => {
-  const param = { pageNo: 1, pageSize: 5, opusId: opusId, showAllComments: true }
-  pageCommentList(param).then((res) => {
-    if (res.list != null && res.list != undefined && res.list.length > 0) {
-      pageCommentListResult.value = res.list;
-      showMoreComments.value = 0
-      res.list.forEach(() => {
-        commentIndex.value.push(false)
-      });
-    }
-  })
-}
+const opusId = ref()
 
 
 const load = () => {
@@ -296,10 +142,6 @@ const load = () => {
   } else {
     loading.value = false
   }
-}
-
-const showEmoji = (e) => {
-  comment.value += e.native
 }
 
 const getOpusByIdFunction = (opusId: string) => {
@@ -342,24 +184,9 @@ const getUserProfile = (userId: any) =>{
   window.open(profilePage.href, '_blank') // 打开新的窗口(跳转路径，跳转类型)
 }
 
-function openComment(opusId: number) {
-  const param = { pageNo: 1, pageSize: 5, opusId: opusId }
-  openOpusComment.value = opusId;
+const openComment = (id: any) =>{
+  opusId.value = id;
   commentDraw.value = true;
-  pageCommentListResult.value = []
-  pageCommentList(param).then((res) => {
-    if (res.list != null && res.list != undefined && res.list.length > 0) {
-      pageCommentListResult.value = res.list;
-      res.list.forEach(() => {
-        commentIndex.value.push(false)
-      });
-
-      if (res.remainCommentNum > 0) {
-        showMoreComments.value = res.remainCommentNum
-      }
-    }
-  })
-
 }
 
 function getPageOpusList(pageNo: number, pageSize: number) {
