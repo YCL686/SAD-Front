@@ -64,7 +64,6 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
 import { ref, reactive } from 'vue'
-import { pageCommentList, addComment, showAllCommentList } from '../api/comment'
 import comment from './comment.vue'
 import { getOpusById } from '../api/opus'
 import { useRouter } from 'vue-router'
