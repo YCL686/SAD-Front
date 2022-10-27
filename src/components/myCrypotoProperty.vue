@@ -126,16 +126,16 @@ function depositFunction() {
   signer.value?.signMessage(import.meta.env.VITE_DEPOSIT_MESSAGE).then(signature => { //链上钱包签名
     let contractWithSigner = contract.connect(signer.value)
     contractWithSigner
-      .transfer( //发起交易
+      .transfer( //发起链上交易
         import.meta.env.VITE_DEPOSIT_WITHDRAW_ADDRESS,
         utils.parseUnits(num.value.toString(), 18)
       )
       .then(transaction => {
         let param = { address: transaction.from, amount: num.value, hash: transaction.hash, message: import.meta.env.VITE_DEPOSIT_MESSAGE, signature: signature }
-        deposit(param).then(res => { //web2后端记录
-          getAccountFunction()
+        deposit(param).then(res => { //web2链下后端记录
+          getAccountFunction() //offChainToken余额更新
           let param = { pageSize: pageSize.value, pageNo: pageNo.value }
-          pageAccountEntryFunction(param)
+          pageAccountEntryFunction(param) //offChainToken流水更新
           console.log(res)
         })
       })
