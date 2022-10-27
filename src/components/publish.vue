@@ -5,21 +5,24 @@
       <a-button @click="pubilshFunction(1)">Stage</a-button>
     </template>
     <a-input v-model:value="title" placeholder="title is optional" />
-    <el-upload class="avatar-uploader" :action="uploadImgUrl" :accept="'image/*,video/*'" :show-file-list="false"
-      :on-success="uploadEditorSuccess" :on-error="uploadEditorError" :before-upload="beforeEditorUpload"
+    <el-upload class="avatar-uploader" :action="uploadResourceUrl" :accept="'image/*,video/*'" :show-file-list="false"
+      :on-success="uploadResourceSuccess" :on-error="uploadResourceError" :before-upload="beforeResourceUpload"
       :headers="headers">
     </el-upload>
-    <quill-editor ref="quillRef" v-model="content" style="min-height: 900px" :disabled="true" theme="snow"
+    <a-spin :spinning="uploadLoading">
+    <quill-editor ref="quillRef" v-model="content" style="min-height: 900px" theme="snow"
       :options="data.editorOption" content-type="html" enable :content="desc" />
+    </a-spin>
   </a-card>
   <br />
 
 </template>
   
 <script lang="ts" setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, toRaw } from 'vue'
 import { publish, getOpusByIdForPublish } from '../api/opus'
 import { useRouter } from 'vue-router'
+import { message } from 'ant-design-vue';
 
 const header = ref('')
 const resourceUrl = ref('')
@@ -29,6 +32,11 @@ const desc = ref('')
 const content = ref('')
 const router = useRouter()
 const opusId = ref('')
+const uploadLoading = ref(false)
+const uploadResourceUrl = import.meta.env.VITE_BASE_URL + 'resource/upload'
+const headers = {
+  token: localStorage.getItem('token')
+}
 const toolbarOptions = [
   ['bold', 'italic', 'underline', 'strike'],
   [{ 'size': ['small', false, 'large', 'huge'] }],
@@ -49,85 +57,83 @@ const data = reactive({
   editorOption: {
     placeholder: '......',
     modules: {
-          // imageResize: {
-          //   displayStyles: {
-          //     backgroundColor: "black",
-          //     border: "none",
-          //     color: "white"
-          //   },
-          //   modules: ["Resize", "DisplaySize", "Toolbar"]
-          // },
-          toolbar: {
-            container: toolbarOptions,
-            handlers: {
-              image: function(value: any) {
-                //debugger
-                if (value) {
-                  document.querySelector("#upload .avatar-uploader input").click();
-                } else {
-                  quillRef.value.format("image", false);
-                }
-              },
-              //https://blog.csdn.net/m0_51963973/article/details/126222377
-              video: function(value: any) {
-                //debugger
-                if (value) {
-                  document.querySelector("#upload .avatar-uploader input").click();
-                } else {
-                  quillRef.value.format("video", false);
-                }
-              }
+      // imageResize: {
+      //   displayStyles: {
+      //     backgroundColor: "black",
+      //     border: "none",
+      //     color: "white"
+      //   },
+      //   modules: ["Resize", "DisplaySize", "Toolbar"]
+      // },
+      toolbar: {
+        container: toolbarOptions,
+        handlers: {
+          image: function (value: any) {
+            //debugger
+            if (value) {
+              document.querySelector("#upload .avatar-uploader input").click();
+            } else {
+              quillRef.value.format("image", false);
+            }
+          },
+          //https://blog.csdn.net/m0_51963973/article/details/126222377
+          video: function (value: any) {
+            //debugger
+            if (value) {
+              document.querySelector("#upload .avatar-uploader input").click();
+            } else {
+              quillRef.value.format("video", false);
             }
           }
         }
-
-
-
-
-
-    //   modules: {
-    //     // theme:'snow',
-    //     toolbar: [
-    //       ['bold', 'italic', 'underline', 'strike'],
-    //       [{ 'size': ['small', false, 'large', 'huge'] }],
-    //       [{ 'font': [] }],
-    //       [{ 'align': [] }],
-    //       ['code-block'],
-    //       [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-    //       [{ 'indent': '-1' }, { 'indent': '+1' }],
-    //       [{ 'header': 1 }, { 'header': 2 }],
-    //       ['link', 'image', 'video'],
-    //       ['clean'],
-    //       //[{'direction': 'rtl' }],    //文字编辑方向，从左到右还是从右到左
-    //       [{ 'color': [] }, { 'background': [] }]
-    //     ]
-    //   },
-    //   placeholder: '......',
-    //   toolbar: {
-    //     container: toolbarOptions,  // 工具栏
-    //     handlers: {
-    //       image: function (value: any) {
-    //         console.log("image")
-    //         debugger
-    //         if (value) {
-    //           document.querySelector('#quillEditorQiniu .avatar-uploader input').click()
-    //         } else {
-    //           quillRef.value.format('image', false);
-    //         }
-    //       },
-    //       video: function (value: any) {
-    //         if (value) {
-    //           document.querySelector('#quillEditorQiniu .avatar-uploader input').click()
-    //         } else {
-    //           quillRef.value.format('video', false);
-    //         }
-    //       }
-    //     }
-    //   },
-    // },
-
+      }
+    }
   },
 })
+
+const beforeResourceUpload = (file: any) => {
+  //console.log(file);
+  uploadLoading.value = true;
+  if(file.type.indexOf("image") === 0){
+    if(file.size > 25165824){
+      message.error('image size too large over 3MB!');
+      return false;
+    }
+    return true;
+
+  }
+
+  if(file.type.indexOf("video") === 0){
+    if(file.size > 83886080){
+      message.error('video size too large over 10MB!');
+    }
+    return true;
+  }
+  message.error('invalid file type!');
+  return false;
+}
+
+const uploadResourceSuccess = (res) => {
+  console.log(quillRef.value)
+  console.log(toRaw(quillRef.value).getQuill())
+
+  uploadLoading.value = false;
+  let length = toRaw(quillRef.value).getQuill().getSelection().index;
+  if(res.data.type == "image"){
+    toRaw(quillRef.value).getQuill().insertEmbed(length, 'image', res.data.originUrl);
+    return;
+  }
+
+  if(res.data.type == "video"){
+    window.jsValue= res.originUrl;
+    toRaw(quillRef.value).getQuill().insertEmbed(length, 'video', res.data.originUrl);
+  }
+
+}
+
+const uploadResourceError = () => {
+  uploadLoading.value = false;
+}
 
 const pubilshFunction = (type: number) => {
   let length = quillRef.value.getText().length
