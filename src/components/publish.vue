@@ -10,8 +10,8 @@
       :headers="headers">
     </el-upload>
     <a-spin :spinning="uploadLoading">
-    <quill-editor ref="quillRef" v-model="content" style="min-height: 900px" theme="snow"
-      :options="data.editorOption" content-type="html" enable :content="desc" />
+    <QuillEditor ref="quillRef" v-model="content" style="min-height: 900px" theme="snow"
+      :options="data.editorOption" :modules="data.modules" content-type="html" enable :content="desc" />
     </a-spin>
   </a-card>
   <br />
@@ -23,6 +23,12 @@ import { ref, reactive, onMounted, toRaw } from 'vue'
 import { publish, getOpusByIdForPublish } from '../api/opus'
 import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue';
+import BlotFormatter from 'quill-blot-formatter/dist/index'
+import { QuillEditor, Quill } from '@vueup/vue-quill'
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
+import Video from '../utils/video'
+Quill.register(Video, true);
+
 
 const header = ref('')
 const resourceUrl = ref('')
@@ -39,7 +45,7 @@ const headers = {
 }
 const toolbarOptions = [
   ['bold', 'italic', 'underline', 'strike'],
-  [{ 'size': ['small', false, 'large', 'huge'] }],
+  [{ 'size': ['small', 'large', false, 'huge'] }],
   [{ 'font': [] }],
   [{ 'align': [] }],
   ['code-block'],
@@ -65,6 +71,9 @@ const data = reactive({
       //   },
       //   modules: ["Resize", "DisplaySize", "Toolbar"]
       // },
+      // name: 'blotFormatter',  
+      // module: BlotFormatter, 
+      // options: {},
       toolbar: {
         container: toolbarOptions,
         handlers: {
@@ -89,6 +98,11 @@ const data = reactive({
       }
     }
   },
+  modules:[{
+    name: 'blotFormatter',  
+      module: BlotFormatter, 
+      options: {/* options */}
+  }]
 })
 
 const beforeResourceUpload = (file: any) => {
@@ -118,6 +132,12 @@ const uploadResourceSuccess = (res) => {
   console.log(toRaw(quillRef.value).getQuill())
 
   uploadLoading.value = false;
+
+  if(res.code != 0){
+    console.log(res.message)
+    return;
+  }
+
   let length = toRaw(quillRef.value).getQuill().getSelection().index;
   if(res.data.type == "image"){
     toRaw(quillRef.value).getQuill().insertEmbed(length, 'image', res.data.originUrl);
@@ -125,7 +145,7 @@ const uploadResourceSuccess = (res) => {
   }
 
   if(res.data.type == "video"){
-    window.jsValue= res.originUrl;
+    window.jsValue= res.data.originUrl;
     toRaw(quillRef.value).getQuill().insertEmbed(length, 'video', res.data.originUrl);
   }
 

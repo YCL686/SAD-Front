@@ -35,13 +35,13 @@
         :label="item.label" :value="item.value" :command="item.value">{{item.label}}</el-menu-item>
     </el-sub-menu>
     <div class="flex-grow-3">
-      <el-button v-if="!isLogined" type="primary" @click="open" round>
+      <el-button v-if="!store.state.isLogined" type="primary" @click="open" round>
         <el-icon class="el-icon--right">
           <Wallet />
         </el-icon>{{$t('buttons.connectWallet')}}
       </el-button>
       <vd-board :connectors="connectors" />
-      <el-sub-menu v-if="isLogined" index="9">
+      <el-sub-menu v-if="store.state.isLogined" index="9">
         <template #title>{{ shortenAddress(address) }}</template>
         <el-menu-item index="9-0">
           <router-link to="/admin">Admin</router-link>

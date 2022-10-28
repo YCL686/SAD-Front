@@ -1,12 +1,13 @@
 <template>
-<div id = "main">
+  <div id="main">
     <el-row :gutter="10">
-    <el-col ::xs="2" :sm="4" :md="4" :lg="4" :xl="4"><div class="grid-content ep-bg-purple" />
-    </el-col>
-    <el-col ::xs="20" :sm="16" :md="14" :lg="14" :xl="14">
+      <el-col ::xs="2" :sm="4" :md="4" :lg="4" :xl="4">
+        <div class="grid-content ep-bg-purple" />
+      </el-col>
+      <el-col ::xs="20" :sm="16" :md="14" :lg="14" :xl="14">
         <ad></ad>
         <el-divider />
-    <!-- <el-scrollbar>
+        <!-- <el-scrollbar>
           <el-card class="opus-card" v-for="o in 30" :key="o">
               <el-skeleton style="--el-skeleton-circle-size: 75px">
     <template #template>
@@ -16,51 +17,67 @@
           <el-skeleton :rows="5" animated />
           </el-card>
         </el-scrollbar> -->
-        <el-menu
-    :default-active="1"
-    class="el-menu-demo"
-    mode="horizontal"
-    v-if="data.isMobile"
-  >
-  <el-menu-item index="1"><router-link to="/index">首页</router-link></el-menu-item>
-  <el-menu-item index="2"><router-link to="/recommand">推荐</router-link></el-menu-item>
-  <el-menu-item index="3"><router-link to="/hot">热门</router-link></el-menu-item>
-  <el-menu-item index="4"><router-link to="/nft">NFT</router-link></el-menu-item>
-  <el-menu-item index="5"><router-link to="/defi">DeFi</router-link></el-menu-item>
-  </el-menu>
+        <el-menu :default-active="1" class="el-menu-demo" mode="horizontal" v-if="data.isMobile">
+          <el-menu-item index="1">
+            <router-link to="/index">首页</router-link>
+          </el-menu-item>
+          <el-menu-item index="2">
+            <router-link to="/recommand">推荐</router-link>
+          </el-menu-item>
+          <el-menu-item index="3">
+            <router-link to="/hot">热门</router-link>
+          </el-menu-item>
+          <el-menu-item index="4">
+            <router-link to="/nft">NFT</router-link>
+          </el-menu-item>
+          <el-menu-item index="5">
+            <router-link to="/defi">DeFi</router-link>
+          </el-menu-item>
+        </el-menu>
         <RouterView></RouterView>
-    </el-col>
-    <el-col :xs="2" :sm="4" :md="6" :lg="6" :xl="6" class="hidden-sm-and-down">
+      </el-col>
+      <el-col :xs="2" :sm="4" :md="6" :lg="6" :xl="6" class="hidden-sm-and-down">
         <el-card class="box-card">
-    <template #header>
-      <div class="card-header">
-        <div style="width:100%;float:left">MyBalance: 1000000</div>
-        <div style="width:100%;float:left">        <el-button class="button">Deposit</el-button>
-        <el-button class="button">Withdraw</el-button>
-        <el-button class="button">Entry</el-button>
-        </div>
-      </div>
-    </template>
-    <!-- <div v-for="o in 4" :key="o" class="text item">{{ 'List item ' + o }}</div> -->
-    <div class="text item">My Opus</div>
-    <div class="text item">My Collect</div>
-    <div class="text item">My Foucus</div>
-    <div class="text item">My Message</div>
-  </el-card>
-    </el-col>
-    
-  </el-row>
-    
-      
-</div>
+          <template #header>
+            <div class="card-header">
+              <div style="width:100%;float:left">MyBalance: 1000000</div>
+              <div style="width:100%;float:left">
+                <el-button class="button">Deposit</el-button>
+                <el-button class="button">Withdraw</el-button>
+                <el-button class="button">Entry</el-button>
+              </div>
+            </div>
+          </template>
+          <!-- <div v-for="o in 4" :key="o" class="text item">{{ 'List item ' + o }}</div> -->
+          <div class="text item">My Opus</div>
+          <div class="text item">My Collect</div>
+          <div class="text item">My Foucus</div>
+          <div class="text item">My Message</div>
+        </el-card>
+      </el-col>
+
+      <a-affix style="position: absolute;right: 10%;" :offset-top="top">
+        <a-space direction="vertical">
+          <a-button type="primary" shape="circle" size="large"><PlusOutlined/></a-button>
+          <a-button  shape="circle" size="large"><FieldTimeOutlined/></a-button>
+          <a-button type="primary" shape="circle" size="large"><VerticalAlignTopOutlined/></a-button>
+          
+        </a-space>
+      </a-affix>
+    </el-row>
+
+
+  </div>
 </template>
 <style scoped>
 .el-row {
   margin-bottom: 20px;
 }
+
 .el-row:last-child {
   margin-bottom: 0;
 }
+
 .el-col {
   border-radius: 4px;
 }
@@ -90,10 +107,11 @@
   line-height: 80px;
 }
 
-.opus-card{
-    width: 100%;;
-    line-height: 30px;
-    text-align: left;
+.opus-card {
+  width: 100%;
+  ;
+  line-height: 30px;
+  text-align: left;
 }
 </style>
 
@@ -105,25 +123,28 @@ import { ref } from 'vue'
 import ad from './ad.vue'
 import 'element-plus/theme-chalk/display.css'
 import store from '../store/index'
+import { PlusOutlined, VerticalAlignTopOutlined, FieldTimeOutlined } from '@ant-design/icons-vue'
 
 
 
 export default defineComponent({
-  components:{ ad },
-    name:'myMain',
+  components: { ad, PlusOutlined, VerticalAlignTopOutlined,FieldTimeOutlined },
+  name: 'myMain',
   setup() {
-      const item = {
-  date: '2016-05-02',
-  name: 'Tom',
-  address: 'No. 189, Grove St, Los Angeles',
-}
-const tableData = ref(Array.from({ length: 100 }).fill(item))
+    const top = ref<number>(1050);
+    const item = {
+      date: '2016-05-02',
+      name: 'Tom',
+      address: 'No. 189, Grove St, Los Angeles',
+    }
+    const tableData = ref(Array.from({ length: 100 }).fill(item))
 
 
-return{
-  tableData,
-  data: store.state
-}
+    return {
+      tableData,
+      data: store.state,
+      top
+    }
   }
 })
 </script>
