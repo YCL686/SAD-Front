@@ -1,4 +1,5 @@
 <template>
+    <a-skeleton :loading="loading" avatar :paragraph="{ rows: 40 }" />
     <div v-if="flag">
     <a-card hoverable>
       <template #actions>
@@ -81,7 +82,7 @@
 </div>
 <a-result v-else status="404" title="404" sub-title="Sorry, the page you visited does not exist.">
     <template #extra>
-      <a-button type="primary">Back Home</a-button>
+      <a-button type="primary" @click="backHome">Back Home</a-button>
     </template>
   </a-result>
   </template>
@@ -105,13 +106,19 @@
   const opusPageList = ref([])
   const opusLoading = ref(false);
   const self = ref('false');
+  const loading = ref(true)
   
   const getProfileFunction =() =>{
     let param = {userId: router.currentRoute.value.params.userId}
     getProfile(param).then((res)=>{
+        loading.value = false
         flag.value = true
         data.value = res
         self.value = res.self
+    })
+    .catch(fallback =>{
+      loading.value = false;
+      flag.value = false
     })
   }
 
@@ -156,6 +163,10 @@
     getProfileFunction();
     pageProfileOpusListFunction();
   })
+
+  const backHome = () =>{
+    router.push('/index')
+  }
 
 
   </script>

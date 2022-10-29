@@ -1,8 +1,8 @@
 <template>
   <a-card id="upload" title="Create Your Opus">
     <template #extra>
-      <a-button type="primary" @click="pubilshFunction(0)">Publish</a-button>
-      <a-button @click="pubilshFunction(1)">Stage</a-button>
+      <a-button type="primary" @click="pubilshFunction(0)">{{$t('buttons.publish')}}</a-button>
+      <a-button @click="pubilshFunction(1)">{{$t('buttons.stage')}}</a-button>
     </template>
     <a-input v-model:value="title" placeholder="title is optional" />
     <el-upload class="avatar-uploader" :action="uploadResourceUrl" :accept="'image/*,video/*'" :show-file-list="false"

@@ -7,13 +7,13 @@
     <div class="flex-grow-1"> </div>
 
     <el-menu-item index="1">
-      <router-link to="/index">首页</router-link>
+      <router-link to="/index">{{$t('menus.index')}}</router-link>
     </el-menu-item>
     <el-menu-item index="2">
-      <router-link to="/recommand">推荐</router-link>
+      <router-link to="/hot">{{$t('menus.hot')}}</router-link>
     </el-menu-item>
     <el-menu-item index="3">
-      <router-link to="/hot">热门</router-link>
+      <router-link to="/focus">{{$t('menus.focus')}}</router-link>
     </el-menu-item>
     <el-menu-item index="4">
       <router-link to="/NFT">NFT</router-link>
@@ -22,15 +22,18 @@
       <router-link to="/DeFi">DeFi</router-link>
     </el-menu-item>
     <div class="flex-grow-2">
-      <el-input v-model="searchKey" class="search-style" placeholder="Please Input" :prefix-icon="Search" />
+      <el-icon>
+        <Search/>
+      </el-icon>
+      <!-- <el-input v-model="searchKey" class="search-style" placeholder="Please Input" :prefix-icon="Search" /> -->
     </div>
 
-    <el-menu-item index="6">
+    <!-- <el-menu-item index="6">
       <router-link to="/publish">Publish</router-link>
-    </el-menu-item>
-    <el-menu-item index="7">Help</el-menu-item>
+    </el-menu-item> -->
+    <!-- <el-menu-item index="7"><template #title><BellOutlined/></template></el-menu-item> -->
     <el-sub-menu index="8">
-      <template #title>Aa</template>
+      <template #title><TranslationOutlined/></template>
       <el-menu-item @click.native="handleLocaleChange(item.value)" v-for="item in lanOptions" :key="item.value"
         :label="item.label" :value="item.value" :command="item.value">{{item.label}}</el-menu-item>
     </el-sub-menu>
@@ -42,17 +45,32 @@
       </el-button>
       <vd-board :connectors="connectors" />
       <el-sub-menu v-if="store.state.isLogined" index="9">
-        <template #title>{{ shortenAddress(address) }}</template>
+        <template #title>
+          <a-badge count="5">
+          <a-avatar style="margin-right: 10px" v-if=" store.state.avatarUrl!= '' && store.state.avatarUrl != undefined && store.state.avatarUrl != null" :src="store.state.avatarUrl" :size="32" />
+          <a-avatar style="margin-right: 10px" :size="32" v-else>{{store.state.nickName}}</a-avatar>
+          </a-badge>
+          {{ store.state.nickName }}
+          </template>
         <el-menu-item index="9-0">
-          <router-link to="/admin">Admin</router-link>
+          <router-link to="/admin">{{$t('menus.items.admin')}}</router-link>
         </el-menu-item>
         <el-menu-item index="9-1">
-          <router-link to="/MyCenter">MyCenter</router-link>
+          <router-link to="/MyCenter">{{$t('menus.items.myCenter')}}</router-link>
         </el-menu-item>
         <el-menu-item index="9-2">
-          <router-link to="/MyCrypotoProperty">MyCrypotoProperty</router-link>
+          <router-link to="/MyToken">{{$t('menus.items.myToken')}}</router-link>
         </el-menu-item>
-        <el-menu-item @click.native="logoutFunction()" index="9-3">LogOut</el-menu-item>
+        <el-menu-item index="9-3">
+          <router-link to="/MyNFT">{{$t('menus.items.myNFT')}}</router-link>
+        </el-menu-item>
+        <el-menu-item index="9-4">
+          <router-link to="/MyDeFi">{{$t('menus.items.myDeFi')}}</router-link>
+        </el-menu-item>
+        <el-menu-item index="9-5">
+          <router-link to="/Setting">{{$t('menus.items.setting')}}</router-link>
+        </el-menu-item>
+        <el-menu-item @click.native="logoutFunction()" index="9-6">{{$t('menus.items.logout')}}</el-menu-item>
       </el-sub-menu>
     </div>
 
@@ -127,6 +145,7 @@ import {
   Switch
 } from '@element-plus/icons-vue'
 import router from '../router'
+import {TranslationOutlined, BellOutlined} from '@ant-design/icons-vue'
 
 const route = useRoute()
 const searchKey = ref('')
@@ -159,23 +178,11 @@ const lanOptions = [
     value: 'jpn',
     label: '日本語'
   }, {
-    value: 'spn',
-    label: 'Español'
-  }, {
     value: 'fre',
     label: 'Français'
   }, {
     value: 'ger',
     label: 'Deutsch'
-  }, {
-    value: 'ara',
-    label: 'بالعربية'
-  }, {
-    value: 'rus',
-    label: 'русский язык'
-  }, {
-    value: 'por',
-    label: 'Português'
   }]
 
 const isDev = window.location.host === 'localhost:5173'
@@ -226,6 +233,8 @@ function logoutFunction() {
     isLogined.value = false;
     store.dispatch('setIsLogined', false)
     localStorage.removeItem('token')
+    localStorage.removeItem('nickName')
+    localStorage.removeItem('avatarUrl')
     router.push('/index')
     //TODO 跳转首页
   })
@@ -267,6 +276,8 @@ onActivated(() => {
       login(param).then((res) => {
         localStorage.setItem("token", res.token)
         isLogined.value = true
+        store.dispatch('setNickName', res.nickName)
+        store.dispatch('setAvatarUrl', res.avatarUrl)
         store.dispatch('setIsLogined', true)
       })
     })

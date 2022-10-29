@@ -3,47 +3,79 @@
     style="padding: 20px;background-color: #fff;border-radius: 10px; margin-bottom: 5px;" :loading="loading" active
     avatar></a-skeleton>
   <div v-else infinite-scroll-distance="1" v-infinite-scroll="load">
-    <a-list style="background-color: #fff;border-radius: 10px;" item-layout="vertical" size="large"
+    <a-list id="111" style="background-color: #fff;border-radius: 10px" item-layout="vertical" size="large"
       :data-source="pageList">
       <template #renderItem="{ item }">
         <a-list-item key="item.title">
           <template #actions>
-            <a-tooltip title="share">
-              <span>
+            
+              <span style="cursor: pointer;">
+                <a-tooltip :title="$t('tooltips.share')">
                 <ShareAltOutlined style="margin-right: 8px" />
+                </a-tooltip>
               </span>
-            </a-tooltip>
+            
+            
             <span style="cursor: pointer;"
               @click="item.collected = !item.collected; item.collectNum++; operateCollectFunction(item.id)"
               v-if="!item.collected">
+              <a-tooltip :title="$t('tooltips.collect')">
               <StarOutlined style="margin-right: 8px" />{{ item.collectNum }}
+              </a-tooltip>
             </span>
+            
+            
             <span style="cursor: pointer; "
               @click="item.collected = !item.collected;item.collectNum--; operateCollectFunction(item.id)"
               v-if="item.collected">
+              <a-tooltip :title="$t('tooltips.collected')">
               <StarTwoTone two-tone-color="#FFD700" style="margin-right: 8px" />{{ item.collectNum }}
+              </a-tooltip>
             </span>
-            <a-tooltip title="Comment">
+            
+            <a-tooltip :title="$t('tooltips.comment')">
               <span>
                 <MessageOutlined @click="openComment(item.id)" style="margin-right: 8px" />{{ item.commentNum }}
               </span>
             </a-tooltip>
+            
             <span style="cursor: pointer;"
               @click="item.liked = !item.liked; item.likeNum++; operateLikeFunction(item.id, 0)" v-if="!item.liked">
+              <a-tooltip :title="$t('tooltips.like')">
               <LikeOutlined style="margin-right: 8px" />{{ item.likeNum }}
+              </a-tooltip>
             </span>
+            
+            
             <span style="cursor: pointer;"
               @click="item.liked = !item.liked; item.likeNum--; operateLikeFunction(item.id, 0)" v-if="item.liked">
+              <a-tooltip :title="$t('tooltips.liked')">
               <LikeTwoTone two-tone-color="#FF0000" style="margin-right: 8px" />{{ item.likeNum }}
+              </a-tooltip>
             </span>
 
+            <a-tooltip :title="$t('tooltips.watch')">
+            <span>
+              <EyeOutlined style="margin-right: 8px" />{{item.watchNum}}
+            </span>
+            </a-tooltip>
+            
+            <a-tooltip :title="$t('tooltips.hot')">
             <span>
               <FireTwoTone two-tone-color="#FF4500" style="margin-right: 8px" />{{item.hotScore}}
             </span>
+            </a-tooltip>
 
-            <a-tooltip title="Daily Staking">
+            <a-tooltip :title="$t('tooltips.dailyStaking')">
               <span style="cursor: pointer;">
                 <DollarCircleOutlined />
+                <count-to :startVal="0" :endVal="1000" :decimals="2" :duration="3000"></count-to>
+              </span>
+            </a-tooltip>
+
+            <a-tooltip :title="$t('tooltips.reward')">
+              <span style="cursor: pointer;">
+                <GiftOutlined />
                 <count-to :startVal="0" :endVal="1000" :decimals="2" :duration="3000"></count-to>
               </span>
             </a-tooltip>
@@ -53,22 +85,26 @@
           <a-list-item-meta :description="item.characterSign">
             <template #title>
               <a-space>
+                <a-tooltip title="click to visit profile">
                 <a @click="getUserProfile(item.userId)">{{ item.nickName }}</a>
-                <a-button @click="item.focused = !item.focused; operateFocusFunction(item.userId)" v-if="!item.focused"
-                  type="primary" size="small" danger>
+                </a-tooltip>
+                <a-tooltip v-if="!item.focused" :title = "$t('tooltips.focus')">
+                <a-button @click="item.focused = !item.focused; operateFocusFunction(item.userId)" 
+                  type="text" size="small">
                   <template #icon>
-                    <PlusOutlined />
+                    <CheckCircleOutlined />
                   </template>
-                  Focus
                 </a-button>
-                <a-button @click="item.focused = !item.focused; operateFocusFunction(item.userId)" v-if="item.focused"
+                </a-tooltip>
+                <a-tooltip v-if="item.focused" :title="$t('tooltips.focus')">
+                <a-button @click="item.focused = !item.focused; operateFocusFunction(item.userId)" 
+                type="text"
                   size="small">
                   <template #icon>
-                    <CheckOutlined />
+                    <CheckCircleTwoTone two-tone-color="#00FF00" />
                   </template>
-                  Focused
                 </a-button>
-
+                </a-tooltip>
                 <!-- <template #datetime> -->
                 <a-tooltip :title="item.publishTime">
                   <span style="color: #ccc;font-size: 12px;line-height: 18px;white-space: nowrap;">{{
@@ -91,7 +127,7 @@
 
 
 
-          <a-typography-title @click="getOpusByIdFunction(item.id)" style="text-align: center;cursor: pointer;"
+          <a-typography-title @click="getOpusByIdFunction(item.id)" style="text-indent: 2em;cursor: pointer;"
             v-if="item.title != null && item.title != '' && item.title != undefined" :level="4">{{item.title}}
           </a-typography-title>
           <!-- <p style="text-indent: 2em">
@@ -122,13 +158,17 @@
             
 
           </div>
+          
         </a-list-item>
       </template>
       <a-skeleton v-for="i in 5" :key="i" style="padding: 20px;" :loading="loading" active avatar></a-skeleton>
+      <a-back-top :visibilityHeight="100" :target="backToTop" />
     </a-list>
     <el-drawer v-model="commentDraw" title="Comment:" direction="rtl">
       <comment :value="opusId"></comment>
     </el-drawer>
+    
+
   </div>
 
 
@@ -142,7 +182,7 @@ import { operateCollect } from '../api/collect'
 import { operateLike } from '../api/like'
 import { useRouter } from 'vue-router'
 import dayjs from 'dayjs';
-import { StarOutlined, StarTwoTone, LikeTwoTone, LikeOutlined, MessageOutlined, DollarCircleOutlined, ShareAltOutlined, PlusOutlined, CheckOutlined, FireTwoTone } from '@ant-design/icons-vue';
+import { StarOutlined, StarTwoTone, LikeTwoTone, LikeOutlined, MessageOutlined, DollarCircleOutlined, ShareAltOutlined, PlusOutlined, CheckOutlined, FireTwoTone, CheckCircleOutlined, CheckCircleTwoTone, EyeOutlined, GiftOutlined} from '@ant-design/icons-vue';
 import { CountTo } from 'vue3-count-to'
 import relativeTime from 'dayjs/plugin/relativeTime';
 import comment from './comment.vue'
@@ -225,6 +265,10 @@ function getPageOpusList(pageNo: number, pageSize: number) {
     pageList.value = pageList.value.concat(currentPageList)
     loading.value = false;
   })
+}
+
+const backToTop = () =>{
+  return document.getElementById('111')
 }
 
 onMounted(() => {

@@ -157,28 +157,12 @@ const lanOptions = [
     label: '日本語'
   },
   {
-    value: 'spn',
-    label: 'Español'
-  },
-  {
     value: 'fre',
     label: 'Français'
   },
   {
     value: 'ger',
     label: 'Deutsch'
-  },
-  {
-    value: 'ara',
-    label: 'بالعربية'
-  },
-  {
-    value: 'rus',
-    label: 'русский язык'
-  },
-  {
-    value: 'por',
-    label: 'Português'
   }
 ]
 

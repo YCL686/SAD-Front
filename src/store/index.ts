@@ -9,7 +9,8 @@ const store = createStore({
       isLogined: localStorage.getItem('token') != null ? true : false,
       locale: localStorage.getItem('locale') || 'en',
       userId:0,
-      shortAddress:''
+      nickName:localStorage.getItem('nickName') || '',
+      avatarUrl: localStorage.getItem('avatarUrl') || ''
     }
   },
   mutations: {
@@ -19,10 +20,17 @@ const store = createStore({
       i18n.global.locale = locale;
     },
     SET_IS_LOGINED: (state, isLogined) => {
-
       state.isLogined = isLogined;
       console.log("state.isLogined:", isLogined, state.isLogined)
     },
+    SET_NICKNAME: (state, nickName) =>{
+      state.nickName = nickName;
+      localStorage.setItem('nickName', nickName)
+    },
+    SET_AVATAR_URL: (state, avatarUrl) => {
+      state.avatarUrl = avatarUrl
+      localStorage.setItem('avatarUrl', avatarUrl)
+    }
   },
 
   actions: {
@@ -35,6 +43,12 @@ const store = createStore({
     setIsLogined({ commit }, isLogined) {
       commit('SET_IS_LOGINED', isLogined)
     },
+    setNickName({commit}, nickName){
+      commit('SET_NICKNAME', nickName)
+    },
+    setAvatarUrl({commit}, avatarUrl){
+      commit('SET_AVATAR_URL', avatarUrl)
+    }
   },
 
   getters: {

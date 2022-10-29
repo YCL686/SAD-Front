@@ -12,10 +12,10 @@
         </a-popover>
 
         <el-button @click="addCommentFunction(null, commentContent, 0)" type="primary">
-          add comment
+          {{$t('buttons.addComment')}}
         </el-button>
         <el-button>
-          clear
+          {{$t('buttons.clear')}}
         </el-button>
       </a-space>
     </div>
@@ -33,7 +33,7 @@
               <LikeTwoTone two-tone-color="#FF0000" style="margin-right: 8px" />{{ comment.likedNum }}
             </span>
           </a-tooltip>
-        <span @click="commentIndex[index] = !commentIndex[index]" key="comment-basic-reply-to">Reply to</span>
+        <span @click="commentIndex[index] = !commentIndex[index]" key="comment-basic-reply-to">{{$t('buttons.replyTo')}}</span>
       </template>
       <el-input v-if="commentIndex[index] == true" style="margin-bottom: 10px;" v-model="subCommentContent" :rows="3" type="textarea" placeholder="Please input" />
     <div v-if="commentIndex[index] == true" style="display: flex;">

@@ -1,12 +1,12 @@
 <template>
   <div id="main">
-    <el-row :gutter="10">
-      <el-col ::xs="2" :sm="4" :md="4" :lg="4" :xl="4">
+    <el-row>
+      <el-col :xs="4" :sm="4" :md="4" :lg="3" :xl="3" class="hidden-sm-and-down">
         <div class="grid-content ep-bg-purple" />
       </el-col>
-      <el-col ::xs="20" :sm="16" :md="14" :lg="14" :xl="14">
-        <ad></ad>
-        <el-divider />
+      <el-col :xs="24" :sm="24" :md="16" :lg="18" :xl="18">
+        <ad style="margin-bottom: 10px"></ad>
+        <!-- <el-divider /> -->
         <!-- <el-scrollbar>
           <el-card class="opus-card" v-for="o in 30" :key="o">
               <el-skeleton style="--el-skeleton-circle-size: 75px">
@@ -36,7 +36,22 @@
         </el-menu>
         <RouterView></RouterView>
       </el-col>
-      <el-col :xs="2" :sm="4" :md="6" :lg="6" :xl="6" class="hidden-sm-and-down">
+      <a-affix style="position: absolute;right: 5%;" :offset-top="top">
+        <a-space direction="vertical">
+          <a-tooltip :title="$t('tooltips.publish')">
+          <a-button @click="goToPublish" type="primary" shape="circle" size="large"><PlusOutlined/></a-button>
+          </a-tooltip>
+          <a-tooltip :title="$t('tooltips.dailyTask')">
+          <a-button  shape="circle" size="large"><FieldTimeOutlined/></a-button>
+          </a-tooltip>
+          
+          
+        </a-space>
+      </a-affix> 
+      <el-col :xs="2" :sm="4" :md="4" :lg="3" :xl="3" class="hidden-sm-and-down">
+        <div class="grid-content ep-bg-purple" />
+      </el-col>
+      <!-- <el-col :xs="2" :sm="4" :md="6" :lg="6" :xl="6" class="hidden-sm-and-down">
         <el-card class="box-card">
           <template #header>
             <div class="card-header">
@@ -48,26 +63,17 @@
               </div>
             </div>
           </template>
-          <!-- <div v-for="o in 4" :key="o" class="text item">{{ 'List item ' + o }}</div> -->
           <div class="text item">My Opus</div>
           <div class="text item">My Collect</div>
           <div class="text item">My Foucus</div>
           <div class="text item">My Message</div>
         </el-card>
-      </el-col>
+      </el-col> -->
 
-      <a-affix style="position: absolute;right: 10%;" :offset-top="top">
-        <a-space direction="vertical">
-          <a-button type="primary" shape="circle" size="large"><PlusOutlined/></a-button>
-          <a-button  shape="circle" size="large"><FieldTimeOutlined/></a-button>
-          <a-button type="primary" shape="circle" size="large"><VerticalAlignTopOutlined/></a-button>
-          
-        </a-space>
-      </a-affix>
+      
     </el-row>
-
-
   </div>
+  
 </template>
 <style scoped>
 .el-row {
@@ -124,6 +130,8 @@ import ad from './ad.vue'
 import 'element-plus/theme-chalk/display.css'
 import store from '../store/index'
 import { PlusOutlined, VerticalAlignTopOutlined, FieldTimeOutlined } from '@ant-design/icons-vue'
+import { useRouter } from 'vue-router'
+
 
 
 
@@ -131,7 +139,7 @@ export default defineComponent({
   components: { ad, PlusOutlined, VerticalAlignTopOutlined,FieldTimeOutlined },
   name: 'myMain',
   setup() {
-    const top = ref<number>(1050);
+    const top = ref<number>(550);
     const item = {
       date: '2016-05-02',
       name: 'Tom',
@@ -139,11 +147,21 @@ export default defineComponent({
     }
     const tableData = ref(Array.from({ length: 100 }).fill(item))
 
+    const router = useRouter()
+
+    const goToPublish = () =>{
+      const publishPage = router.resolve({
+    path: '/publish'
+  })
+      window.open(publishPage.href, '_blank') 
+    }
+
 
     return {
       tableData,
       data: store.state,
-      top
+      top,
+      goToPublish
     }
   }
 })
