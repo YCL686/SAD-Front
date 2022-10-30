@@ -37,6 +37,7 @@ export default {
       }
     },
     tooltips:{
+      profile:'Voir son profil',
       focus: 'Attention',
       focused:"Après l'attention",
       share:'Partager',

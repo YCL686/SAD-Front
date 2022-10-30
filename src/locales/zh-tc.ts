@@ -37,6 +37,7 @@ export default {
       }
     },
     tooltips:{
+      profile:'查看TA的主頁',
       focus: '關注',
       focused:"已關注",
       share:'分享',

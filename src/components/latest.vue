@@ -85,7 +85,7 @@
           <a-list-item-meta :description="item.characterSign">
             <template #title>
               <a-space>
-                <a-tooltip title="click to visit profile">
+                <a-tooltip :title="$t('tooltips.profile')">
                 <a @click="getUserProfile(item.userId)">{{ item.nickName }}</a>
                 </a-tooltip>
                 <a-tooltip v-if="!item.focused" :title = "$t('tooltips.focus')">

@@ -37,6 +37,7 @@ export default {
       }
     },
     tooltips:{
+      profile:'Sein Profil anzeigen',
       focus: 'folgen',
       focused:"Bereits gefolgt",
       share:'Teilen',

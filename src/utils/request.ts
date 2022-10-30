@@ -50,7 +50,6 @@ instance.interceptors.response.use(
       return Promise.reject(new Error(res.message || 'Error'))
     } else if (res.code == 2) { //token有误
       store.dispatch('setIsLogined', false)
-      debugger
       isActivated.value = false;
       localStorage.removeItem("token")
       open()

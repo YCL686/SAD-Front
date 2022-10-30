@@ -80,7 +80,7 @@
               <LikeTwoTone two-tone-color="#FF0000" style="margin-right: 8px" />{{ subComment.likedNum }}
             </span>
           </a-tooltip>
-          <span @click="subComment.showReply = !subComment.showReply" key="comment-basic-reply-to">Reply to</span>
+          <span @click="subComment.showReply = !subComment.showReply" key="comment-basic-reply-to">{{$t('buttons.replyTo')}}</span>
           
         </template>
         <el-input v-if="subComment.showReply == true" style="margin-bottom: 10px;" v-model="subCommentContent" :rows="3" type="textarea" placeholder="Please input" />

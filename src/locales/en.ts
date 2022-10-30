@@ -37,6 +37,7 @@ export default {
     }
   },
   tooltips:{
+    profile:'View His Profile',
     focus: 'Focus',
     focused:'Focused',
     share:'Share',

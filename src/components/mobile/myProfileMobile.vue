@@ -45,7 +45,7 @@
           operation.
         </div>
       </el-collapse-item>
-      <el-collapse-item title="AboutUs" name="5">
+      <el-collapse-item title="Setting" name="5">
         <div>
           Decision making: giving advices about operations is acceptable, but do
           not make decisions for the users;

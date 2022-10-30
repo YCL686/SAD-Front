@@ -37,6 +37,7 @@ export default {
       }
     },
     tooltips:{
+      profile:'그의 홈 페이지 보기',
       focus: '관심',
       focused:"이미 팔로우",
       share:'공유',

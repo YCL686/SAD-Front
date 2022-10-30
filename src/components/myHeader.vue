@@ -1,9 +1,7 @@
 <template>
   <el-menu background-color="#545c64" text-color="#fff" active-text-color="#ffd04b" :default-active="activeIndex"
     class="el-menu-demo" mode="horizontal" :ellipsis="false">
-    <el-menu-item index="0">
-      <router-link to="/index">LOGO</router-link>
-    </el-menu-item>
+    <svg-icon style="margin-left:10px" name="LOGO" color='red'></svg-icon>
     <div class="flex-grow-1"> </div>
 
     <el-menu-item index="1">
@@ -136,6 +134,7 @@ import { useI18n } from "vue-i18n"
 import { useRoute } from 'vue-router'
 import { login, logout } from '../api/user'
 import { ElMessage } from 'element-plus'
+
 
 
 

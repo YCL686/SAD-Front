@@ -26,6 +26,7 @@
     "process": "^0.11.10",
     "qs": "^6.11.0",
     "quill-blot-formatter": "^1.0.5",
+    "svg-sprite-loader": "^6.0.11",
     "tinymce": "^5.10.2",
     "util": "^0.12.4",
     "vue": "^3.2.37",
@@ -45,6 +46,7 @@
     "eslint-plugin-vue": "^9.5.1",
     "typescript": "^4.6.4",
     "vite": "^3.1.0",
+    "vite-plugin-svg-icons": "^2.0.1",
     "vue-tsc": "^0.40.4"
   }
 }

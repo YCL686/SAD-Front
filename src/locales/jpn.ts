@@ -37,6 +37,7 @@ export default {
       }
     },
     tooltips:{
+      profile:'彼のホームページを見る',
       focus: 'に注目',
       focused:"注目",
       share:'分かち合う',

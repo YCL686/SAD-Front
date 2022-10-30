@@ -19,9 +19,14 @@ import 'ant-design-vue/dist/antd.css';
 // import 'quill/dist/quill.min.js'
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
+import SvgIcon from './components/SvgIcon/index.vue'
+import 'virtual:svg-icons-register'
+
+
 
 
 const app = createApp(App)
+app.component('svg-icon',SvgIcon)
 app.use(router)
 app.use(store)
 app.use(ElementPlus)
@@ -29,11 +34,11 @@ app.use(VueDapp)
 app.use(i18n)
 app.use(InfiniteScroll)
 app.use(Antd)
-//app.component('QuillEditor', QuillEditor)
 app.mount('#app')
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
   }
+
 
 //当路由进入前
 router.beforeEach((to, from , next) => {
