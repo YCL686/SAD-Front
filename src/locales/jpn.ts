@@ -54,5 +54,10 @@ export default {
       publish:'リリース',
       dailyTask:'毎日のタスク',
       backToTop:'トップに戻る'
+    },
+    inputs:{
+      comment:'コメントを入力してください...',
+      title:'タイトルは選択可能...',
+      content:'内容を入力してください...'
     }
   }

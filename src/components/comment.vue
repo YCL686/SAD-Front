@@ -1,5 +1,5 @@
 <template>
-    <el-input style="margin-bottom: 10px;" v-model="commentContent" :rows="3" type="textarea" placeholder="Please input" />
+    <el-input style="margin-bottom: 10px;" v-model="commentContent" :rows="3" type="textarea" :placeholder="$t('inputs.comment')" />
     <div style="display: flex;">
       <a-space style="margin-left: auto;">
         <a-popover title="emoji" trigger="click">
@@ -35,7 +35,7 @@
           </a-tooltip>
         <span @click="commentIndex[index] = !commentIndex[index]" key="comment-basic-reply-to">{{$t('buttons.replyTo')}}</span>
       </template>
-      <el-input v-if="commentIndex[index] == true" style="margin-bottom: 10px;" v-model="subCommentContent" :rows="3" type="textarea" placeholder="Please input" />
+      <el-input v-if="commentIndex[index] == true" style="margin-bottom: 10px;" v-model="subCommentContent" :rows="3" type="textarea" :placeholder="$t('inputs.comment')" />
     <div v-if="commentIndex[index] == true" style="display: flex;">
       <a-space style="margin-left: auto;">
         <a-popover title="emoji" trigger="click">
@@ -56,9 +56,13 @@
       </a-space>
     </div>      
     <template #author><a>{{comment.fromNickName}}</a></template>
-      <template #avatar>
-        <a-avatar :src="comment.fromAvatarUrl" :alt="comment.fromNickName" />
-      </template>
+    <template #avatar>
+              <a-avatar v-if="comment.fromAvatarUrl != null &&comment.fromAvatarUrl != '' && comment.fromAvatarUrl != undefined" :size="40"
+                :src="comment.fromAvatarUrl" />
+              <a-avatar v-else :size="40">
+                {{comment.fromNickName}}
+              </a-avatar>
+            </template>
       <template #content>
         <p>
           {{comment.content}}
@@ -83,7 +87,7 @@
           <span @click="subComment.showReply = !subComment.showReply" key="comment-basic-reply-to">{{$t('buttons.replyTo')}}</span>
           
         </template>
-        <el-input v-if="subComment.showReply == true" style="margin-bottom: 10px;" v-model="subCommentContent" :rows="3" type="textarea" placeholder="Please input" />
+        <el-input v-if="subComment.showReply == true" style="margin-bottom: 10px;" v-model="subCommentContent" :rows="3" type="textarea" :placeholder="$t('inputs.commet')" />
     <div v-if="subComment.showReply == true" style="display: flex;">
       <a-space style="margin-left: auto;">
         <a-popover title="emoji" trigger="click">
@@ -105,8 +109,12 @@
     </div>
         <template #author><a>{{subComment.fromNickName}}</a> @ <a>{{subComment.toNickName}}</a></template>
         <template #avatar>
-          <a-avatar :src="subComment.fromAvatarUrl" :alt="subComment.fromNickName" />
-        </template>
+              <a-avatar v-if="subComment.fromAvatarUrl != null &&subComment.fromAvatarUrl != '' && subComment.fromAvatarUrl != undefined" :size="40"
+                :src="subComment.fromAvatarUrl" />
+              <a-avatar v-else :size="40">
+                {{subComment.fromNickName}}
+              </a-avatar>
+            </template>
         <template #content>
           <p>
             {{subComment.content}}

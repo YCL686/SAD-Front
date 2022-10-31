@@ -3,7 +3,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 //作品展示页面
 import opus from '../components/opus.vue'
 //首页 即最新发布页面
-import index from '../components/latest.vue'
+import latest from '../components/latest.vue'
 //发布作品页面
 import publish from '../components/publish.vue'
 //热门
@@ -23,6 +23,18 @@ import admin from '../components/admin/index.vue'
 
 import profile from '../components/profile.vue'
 
+//移动端
+import myCenterMobile from '../components/mobile/myCenterMobile.vue'
+
+import latestMobile from '../components/mobile/latestMobile.vue'
+
+import publishMobile from '../components/mobile/publishMobile.vue'
+
+import opusMobile from '../components/mobile/opusMobile.vue'
+
+
+const isMobile = navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)
+
 const routes = [{
   path: '/profile/:userId',
   name: 'profile',
@@ -31,15 +43,15 @@ const routes = [{
   {
   path: '/opus/:opusId',
   name: 'opus',
-  component: opus
+  component: isMobile? opusMobile : opus
 }, {
   path: '/index',
   name: 'index',
-  component: index
+  component: isMobile? latestMobile :  latest
 }, {
   path: '/publish',
   name: 'publish',
-  component: publish
+  component: isMobile? publishMobile : publish
 }, {
   path: '/hot',
   name: 'hot',

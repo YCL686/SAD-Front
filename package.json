@@ -26,6 +26,8 @@
     "process": "^0.11.10",
     "qs": "^6.11.0",
     "quill-blot-formatter": "^1.0.5",
+    "quill-emoji": "^0.2.0",
+    "quill-mention": "^3.1.0",
     "svg-sprite-loader": "^6.0.11",
     "tinymce": "^5.10.2",
     "util": "^0.12.4",

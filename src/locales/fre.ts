@@ -54,5 +54,10 @@ export default {
       publish:'Publication',
       dailyTask:'Tâches quotidiennes',
       backToTop:'Retour en haut'
+    },
+    inputs:{
+      comment:'Veuillez entrer un commentaire...',
+      title:'Le titre est facultatif...',
+      content:'Veuillez saisir le contenu...'
     }
   }

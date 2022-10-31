@@ -7,22 +7,14 @@
     mode="horizontal"
     :ellipsis="false"
   >
-    <el-menu-item index="0">
-      <router-link to="/index">LOGO</router-link>
-    </el-menu-item>
+  <svg-icon name="LOGO2"></svg-icon>
     <div class="flex-grow-1"/>
-
-     <!-- <el-menu-item style="padding:0 3px" index="1">
-      <router-link to="/index">首页</router-link>
-    </el-menu-item>
-    <el-menu-item style="padding:0 3px" index="2">
-      <router-link to="/recommand">recommand</router-link>
-    </el-menu-item> -->
     <el-menu-item style="padding:0 3px" index="3">
       <router-link to="/hot"><el-icon><Search /></el-icon></router-link>
     </el-menu-item> 
-    <el-sub-menu  index="1">
-      <template #title>Aa</template>
+    <el-sub-menu style="padding-left: 0px;"  index="1">
+      <template #title><TranslationOutlined/>
+      </template>
       <el-menu-item
       style="padding:0 3px"
         @click.native="handleLocaleChange(item.value)"
@@ -37,25 +29,35 @@
     </el-sub-menu>
 
     <li class="connect-wallet">
-      <el-button v-if="!isLogined" type="primary" @click="open" round size="small">
+      <el-button v-if="!store.state.isLogined" type="primary" @click="open" round size="small">
         {{ $t('buttons.connectWallet') }}
       </el-button>
       <vd-board :connectors="connectors" dark />
     </li>
-    <el-sub-menu v-if="isLogined" index="9">
-      <template #title>{{ shortenAddress(address) }}</template>
-      <el-menu-item index="9-0">
-        <router-link to="/admin">Admin</router-link>
-      </el-menu-item>
-      <el-menu-item index="9-1">
-        <router-link to="/MyCenter">MyCenter</router-link>
-      </el-menu-item>
-      <el-menu-item index="9-2">
-        <router-link to="/MyCrypotoProperty">MyCrypotoProperty</router-link>
-      </el-menu-item>
-      <el-menu-item @click.native="logoutFunction()" index="9-3">LogOut</el-menu-item>
-    </el-sub-menu>
+    <el-menu-item @click.native="showMyProfile" style="padding-left: 0px;" v-if="store.state.isLogined" index="9">
+      <a-badge count="5">
+          <a-avatar  v-if=" store.state.avatarUrl!= '' && store.state.avatarUrl != undefined && store.state.avatarUrl != null" :src="store.state.avatarUrl" :size="32" />
+          <a-avatar  :size="32" v-else>{{store.state.nickName}}</a-avatar>
+          </a-badge>
+          {{ store.state.nickName }}
+        </el-menu-item>
   </el-menu>
+  <a-drawer
+    v-model:visible="myProfileVisible"
+    class="custom-class"
+    title="MyProfile"
+    placement="right"
+  >
+  <a-list size="small">
+      <a-list-item><CrownOutlined/> {{$t('menus.items.admin')}}</a-list-item>
+      <a-list-item><HomeOutlined/> {{$t('menus.items.myCenter')}}</a-list-item>
+      <a-list-item><DollarOutlined/> {{$t('menus.items.myToken')}}</a-list-item>
+      <a-list-item><FileImageOutlined/> {{$t('menus.items.myNFT')}}</a-list-item>
+      <a-list-item><BankOutlined/> {{$t('menus.items.myDeFi')}}</a-list-item>
+      <a-list-item><SettingOutlined/> {{$t('menus.items.setting')}}</a-list-item>
+      <a-list-item><LogoutOutlined/> {{$t('menus.items.logout')}}</a-list-item>
+  </a-list>
+  </a-drawer>
 </template>
 <style scoped>
 .connect-wallet {
@@ -118,8 +120,11 @@ import { login, logout } from '../../api/user'
 import { ElMessage } from 'element-plus'
 
 import { Wallet, Search, Switch } from '@element-plus/icons-vue'
+import {TranslationOutlined, BellOutlined, CrownOutlined, HomeOutlined,DollarOutlined, FileImageOutlined, BankOutlined, SettingOutlined, LogoutOutlined} from '@ant-design/icons-vue'
+
 import router from '../../router'
 
+const myProfileVisible = ref(false)
 const route = useRoute()
 const searchKey = ref('')
 const activeIndex = ref('1')
@@ -260,4 +265,8 @@ watch(selectedChainId, async (val, oldVal) => {
     console.error(e)
   }
 })
+
+const showMyProfile = () =>{
+  myProfileVisible.value = true
+}
 </script>

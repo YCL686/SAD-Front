@@ -1,35 +1,52 @@
 <template>
-  <a-card id="upload" title="Create Your Opus">
+  <a-spin :spinning="uploadLoading">
+  <a-card v-if="!publishSuccess" id="upload" title="Create Your Opus">
     <template #extra>
-      <a-button type="primary" @click="pubilshFunction(0)">{{$t('buttons.publish')}}</a-button>
-      <a-button @click="pubilshFunction(1)">{{$t('buttons.stage')}}</a-button>
+      <a-button type="primary" @click="pubilshFunction(0)">{{ $t('buttons.publish') }}</a-button>
+      <a-button @click="pubilshFunction(1)">{{ $t('buttons.stage') }}</a-button>
     </template>
-    <a-input v-model:value="title" placeholder="title is optional" />
+    <a-input v-model:value="title" :placeholder="$t('inputs.title')" />
     <el-upload class="avatar-uploader" :action="uploadResourceUrl" :accept="'image/*,video/*'" :show-file-list="false"
       :on-success="uploadResourceSuccess" :on-error="uploadResourceError" :before-upload="beforeResourceUpload"
       :headers="headers">
     </el-upload>
-    <a-spin :spinning="uploadLoading">
-    <QuillEditor ref="quillRef" v-model="content" style="min-height: 900px" theme="snow"
-      :options="data.editorOption" :modules="data.modules" content-type="html" enable :content="desc" />
-    </a-spin>
+    
+      <QuillEditor ref="quillRef" v-model="content" style="min-height: 900px" theme="snow" :options="data.editorOption"
+        :modules="data.modules" content-type="html" enable :content="desc" />
+    
   </a-card>
+  <a-result v-else status="success" title="Successfully Publish Your Awsome Opus!"
+    sub-title="Waiting For The Audited Result...">
+    <template #extra>
+      <a-button key="console" type="primary" @click="createOneMore">Create One More</a-button>
+      <a-button key="console" @click="goBack">Go Back</a-button>
+    </template>
+  </a-result>
   <br />
+</a-spin>
 
 </template>
   
 <script lang="ts" setup>
 import { ref, reactive, onMounted, toRaw } from 'vue'
 import { publish, getOpusByIdForPublish } from '../api/opus'
+import { getMentionedList } from '../api/user'
 import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue';
 import BlotFormatter from 'quill-blot-formatter/dist/index'
 import { QuillEditor, Quill } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import Video from '../utils/video'
+import quillEmoji from 'quill-emoji'
+import 'quill-emoji/dist/quill-emoji.css'
+import mention from "quill-mention";
+import 'quill-mention/dist/quill.mention.min.css'
+
 Quill.register(Video, true);
+Quill.register('modules/quillEmoji', quillEmoji)
+Quill.register({ 'modules/mention': mention, })
 
-
+const publishSuccess = ref(false)
 const header = ref('')
 const resourceUrl = ref('')
 const title = ref('')
@@ -44,18 +61,19 @@ const headers = {
   token: localStorage.getItem('token')
 }
 const toolbarOptions = [
-  ['bold', 'italic', 'underline', 'strike'],
-  [{ 'size': ['small', 'large', false, 'huge'] }],
-  [{ 'font': [] }],
-  [{ 'align': [] }],
+  //'underline', 'strike'
+  ['bold', 'italic'],
+  [{ 'size': ['small', 'large', 'huge'] }],
+  // [{ 'font': [] }],
+  // [{ 'align': [] }],
   ['code-block'],
   [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-  [{ 'indent': '-1' }, { 'indent': '+1' }],
+  // [{ 'indent': '-1' }, { 'indent': '+1' }],
   [{ 'header': 1 }, { 'header': 2 }],
-  ['link', 'image', 'video'],
-  ['clean'],
+  ['link', 'image'],
+  ['emoji'],
   //[{'direction': 'rtl' }],    //文字编辑方向，从左到右还是从右到左
-  [{ 'color': [] }, { 'background': [] }]
+  [{ 'color': [] }]
 ]
 const data = reactive({
   content: '',
@@ -95,21 +113,62 @@ const data = reactive({
             }
           }
         }
-      }
+      },
+      "emoji-toolbar": true,
+      // "emoji-textarea": true,
+      "emoji-shortname": true,
+      mention: {  // 重点： 提醒功能配置项
+        allowedChars: /^[A-Za-z\s]*$/, // 正则匹配
+        mentionDenotationChars: ['@'], // 匹配符号，匹配到@符号弹出提醒框
+        offsetLeft: 4,
+        source: (searchTerm, renderList, mentionChar) => { // 数据源（遍历成{id, value}形式）
+          const param = {key :searchTerm};
+          getMentionedList(param).then(res=>{
+            const values = res.map(item => ({
+            id: item.id,
+            value: item.nickName,
+          }))
+          renderList(values, searchTerm) // 渲染函数（生成提醒框）
+          })
+        },
+        onSelect: (data, insertItem) => { // 注意：选中后的回调函数
+          const item = {
+            text: `@${data.value}`,
+            name: data.value,
+            id: data.id,
+          }
+          insertItem(data) // 注意：这个函数必须加上，有这个才会在文本框显示选中的值
+          //this.onSelectd(item) // 返回给后端的选中提醒的人 TODO
+
+        },
+
+      },
+
     }
   },
-  modules:[{
-    name: 'blotFormatter',  
-      module: BlotFormatter, 
-      options: {/* options */}
+  modules: [{
+    name: 'blotFormatter',
+    module: BlotFormatter,
+    options: {/* options */ }
   }]
 })
+
+const createOneMore = () => {
+  publishSuccess.value = false
+  title.value = ''
+  quillRef.value = ''
+  content.value = ''
+}
+
+const goBack = () => {
+  router.push('/index')
+}
 
 const beforeResourceUpload = (file: any) => {
   //console.log(file);
   uploadLoading.value = true;
-  if(file.type.indexOf("image") === 0){
-    if(file.size > 25165824){
+  if (file.type.indexOf("image") === 0) {
+    if (file.size > 25165824) {
       message.error('image size too large over 3MB!');
       return false;
     }
@@ -117,8 +176,8 @@ const beforeResourceUpload = (file: any) => {
 
   }
 
-  if(file.type.indexOf("video") === 0){
-    if(file.size > 83886080){
+  if (file.type.indexOf("video") === 0) {
+    if (file.size > 83886080) {
       message.error('video size too large over 10MB!');
     }
     return true;
@@ -128,24 +187,22 @@ const beforeResourceUpload = (file: any) => {
 }
 
 const uploadResourceSuccess = (res) => {
-  console.log(quillRef.value)
-  console.log(toRaw(quillRef.value).getQuill())
-
+  
   uploadLoading.value = false;
 
-  if(res.code != 0){
+  if (res.code != 0) {
     console.log(res.message)
     return;
   }
 
   let length = toRaw(quillRef.value).getQuill().getSelection().index;
-  if(res.data.type == "image"){
+  if (res.data.type == "image") {
     toRaw(quillRef.value).getQuill().insertEmbed(length, 'image', res.data.originUrl);
     return;
   }
 
-  if(res.data.type == "video"){
-    window.jsValue= res.data.originUrl;
+  if (res.data.type == "video") {
+    window.jsValue = res.data.originUrl;
     toRaw(quillRef.value).getQuill().insertEmbed(length, 'video', res.data.originUrl);
   }
 
@@ -156,11 +213,13 @@ const uploadResourceError = () => {
 }
 
 const pubilshFunction = (type: number) => {
+  uploadLoading.value = true;
+
   let length = quillRef.value.getText().length
   let a = quillRef.value.getContents()
   if (length === 1) {
-    alert('内容不能为空')
-    return;
+      message.error("please input")    
+      return;
   }
 
   console.log(quillRef.value)
@@ -175,7 +234,12 @@ const pubilshFunction = (type: number) => {
   }
 
   publish(param).then(res => {
-    console.log(res)
+    uploadLoading.value = false
+    if (type == 0) {
+      publishSuccess.value = true
+    }else{
+      message.success("stage success !")
+    }
   })
 }
 

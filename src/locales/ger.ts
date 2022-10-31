@@ -54,5 +54,10 @@ export default {
       publish:'veröffentlichen',
       dailyTask:'Tägliche Aufgaben',
       backToTop:'Zurück nach oben'
+    },
+    inputs:{
+      comment:'Bitte geben Sie einen Kommentar ein...',
+      title:'Der Titel ist optional...',
+      content:'Bitte geben Sie den Inhalt ein...'
     }
   }

@@ -54,5 +54,10 @@ export default {
       publish:'發佈',
       dailyTask:'每日任務',
       backToTop:'回到頂部'
+    },
+    inputs:{
+      comment:'請輸入評論...',
+      title:'標題可選...',
+      content:'請輸入內容...'
     }
   }

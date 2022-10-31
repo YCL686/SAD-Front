@@ -22,3 +22,10 @@ export function getProfile(param: any){
     method: 'get'
   })
 }
+
+export function getMentionedList(param: any){
+  return request({
+    url: '/user/getMentionedList?' + qs.stringify(param),
+    method: 'get'
+  })
+}

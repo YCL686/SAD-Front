@@ -122,11 +122,7 @@
               </a-avatar>
             </template>
 
-
           </a-list-item-meta>
-
-
-
           <a-typography-title @click="getOpusByIdFunction(item.id)" style="text-indent: 2em;cursor: pointer;"
             v-if="item.title != null && item.title != '' && item.title != undefined" :level="4">{{item.title}}
           </a-typography-title>
@@ -139,24 +135,10 @@
           </a-typography-paragraph>
           <div style="text-align: center;">
             <el-image
-              v-if="item.resourceCompressUrls != null && item.resourceCompressUrls != undefined && item.resourceCompressUrls.length > 0 && item.resourceCompressUrls.length < 5"
+              v-if="item.resourceCompressUrls != null && item.resourceCompressUrls != undefined && item.resourceCompressUrls.length > 0 && item.resourceCompressUrls.length"
               v-for="(image, index) in item.resourceCompressUrls" class="preview-image"
               :src="image" :preview-src-list="item.resourceUrls" :initial-index="index" fit="cover">
-              <!-- <template #viewer>
-             <div v-if="index==1" class="image-slot">
-           +123
-          </div>
-        </template> -->
             </el-image>
-              
-            <el-image
-              v-if="item.resourceCompressUrls != null && item.resourceCompressUrls != undefined && item.resourceCompressUrls.length > 0 && item.resourceCompressUrls.length >= 5"
-              v-for="image, index in item.resourceCompressUrls.slice(0,5)" class="preview-image"
-              :class="{mask: index==1}" :src="image" :preview-src-list="item.resourceUrls" :initial-index="index"
-              fit="cover">
-            </el-image>
-            
-
           </div>
           
         </a-list-item>

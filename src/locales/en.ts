@@ -19,7 +19,7 @@ export default {
       focus: 'Focus',
       items:{
         admin: 'Admin',
-        myCenter: 'myCenter',
+        myCenter: 'MyCenter',
         myOpus:'MyOpus',
         myCollect:'MyCollection',
         myComment:'MyComment',
@@ -54,5 +54,10 @@ export default {
     publish:'Publish',
     dailyTask:'Daily Task',
     backToTop:'Back To Top'
-  }
+  },
+    inputs:{
+      comment:'Please Input Your Comment...',
+      title:'Title Is Optional...',
+      content:'Please Input Your Content...'
+    }
 }

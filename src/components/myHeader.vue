@@ -1,7 +1,7 @@
 <template>
   <el-menu background-color="#545c64" text-color="#fff" active-text-color="#ffd04b" :default-active="activeIndex"
     class="el-menu-demo" mode="horizontal" :ellipsis="false">
-    <svg-icon style="margin-left:10px" name="LOGO" color='red'></svg-icon>
+    <svg-icon style="margin-left:10px" name="LOGO2" color='red'></svg-icon>
     <div class="flex-grow-1"> </div>
 
     <el-menu-item index="1">
@@ -51,28 +51,30 @@
           {{ store.state.nickName }}
           </template>
         <el-menu-item index="9-0">
-          <router-link to="/admin">{{$t('menus.items.admin')}}</router-link>
+          <router-link to="/admin"><CrownOutlined/> {{$t('menus.items.admin')}}</router-link>
         </el-menu-item>
         <el-menu-item index="9-1">
-          <router-link to="/MyCenter">{{$t('menus.items.myCenter')}}</router-link>
+          <router-link to="/MyCenter"><HomeOutlined/> {{$t('menus.items.myCenter')}}</router-link>
         </el-menu-item>
         <el-menu-item index="9-2">
-          <router-link to="/MyToken">{{$t('menus.items.myToken')}}</router-link>
+          <router-link to="/MyToken"><DollarOutlined/> {{$t('menus.items.myToken')}}</router-link>
         </el-menu-item>
         <el-menu-item index="9-3">
-          <router-link to="/MyNFT">{{$t('menus.items.myNFT')}}</router-link>
+          <router-link to="/MyNFT"><FileImageOutlined/> {{$t('menus.items.myNFT')}}</router-link>
         </el-menu-item>
         <el-menu-item index="9-4">
-          <router-link to="/MyDeFi">{{$t('menus.items.myDeFi')}}</router-link>
+          <router-link to="/MyDeFi"><BankOutlined/> {{$t('menus.items.myDeFi')}}</router-link>
         </el-menu-item>
         <el-menu-item index="9-5">
-          <router-link to="/Setting">{{$t('menus.items.setting')}}</router-link>
+          <router-link to="/Setting"><SettingOutlined/> {{$t('menus.items.setting')}}</router-link>
         </el-menu-item>
-        <el-menu-item @click.native="logoutFunction()" index="9-6">{{$t('menus.items.logout')}}</el-menu-item>
+        <el-menu-item @click.native="logoutFunction()" index="9-6"><LogoutOutlined/> {{$t('menus.items.logout')}}</el-menu-item>
       </el-sub-menu>
     </div>
-
   </el-menu>
+
+  
+
 </template>
 <style scoped>
 .search-style {
@@ -144,7 +146,7 @@ import {
   Switch
 } from '@element-plus/icons-vue'
 import router from '../router'
-import {TranslationOutlined, BellOutlined} from '@ant-design/icons-vue'
+import {TranslationOutlined, CrownOutlined, HomeOutlined,DollarOutlined, FileImageOutlined, BankOutlined, SettingOutlined, LogoutOutlined} from '@ant-design/icons-vue'
 
 const route = useRoute()
 const searchKey = ref('')

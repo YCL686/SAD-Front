@@ -54,5 +54,10 @@ export default {
       publish:'게시',
       dailyTask:'일일 작업',
       backToTop:'맨 위로'
+    },
+    inputs:{
+      comment:'입력하십시오....',
+      title:'제목 선택 가능...',
+      content:'내용을 입력하십시오....'
     }
   }

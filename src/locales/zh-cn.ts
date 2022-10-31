@@ -54,5 +54,10 @@ export default {
       publish:'发布',
       dailyTask:'每日任务',
       backToTop:'回到顶部'
+    },
+    inputs:{
+      comment:'请输入评论...',
+      title:'标题可选...',
+      content:'请输入内容...'
     }
   }

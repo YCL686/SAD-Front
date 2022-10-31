@@ -6,26 +6,15 @@
       </el-col>
       <el-col :xs="24" :sm="24" :md="16" :lg="18" :xl="18">
         <ad style="margin-bottom: 10px"></ad>
-        <!-- <el-divider /> -->
-        <!-- <el-scrollbar>
-          <el-card class="opus-card" v-for="o in 30" :key="o">
-              <el-skeleton style="--el-skeleton-circle-size: 75px">
-    <template #template>
-      <el-skeleton-item variant="circle" />
-    </template>
-  </el-skeleton>
-          <el-skeleton :rows="5" animated />
-          </el-card>
-        </el-scrollbar> -->
         <el-menu :default-active="1" class="el-menu-demo" mode="horizontal" v-if="data.isMobile">
           <el-menu-item index="1">
-            <router-link to="/index">首页</router-link>
+            <router-link to="/index">{{$t('menus.index')}}</router-link>
           </el-menu-item>
           <el-menu-item index="2">
-            <router-link to="/recommand">推荐</router-link>
+            <router-link to="/hot">{{$t('menus.hot')}}</router-link>
           </el-menu-item>
           <el-menu-item index="3">
-            <router-link to="/hot">热门</router-link>
+            <router-link to="/focus">{{$t('menus.focus')}}</router-link>
           </el-menu-item>
           <el-menu-item index="4">
             <router-link to="/nft">NFT</router-link>
