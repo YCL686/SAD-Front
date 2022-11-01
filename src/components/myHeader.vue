@@ -210,18 +210,18 @@ const { open } = useBoard()
 
 
 const { wallet, disconnect, onDisconnect, onAccountsChanged, onChainChanged } = useWallet()
-const { address, balance, chainId, isActivated, dnsAlias, signer } = useEthers()
+const { address, balance, chainId, isActivated, dnsAlias, signer, provider } = useEthers()
 
-const web3 = window.ethereum as any;
-const { connectWith } = useWallet()
+// const web3 = window.ethereum as any;
+// const { connectWith } = useWallet()
 
-if (localStorage.getItem('token') != null && web3.selectedAddress) {
-  //TODO now default metamask need update
-  connectWith(connectors[0]).then(() => {
-    console.log(wallet.status)
-    //signer.value.connect(wallet.provider)
-  })
-}
+// if (localStorage.getItem('token') != null && web3.selectedAddress) {
+//   //TODO now default metamask need update
+//   connectWith(connectors[0]).then(() => {
+//     console.log(wallet.status)
+//     //signer.value.connect(wallet.provider)
+//   })
+// }
 
 
 function logoutFunction() {
@@ -282,9 +282,12 @@ onActivated(() => {
         store.dispatch('setIsLogined', true)
       })
     })
-  }else{
+    console.log(provider)
     console.log(signer)
-    console.log(pro)
+  }else{
+    console.log("123")
+    console.log(provider)
+    console.log(signer)
   }
 })
 const isChainChanged = ref(false)

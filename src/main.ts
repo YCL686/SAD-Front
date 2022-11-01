@@ -21,6 +21,7 @@ import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 import SvgIcon from './components/SvgIcon/index.vue'
 import 'virtual:svg-icons-register'
+import { ContractFactory, ethers, utils } from 'ethers'
 
 
 
@@ -30,7 +31,24 @@ app.component('svg-icon',SvgIcon)
 app.use(router)
 app.use(store)
 app.use(ElementPlus)
-app.use(VueDapp)
+app.use(VueDapp, {
+  autoConnect: true, // Automatically connect MetaMask wallet when the page is loaded
+   networks: {
+     97: {
+       chainId: ethers.utils.hexValue(97),
+       blockExplorerUrls: ['https://mumbai.polygonscan.com/'],
+       chainName: 'BSC-TEST',
+       rpcUrls: ['https://rpc-mumbai.maticvigil.com/'],
+       nativeCurrency: {
+         name: 'TBNB',
+         decimals: 18,
+         symbol: 'TBNB',
+       },
+     },
+     42161: {
+     }
+   },
+ })
 app.use(i18n)
 app.use(InfiniteScroll)
 app.use(Antd)

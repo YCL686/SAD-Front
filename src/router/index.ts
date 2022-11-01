@@ -13,7 +13,7 @@ import recommand from '../components/recommand.vue'
 //个人中心 非链上业务合集 如我的作品 我的消息 我的关注 我的收藏等
 import myCenter from '../components/myCenter.vue'
 //加密资产中心 链上业务合集 如我的余额 流水 提现 充值 我的NFT 我的DeFi
-import myCrypotoProperty from '../components/myCrypotoProperty.vue'
+import myToken from '../components/myCrypotoProperty.vue'
 //NFT页面 如NFT交易市场
 import NFT from '../components/NFT.vue'
 //DeFi页面
@@ -65,9 +65,9 @@ const routes = [{
   name: 'myCenter',
   component: myCenter
 }, {
-  path: '/myCrypotoProperty',
-  name: 'myCrypotoProperty',
-  component: myCrypotoProperty
+  path: '/myToken',
+  name: 'myToken',
+  component: myToken
 },{
   path: '/NFT',
   name: 'NFT',

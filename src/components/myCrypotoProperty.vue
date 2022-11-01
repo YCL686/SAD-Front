@@ -1,5 +1,5 @@
 <template>
-  <el-descriptions class="margin-top" title="My $SAD Token" :column="3" :size="large" border>
+  <!-- <el-descriptions class="margin-top" title="My $SAD Token" :column="1" :size="small" border>
     <template #extra>
       <el-input-number v-model="num" :min="1" :max="100000" />
       <el-button-group>
@@ -14,13 +14,19 @@
 
       <count-to :startVal="0" :endVal="offChainToken" :decimals="5" :duration="3000"></count-to>
     </el-descriptions-item>
+    
+    
+  </el-descriptions>
+  <el-descriptions :column="1" :size="small" border>
     <el-descriptions-item>
       <template #label>
         <div class="cell-item">OnChainToken</div>
       </template>
-
       <count-to :startVal="0" :endVal="onChainToken" :decimals="5" :duration="3000"></count-to>
     </el-descriptions-item>
+  </el-descriptions>
+
+  <el-descriptions :column="1" :size="small" border>
     <el-descriptions-item>
       <template #label>
         <div class="cell-item">BNB</div>
@@ -28,7 +34,36 @@
 
       <count-to :startVal="0" :endVal="Number(balance) / Math.pow(10, 18)" :decimals="5" :duration="3000"></count-to>
     </el-descriptions-item>
-  </el-descriptions>
+  </el-descriptions> -->
+  <div>
+    <a-card title="MyToken" :bordered="false">
+      <template #extra>
+        <a-space>
+          <a-button shape="round" @click="depositModalVisible = true" type="primary">Deposit</a-button>
+          <a-button shape="round" @click="withdrawModalVisible = true" >Withdraw</a-button>
+          <QuestionCircleOutlined @click="questionVisible = true" style="cursor: pointer;"/>
+        </a-space>
+      </template>
+  <a-row :gutter="8">
+      <a-col :span="12">
+        <a-card>
+          <a-statistic title="OffChainToken" :value="offChainToken" />        
+        </a-card>
+      </a-col>
+      <a-col :span="12" :bordered="false">
+        <a-card>
+          <a-statistic title="OnChainToken" :value="onChainToken" />
+        </a-card>
+      </a-col>
+      <!-- <a-col :span="8">
+        <a-card title="BNB" :bordered="false">
+          <count-to :startVal="0" :endVal="Number(balance) / Math.pow(10, 18)" :decimals="2" :duration="3000"></count-to>
+        </a-card>
+      </a-col> -->
+    </a-row>
+  </a-card>
+  </div>
+
   <el-table :data="tableData" height="250" style="width: 100%">
     <el-table-column prop="entryTypeName" label="entryTypeName" width="180" />
     <el-table-column prop="entryAmount" label="entryAmount" width="180" />
@@ -39,12 +74,39 @@
     <el-table-column prop="gmtCreated" label="operationTime" width="180" />
   </el-table>
   <el-pagination small background layout="prev, pager, next" :total="50" class="mt-4" />
+
+  <a-drawer
+    title="Question"
+    :closable="false"
+    :visible="questionVisible"
+    placement="bottom"
+    @close="onQuestionClose"
+  >
+    <p>Some contents...</p>
+    <p>Some contents...</p>
+    <p>Some contents...</p>
+  </a-drawer>
+
+  <a-modal style="text-align: center;" v-model:visible="depositModalVisible" title="Deposit"
+      ok-text="confirm"
+      cancel-text="cancel" 
+      @ok="handleDeposit">
+      <el-input-number v-model="depositNum" :min="1" :max="1000000" />
+    </a-modal>
+
+    <a-modal style="text-align: center;" v-model:visible="withdrawModalVisible" title="WithDraw"
+      ok-text="confirm"
+      cancel-text="cancel" 
+      @ok="handleWithdraw">
+      <el-input-number v-model="withDrawNum" :min="1" :max="1000000" />
+    </a-modal>
+
 </template>
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref } from 'vue'
-import { defineComponent } from 'vue'
 import { CountTo } from 'vue3-count-to'
 import { ElMessage } from 'element-plus'
+import {QuestionCircleOutlined} from '@ant-design/icons-vue'
 import {
   useBoard,
   useEthers,
@@ -62,7 +124,13 @@ import {
 import { ContractFactory, ethers, utils } from 'ethers'
 import { getAccount, deposit } from '../api/account'
 import { pageAccountEntry } from '../api/accountEntry'
+import { Provider } from '@ethersproject/abstract-provider'
 
+const depositNum = ref(1)
+const withDrawNum = ref(1)
+const withdrawModalVisible = ref(false)
+const depositModalVisible = ref(false)
+const questionVisible = ref(false)
 const num = ref(1)
 const onChainToken = ref(0)
 const offChainToken = ref(0)
@@ -73,35 +141,72 @@ const currentNo = ref(1)
 const total = ref(0)
 const tableData = ref([])
 
-function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+const handleWithdraw = () => {
+
 }
 
-(async function () {
-  await sleep(1000);
-})();
+const onQuestionClose = () =>{
+  questionVisible.value = false;
+}
 
+
+const getOnChainToken = (provider: Provider) => {
+  let contract = new ethers.Contract(
+ import.meta.env.VITE_CONTRACT_ADDRESS,
+ import.meta.env.VITE_CONTRACT_ABI,
+ provider)
+ contract.balanceOf(address.value).then(res => {
+  onChainToken.value = Number(res) / Math.pow(10, 18)
+})
+}
+
+
+const { onActivated, onChanged } = useEthersHooks()
 const { address, balance, chainId, isActivated, dnsAlias, signer, provider } = useEthers()
-const { wallet } = useWallet()
+onActivated(({ signer, provider }) => {
+  getOnChainToken(provider)
+})
+ 
+ const handleDeposit = () => {
 
-const web3 = window.ethereum as any;
-const { connectWith } = useWallet()
+if (depositNum.value < 0 || depositNum.value > onChainToken.value) {
+  ElMessage({
+    message: 'InSufficent onChainToken Amount',
+    type: 'error'
+  })
+  return
+}
+signer.value?.signMessage(import.meta.env.VITE_DEPOSIT_MESSAGE).then(signature => { //链上钱包签名
+  let contractWithSigner = contract.connect(signer.value)
+  contractWithSigner
+    .transfer( //发起链上交易
+      import.meta.env.VITE_DEPOSIT_WITHDRAW_ADDRESS,
+      utils.parseUnits(depositNum.value.toString(), 18)
+    )
+    .then(transaction => {
+      let param = { address: transaction.from, amount: depositNum.value, hash: transaction.hash, message: import.meta.env.VITE_DEPOSIT_MESSAGE, signature: signature }
+      deposit(param).then(res => { //web2链下后端记录
+        getAccountFunction() //offChainToken余额更新
+        let param = { pageSize: pageSize.value, pageNo: pageNo.value }
+        pageAccountEntryFunction(param) //offChainToken流水更新
+        console.log(res)
+      })
+    })
+})
+
+}
 
 
 onMounted(async () => {
   await getAccountFunction()
   let param = { pageSize: pageSize.value, pageNo: pageNo.value }
   await pageAccountEntryFunction(param)
+  getOnChainToken(provider.value)
 })
-let contract = new ethers.Contract(
-  import.meta.env.VITE_CONTRACT_ADDRESS,
-  import.meta.env.VITE_CONTRACT_ABI,
-  signer.value
-)
 
-contract.balanceOf(address.value).then(res => {
-  onChainToken.value = Number(res) / Math.pow(10, 18)
-})
+
+
+
 
 function getAccountFunction() {
   getAccount().then(res => {
@@ -115,33 +220,6 @@ function pageAccountEntryFunction(param: any) {
   })
 }
 
-function depositFunction() {
-  if (num.value < 0 || num.value > onChainToken.value) {
-    ElMessage({
-      message: 'InSufficent onChainToken Amount',
-      type: 'error'
-    })
-    return
-  }
-  signer.value?.signMessage(import.meta.env.VITE_DEPOSIT_MESSAGE).then(signature => { //链上钱包签名
-    let contractWithSigner = contract.connect(signer.value)
-    contractWithSigner
-      .transfer( //发起链上交易
-        import.meta.env.VITE_DEPOSIT_WITHDRAW_ADDRESS,
-        utils.parseUnits(num.value.toString(), 18)
-      )
-      .then(transaction => {
-        let param = { address: transaction.from, amount: num.value, hash: transaction.hash, message: import.meta.env.VITE_DEPOSIT_MESSAGE, signature: signature }
-        deposit(param).then(res => { //web2链下后端记录
-          getAccountFunction() //offChainToken余额更新
-          let param = { pageSize: pageSize.value, pageNo: pageNo.value }
-          pageAccountEntryFunction(param) //offChainToken流水更新
-          console.log(res)
-        })
-      })
-  })
-
-}
 
 </script>
 <style scoped>
