@@ -15,3 +15,11 @@ export function deposit(data : any){
         data
     })
 }
+
+export function withdraw(data: any){
+  return request({
+    url:'account/withdraw',
+    method:'post',
+    data
+  })
+}

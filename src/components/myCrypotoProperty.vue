@@ -39,8 +39,8 @@
     <a-card title="MyToken" :bordered="false">
       <template #extra>
         <a-space>
-          <a-button shape="round" @click="depositModalVisible = true" type="primary">Deposit</a-button>
-          <a-button shape="round" @click="withdrawModalVisible = true" >Withdraw</a-button>
+          <a-button shape="round" :loading="depositing" @click="depositModalVisible = true" type="primary">Deposit</a-button>
+          <a-button shape="round" :loading="withdrawing" @click="withdrawModalVisible = true" >Withdraw</a-button>
           <QuestionCircleOutlined @click="questionVisible = true" style="cursor: pointer;"/>
         </a-space>
       </template>
@@ -98,7 +98,7 @@
       ok-text="confirm"
       cancel-text="cancel" 
       @ok="handleWithdraw">
-      <el-input-number v-model="withDrawNum" :min="1" :max="1000000" />
+      <el-input-number v-model="withdrawNum" :min="1" :max="1000000" />
     </a-modal>
 
 </template>
@@ -122,12 +122,15 @@ import {
   Web3Provider
 } from 'vue-dapp'
 import { ContractFactory, ethers, utils } from 'ethers'
-import { getAccount, deposit } from '../api/account'
+import { getAccount, deposit, withdraw } from '../api/account'
 import { pageAccountEntry } from '../api/accountEntry'
 import { Provider } from '@ethersproject/abstract-provider'
+import { message } from 'ant-design-vue'
 
+const depositing = ref(false)
+const withdrawing = ref(false)
 const depositNum = ref(1)
-const withDrawNum = ref(1)
+const withdrawNum = ref(1)
 const withdrawModalVisible = ref(false)
 const depositModalVisible = ref(false)
 const questionVisible = ref(false)
@@ -141,9 +144,7 @@ const currentNo = ref(1)
 const total = ref(0)
 const tableData = ref([])
 
-const handleWithdraw = () => {
 
-}
 
 const onQuestionClose = () =>{
   questionVisible.value = false;
@@ -157,6 +158,8 @@ const getOnChainToken = (provider: Provider) => {
  provider)
  contract.balanceOf(address.value).then(res => {
   onChainToken.value = Number(res) / Math.pow(10, 18)
+}).catch(()=>{
+  message.error('Failed To Get Your OnChainToken, Please Check Your Network!')
 })
 }
 
@@ -166,16 +169,38 @@ const { address, balance, chainId, isActivated, dnsAlias, signer, provider } = u
 onActivated(({ signer, provider }) => {
   getOnChainToken(provider)
 })
+
+const handleWithdraw = () => {
+  if (withdrawNum.value < 0 || withdrawNum.value > offChainToken.value) {
+  message.error('InSufficent offChainToken')
+  return;
+}
+
+withdrawModalVisible.value = false;
+signer.value?.signMessage(import.meta.env.VITE_WITHDRAW_MESSAGE).then(signature => { //链上钱包签名
+  withdrawing.value = true;
+  let param = { address: address.value, amount: withdrawNum.value, message: import.meta.env.VITE_WITHDRAW_MESSAGE, signature: signature }
+  withdraw(param).then(res =>{
+  getAccountFunction() //offChainToken余额更新
+  let param = { pageSize: pageSize.value, pageNo: pageNo.value }
+  pageAccountEntryFunction(param) //offChainToken流水更新
+  withdrawing.value = false;
+  message.success('Withdraw Success!')
+  })
+})
+
+}
  
  const handleDeposit = () => {
-
 if (depositNum.value < 0 || depositNum.value > onChainToken.value) {
-  ElMessage({
-    message: 'InSufficent onChainToken Amount',
-    type: 'error'
-  })
+  message.error('InSufficent onChainToken')
   return
 }
+depositModalVisible.value = false;
+let contract = new ethers.Contract(
+ import.meta.env.VITE_CONTRACT_ADDRESS,
+ import.meta.env.VITE_CONTRACT_ABI,
+ provider.value)
 signer.value?.signMessage(import.meta.env.VITE_DEPOSIT_MESSAGE).then(signature => { //链上钱包签名
   let contractWithSigner = contract.connect(signer.value)
   contractWithSigner
@@ -184,16 +209,27 @@ signer.value?.signMessage(import.meta.env.VITE_DEPOSIT_MESSAGE).then(signature =
       utils.parseUnits(depositNum.value.toString(), 18)
     )
     .then(transaction => {
-      let param = { address: transaction.from, amount: depositNum.value, hash: transaction.hash, message: import.meta.env.VITE_DEPOSIT_MESSAGE, signature: signature }
-      deposit(param).then(res => { //web2链下后端记录
+      depositing.value = true;
+      provider.value.waitForTransaction(transaction.hash).then(res=>{ //同步等待交易完成
+        if(res.status === 1){
+        let param = { address: transaction.from, amount: depositNum.value, hash: transaction.hash, message: import.meta.env.VITE_DEPOSIT_MESSAGE, signature: signature }
+        deposit(param).then(() => { //web2链下后端记录
         getAccountFunction() //offChainToken余额更新
         let param = { pageSize: pageSize.value, pageNo: pageNo.value }
         pageAccountEntryFunction(param) //offChainToken流水更新
-        console.log(res)
+        depositing.value = false;
+        message.success('Deposite Success!')
       })
+        }else{
+          depositing.value = false;
+          console.log(res)
+          message.error('Deposite Error!')
+        }
+        depositNum.value = 1;
+      })
+      
     })
 })
-
 }
 
 
