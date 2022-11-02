@@ -185,10 +185,13 @@ signer.value?.signMessage(import.meta.env.VITE_WITHDRAW_MESSAGE).then(signature 
   let param = { pageSize: pageSize.value, pageNo: pageNo.value }
   pageAccountEntryFunction(param) //offChainToken流水更新
   withdrawing.value = false;
+  withdrawNum.value = 1
   message.success('Withdraw Success!')
   })
+}).catch(() => {
+  withdrawing.value = false;
+  message.error('Failed To Get Your Wallet, Please Check Your Network!')
 })
-
 }
  
  const handleDeposit = () => {
