@@ -31,7 +31,10 @@
           <a-button @click="goToPublish" type="primary" shape="circle" size="large"><PlusOutlined/></a-button>
           </a-tooltip>
           <a-tooltip :title="$t('tooltips.dailyTask')">
-          <a-button  shape="circle" size="large"><FieldTimeOutlined/></a-button>
+          <a-button @click="showDailyTaskModal"  shape="circle" size="large"><FieldTimeOutlined/></a-button>
+          <a-modal v-model:visible="dailyTaskModalVisible" title="DailyTask" @ok="handleOk">
+      <daily-task></daily-task>
+    </a-modal>
           </a-tooltip>
           
           
@@ -116,6 +119,7 @@
 import { defineComponent } from 'vue'
 import { ref } from 'vue'
 import ad from './ad.vue'
+import dailyTask from '../components/dailyTask.vue'
 import 'element-plus/theme-chalk/display.css'
 import store from '../store/index'
 import { PlusOutlined, VerticalAlignTopOutlined, FieldTimeOutlined } from '@ant-design/icons-vue'
@@ -125,7 +129,7 @@ import { useRouter } from 'vue-router'
 
 
 export default defineComponent({
-  components: { ad, PlusOutlined, VerticalAlignTopOutlined,FieldTimeOutlined },
+  components: { ad, PlusOutlined, VerticalAlignTopOutlined,FieldTimeOutlined, dailyTask },
   name: 'myMain',
   setup() {
     const top = ref<number>(550);
@@ -135,8 +139,17 @@ export default defineComponent({
       address: 'No. 189, Grove St, Los Angeles',
     }
     const tableData = ref(Array.from({ length: 100 }).fill(item))
-
+    const dailyTaskModalVisible = ref(false)
     const router = useRouter()
+
+    const handleOk = () => {
+      dailyTaskModalVisible.value = false
+    }
+
+    const showDailyTaskModal = () => {
+      dailyTaskModalVisible.value = true
+            console.log(1111)
+    }
 
     const goToPublish = () =>{
       const publishPage = router.resolve({
@@ -150,7 +163,10 @@ export default defineComponent({
       tableData,
       data: store.state,
       top,
-      goToPublish
+      goToPublish,
+      dailyTaskModalVisible,
+      handleOk,
+      showDailyTaskModal
     }
   }
 })
