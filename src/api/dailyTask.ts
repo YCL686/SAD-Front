@@ -7,3 +7,11 @@ export function getDailyTask() {
         method: 'get'
     })
 }
+
+export function getDailyTaskReward(param: any) {
+    return request({
+        url: '/daily-task-record/getDailyTaskReward',
+        method: 'post',
+        data: param
+    })
+}
