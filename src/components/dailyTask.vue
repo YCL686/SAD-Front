@@ -14,7 +14,7 @@
         </template>
 
           <template #title>
-            {{ item.taskName}}  ({{item.taskReward}}$SAD)
+            {{ item.taskName}}
           </template>
         </a-list-item-meta>
       </a-list-item>
