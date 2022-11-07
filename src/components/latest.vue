@@ -67,7 +67,7 @@
             </a-tooltip>
 
             <a-tooltip :title="$t('tooltips.dailyStaking')">
-              <span style="cursor: pointer;">
+              <span @click="dailyStakingModalVisible = true" style="cursor: pointer;">
                 <DollarCircleOutlined />
                 <count-to :startVal="0" :endVal="1000" :decimals="2" :duration="3000"></count-to>
               </span>
@@ -150,6 +150,9 @@
       <comment :value="opusId"></comment>
     </el-drawer>
     
+    <a-modal destroyOnClose="true" :footer="null" v-model:visible="dailyStakingModalVisible" title="DailyStaking" @ok="handleOk">
+      <daily-staking :value="opusId"></daily-staking>
+    </a-modal>
 
   </div>
 
@@ -163,6 +166,7 @@ import { operateFocus } from '../api/focus'
 import { operateCollect } from '../api/collect'
 import { operateLike } from '../api/like'
 import { useRouter } from 'vue-router'
+import dailyStaking from '../components/dailyStaking.vue'
 import dayjs from 'dayjs';
 import { StarOutlined, StarTwoTone, LikeTwoTone, LikeOutlined, MessageOutlined, DollarCircleOutlined, ShareAltOutlined, PlusOutlined, CheckOutlined, FireTwoTone, CheckCircleOutlined, CheckCircleTwoTone, EyeOutlined, GiftOutlined} from '@ant-design/icons-vue';
 import { CountTo } from 'vue3-count-to'
@@ -181,6 +185,11 @@ const pageNo = ref(1)
 const commentDraw = ref(false)
 const router = useRouter()
 const opusId = ref()
+const dailyStakingModalVisible = ref(false)
+
+const handleOk = () => {
+  dailyStakingModalVisible.value = false
+}
 
 
 const load = () => {
