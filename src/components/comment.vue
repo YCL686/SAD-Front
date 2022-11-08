@@ -144,7 +144,6 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import data from "emoji-mart-vue-fast/data/all.json";
 import { Picker, EmojiIndex } from "emoji-mart-vue-fast/src";
 import "emoji-mart-vue-fast/css/emoji-mart.css";
-import { string } from 'vue-types'
 let emojiIndex = new EmojiIndex(data);
 
 dayjs.extend(relativeTime);

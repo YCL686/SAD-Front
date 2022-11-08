@@ -67,7 +67,7 @@
             </a-tooltip>
 
             <a-tooltip :title="$t('tooltips.dailyStaking')">
-              <span @click="dailyStakingModalVisible = true" style="cursor: pointer;">
+              <span @click="dailyStakingModalVisible = true; opusId = item.id" style="cursor: pointer;">
                 <DollarCircleOutlined />
                 <count-to :startVal="0" :endVal="1000" :decimals="2" :duration="3000"></count-to>
               </span>
@@ -149,13 +149,10 @@
     <el-drawer v-model="commentDraw" title="Comment:" direction="rtl">
       <comment :value="opusId"></comment>
     </el-drawer>
-    
-    <a-modal destroyOnClose="true" :footer="null" v-model:visible="dailyStakingModalVisible" title="DailyStaking" @ok="handleOk">
-      <daily-staking :value="opusId"></daily-staking>
+    <a-modal :destroyOnClose="true" :footer="null" v-model:visible="dailyStakingModalVisible" title="DailyStaking" @ok="handleOk">
+      <dailyStaking :opusId="opusId"></dailyStaking>
     </a-modal>
-
   </div>
-
 
 </template>
 <script lang="ts" setup>

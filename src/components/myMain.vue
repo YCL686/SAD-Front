@@ -32,7 +32,7 @@
           </a-tooltip>
           <a-tooltip :title="$t('tooltips.dailyTask')">
           <a-button @click="showDailyTaskModal"  shape="circle" size="large"><FieldTimeOutlined/></a-button>
-          <a-modal destroyOnClose="true" :footer="null" v-model:visible="dailyTaskModalVisible" title="DailyTask" @ok="handleOk">
+          <a-modal :destroyOnClose="true" :footer="null" v-model:visible="dailyTaskModalVisible" title="DailyTask" @ok="handleOk">
       <daily-task></daily-task>
     </a-modal>
           </a-tooltip>
