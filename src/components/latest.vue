@@ -68,15 +68,14 @@
 
             <a-tooltip :title="$t('tooltips.dailyStaking')">
               <span @click="dailyStakingModalVisible = true; opusId = item.id" style="cursor: pointer;">
-                <DollarCircleOutlined />
-                <count-to :startVal="0" :endVal="1000" :decimals="2" :duration="3000"></count-to>
+                <DollarCircleOutlined style="margin-right: 8px" />
+                <count-to :startVal="0" :endVal="item.currentStakingAmount" :decimals="2" :duration="3000"></count-to>
               </span>
             </a-tooltip>
 
             <a-tooltip :title="$t('tooltips.reward')">
-              <span style="cursor: pointer;">
+              <span @click="rewardModalVisible = true; userId = item.userId" style="cursor: pointer;">
                 <GiftOutlined />
-                <count-to :startVal="0" :endVal="1000" :decimals="2" :duration="3000"></count-to>
               </span>
             </a-tooltip>
 
@@ -152,6 +151,9 @@
     <a-modal :destroyOnClose="true" :footer="null" v-model:visible="dailyStakingModalVisible" title="DailyStaking" @ok="handleOk">
       <dailyStaking :opusId="opusId"></dailyStaking>
     </a-modal>
+    <a-modal :destroyOnClose="true" :footer="null" v-model:visible="rewardModalVisible" title="Reward" @ok="handleOk">
+      <reward :toUserId="userId"></reward>
+    </a-modal>
   </div>
 
 </template>
@@ -164,6 +166,7 @@ import { operateCollect } from '../api/collect'
 import { operateLike } from '../api/like'
 import { useRouter } from 'vue-router'
 import dailyStaking from '../components/dailyStaking.vue'
+import reward from '../components/reward.vue'
 import dayjs from 'dayjs';
 import { StarOutlined, StarTwoTone, LikeTwoTone, LikeOutlined, MessageOutlined, DollarCircleOutlined, ShareAltOutlined, PlusOutlined, CheckOutlined, FireTwoTone, CheckCircleOutlined, CheckCircleTwoTone, EyeOutlined, GiftOutlined} from '@ant-design/icons-vue';
 import { CountTo } from 'vue3-count-to'
@@ -182,10 +185,13 @@ const pageNo = ref(1)
 const commentDraw = ref(false)
 const router = useRouter()
 const opusId = ref()
+const userId = ref()
 const dailyStakingModalVisible = ref(false)
+const rewardModalVisible = ref(false)
 
 const handleOk = () => {
   dailyStakingModalVisible.value = false
+  rewardModalVisible.value = false
 }
 
 

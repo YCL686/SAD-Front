@@ -67,16 +67,15 @@
               </a-tooltip>
   
               <a-tooltip :title="$t('tooltips.dailyStaking')">
-                <span style="cursor: pointer;">
-                  <DollarCircleOutlined />
-                  <count-to :startVal="0" :endVal="1000" :decimals="2" :duration="3000"></count-to>
+                <span @click="dailyStakingModalVisible = true; opusId = item.id" style="cursor: pointer;">
+                  <DollarCircleOutlined style="margin-right: 2px" />
+                  <count-to :startVal="0" :endVal="item.currentStakingAmount" :decimals="2" :duration="3000"></count-to>
                 </span>
               </a-tooltip>
   
               <a-tooltip :title="$t('tooltips.reward')">
                 <span style="cursor: pointer;">
                   <GiftOutlined />
-                  <count-to :startVal="0" :endVal="1000" :decimals="2" :duration="3000"></count-to>
                 </span>
               </a-tooltip>
   
@@ -150,7 +149,9 @@
       <el-drawer size="80%" v-model="commentDraw" title="Comment:" direction="btt">
         <comment :value="opusId"></comment>
       </el-drawer>
-      
+      <a-modal :destroyOnClose="true" :footer="null" v-model:visible="dailyStakingModalVisible" title="DailyStaking" @ok="handleOk">
+      <dailyStaking :opusId="opusId"></dailyStaking>
+    </a-modal>
   
     </div>
   
@@ -169,6 +170,8 @@
   import { CountTo } from 'vue3-count-to'
   import relativeTime from 'dayjs/plugin/relativeTime';
   import comment from '../comment.vue'
+  import dailyStaking from '../dailyStaking.vue'
+
   dayjs.extend(relativeTime);
   
   
@@ -182,6 +185,11 @@
   const commentDraw = ref(false)
   const router = useRouter()
   const opusId = ref()
+  const dailyStakingModalVisible = ref(false)
+
+const handleOk = () => {
+  dailyStakingModalVisible.value = false
+}
   
   
   const load = () => {
