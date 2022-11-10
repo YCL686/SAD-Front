@@ -74,7 +74,7 @@
               </a-tooltip>
   
               <a-tooltip :title="$t('tooltips.reward')">
-                <span style="cursor: pointer;">
+                <span @click="rewardModalVisible = true; userId = item.userId, toNickName = item.nickName" style="cursor: pointer;">
                   <GiftOutlined />
                 </span>
               </a-tooltip>
@@ -152,7 +152,9 @@
       <a-modal :destroyOnClose="true" :footer="null" v-model:visible="dailyStakingModalVisible" title="DailyStaking" @ok="handleOk">
       <dailyStaking :opusId="opusId"></dailyStaking>
     </a-modal>
-  
+    <a-modal :destroyOnClose="true" :footer="null" v-model:visible="rewardModalVisible" title="Reward" @ok="handleOk">
+      <reward :toUserId="userId" :toNickName = "toNickName"></reward>
+    </a-modal>
     </div>
   
   
@@ -171,6 +173,8 @@
   import relativeTime from 'dayjs/plugin/relativeTime';
   import comment from '../comment.vue'
   import dailyStaking from '../dailyStaking.vue'
+  import reward from '../reward.vue'
+
 
   dayjs.extend(relativeTime);
   
@@ -185,10 +189,14 @@
   const commentDraw = ref(false)
   const router = useRouter()
   const opusId = ref()
+  const userId = ref()
+  const toNickName = ref()
   const dailyStakingModalVisible = ref(false)
+  const rewardModalVisible = ref(false)
 
 const handleOk = () => {
   dailyStakingModalVisible.value = false
+  rewardModalVisible.value = false
 }
   
   

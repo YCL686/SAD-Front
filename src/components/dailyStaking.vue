@@ -55,7 +55,7 @@
             </a-col>
         </a-row>
         <a-row style="margin-top:10px">
-            <a-space>
+            <a-space size="small">
                 <a-tag style="cursor: pointer;" @click="inputNum = offChainToken / 10" color="green">10%</a-tag>
                 <a-tag style="cursor: pointer;" @click="inputNum = offChainToken / 4" color="blue">25%</a-tag>
                 <a-tag style="cursor: pointer;" @click="inputNum = offChainToken / 2" color="pink">50%</a-tag>
@@ -142,7 +142,7 @@
 
 <script lang="ts" setup>
 
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 import { getDailyStakingPool, stakeDailyStaking } from '../api/dailyStaking'
 import { message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
@@ -183,20 +183,6 @@ const columns = [
 const props = defineProps({
     opusId: String,
 });
-
-watch(
-    () => props.opusId,
-    (newVal, oldVal) => {
-        console.log(props.opusId)
-        if (newVal != oldVal) {
-            console.log(props.opusId)
-            getDailyStakingPoolFunction()
-        }
-    },
-    {
-        deep: true
-    }
-)
 
 const getDailyStakingPoolFunction = () => {
     let tmLoc = new Date()

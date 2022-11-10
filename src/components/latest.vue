@@ -74,8 +74,14 @@
             </a-tooltip>
 
             <a-tooltip :title="$t('tooltips.reward')">
-              <span @click="rewardModalVisible = true; userId = item.userId" style="cursor: pointer;">
+              <span @click="rewardModalVisible = true; userId = item.userId, toNickName = item.nickName" style="cursor: pointer;">
                 <GiftOutlined />
+              </span>
+            </a-tooltip>
+
+            <a-tooltip :title="$t('tooltips.reward')">
+              <span style="cursor: pointer;">
+                <ExclamationCircleOutlined />
               </span>
             </a-tooltip>
 
@@ -152,7 +158,7 @@
       <dailyStaking :opusId="opusId"></dailyStaking>
     </a-modal>
     <a-modal :destroyOnClose="true" :footer="null" v-model:visible="rewardModalVisible" title="Reward" @ok="handleOk">
-      <reward :toUserId="userId"></reward>
+      <reward :toUserId="userId" :toNickName = "toNickName"></reward>
     </a-modal>
   </div>
 
@@ -168,7 +174,7 @@ import { useRouter } from 'vue-router'
 import dailyStaking from '../components/dailyStaking.vue'
 import reward from '../components/reward.vue'
 import dayjs from 'dayjs';
-import { StarOutlined, StarTwoTone, LikeTwoTone, LikeOutlined, MessageOutlined, DollarCircleOutlined, ShareAltOutlined, PlusOutlined, CheckOutlined, FireTwoTone, CheckCircleOutlined, CheckCircleTwoTone, EyeOutlined, GiftOutlined} from '@ant-design/icons-vue';
+import { StarOutlined, StarTwoTone, LikeTwoTone, LikeOutlined, MessageOutlined, DollarCircleOutlined, ShareAltOutlined, PlusOutlined, CheckOutlined, FireTwoTone, CheckCircleOutlined, CheckCircleTwoTone, EyeOutlined, GiftOutlined, ExclamationCircleOutlined} from '@ant-design/icons-vue';
 import { CountTo } from 'vue3-count-to'
 import relativeTime from 'dayjs/plugin/relativeTime';
 import comment from './comment.vue'
@@ -186,6 +192,7 @@ const commentDraw = ref(false)
 const router = useRouter()
 const opusId = ref()
 const userId = ref()
+const toNickName = ref()
 const dailyStakingModalVisible = ref(false)
 const rewardModalVisible = ref(false)
 

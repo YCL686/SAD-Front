@@ -31,12 +31,14 @@
           <a-button @click="goToPublish" type="primary" shape="circle" size="large"><PlusOutlined/></a-button>
           </a-tooltip>
           <a-tooltip :title="$t('tooltips.dailyTask')">
-          <a-button @click="showDailyTaskModal"  shape="circle" size="large"><FieldTimeOutlined/></a-button>
+          <a-button @click="showDailyTaskModal"  shape="circle" size="large"><ClockCircleOutlined/></a-button>
           <a-modal :destroyOnClose="true" :footer="null" v-model:visible="dailyTaskModalVisible" title="DailyTask" @ok="handleOk">
       <daily-task></daily-task>
     </a-modal>
           </a-tooltip>
-          
+          <a-tooltip title="Auction">
+            <a-button type="primary" shape="circle" size="large"><CrownOutlined/></a-button>
+          </a-tooltip>
           
         </a-space>
       </a-affix> 
@@ -122,14 +124,14 @@ import ad from './ad.vue'
 import dailyTask from '../components/dailyTask.vue'
 import 'element-plus/theme-chalk/display.css'
 import store from '../store/index'
-import { PlusOutlined, VerticalAlignTopOutlined, FieldTimeOutlined } from '@ant-design/icons-vue'
+import { PlusOutlined, VerticalAlignTopOutlined, FieldTimeOutlined, ClockCircleOutlined, CrownOutlined } from '@ant-design/icons-vue'
 import { useRouter } from 'vue-router'
 
 
 
 
 export default defineComponent({
-  components: { ad, PlusOutlined, VerticalAlignTopOutlined,FieldTimeOutlined, dailyTask },
+  components: { ad, PlusOutlined, VerticalAlignTopOutlined, FieldTimeOutlined, dailyTask, ClockCircleOutlined, CrownOutlined },
   name: 'myMain',
   setup() {
     const top = ref<number>(550);

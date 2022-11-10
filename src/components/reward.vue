@@ -4,19 +4,22 @@
             <a-col :span="12">
                 <a-statistic title="MyOffChainToken" :value="offChainToken"/>
             </a-col>
+            <a-col :span="12">
+                <a-statistic title="TotalRewardAmount" :value="totalRewardAmount"/>
+            </a-col>
         </a-row>
-        <a-divider />
+        <a-divider>You are rewarding to <a @click="getUserProfile(props.toUserId)">{{$props.toNickName}}</a></a-divider>
         <a-row>
             <a-col :span="16">
                 <el-input-number style="width: 90%;" v-model="inputNum" :min="1" :max="1000000" />
             </a-col>
             <a-col :span="8">
-                <a-button type="primary" :loading="rewardLoading" @click="rewardFunction">REWARD
+                <a-button type="primary" :disabled="!rewardable" :loading="rewardLoading" @click="rewardFunction">REWARD
                 </a-button>
             </a-col>
         </a-row>
-        <a-row style="margin-top:10px">
-            <a-space>
+        <a-row style="margin-top:15px">
+            <a-space size="large">
                 <a-tag style="cursor: pointer;" @click="inputNum = offChainToken / 10" color="green">10%</a-tag>
                 <a-tag style="cursor: pointer;" @click="inputNum = offChainToken / 4" color="blue">25%</a-tag>
                 <a-tag style="cursor: pointer;" @click="inputNum = offChainToken / 2" color="pink">50%</a-tag>
@@ -24,6 +27,7 @@
                 <a-tag style="cursor: pointer;" @click="inputNum = offChainToken" color="red">100%</a-tag>
             </a-space>
         </a-row>
+        <a-divider />
         <a-row style="margin-top: 10px;width:80%">
             <a-typography-paragraph v-model:content="memo" editable />
             <template #editableIcon><HighlightOutlined /></template>
@@ -31,22 +35,19 @@
         <!-- <a-divider /> -->
         <a-collapse ghost>
             <a-collapse-panel key="1" header="Reward Record">
-                <!-- <a-table size="middle" :pagination="false" :dataSource="dailyStakingRecord" :columns="columns">
+                <a-table size="middle" :pagination="false" :dataSource="rewardRecord" :columns="columns">
                     <template #bodyCell="{ column, text, record }">
-                        <template v-if="column.dataIndex === 'nickName'">
-                            <a @click="getUserProfile(record.userId)">{{ text }}</a>
+                        <template v-if="column.dataIndex === 'fromUserName'">
+                            <a @click="getUserProfile(record.fromUserId)">{{ text }}</a>
                         </template>
                     </template>
-                </a-table> -->
+                </a-table>
             </a-collapse-panel>
             <a-collapse-panel key="2" header="Reward Rule">
                 <a-typography>
                     <a-typography-title>Introduction</a-typography-title>
                     <a-typography-paragraph>
-                        Daily Staking is an activity aimed at encouraging creators to create high-quality content.Users
-                        could use your offChainToken to stake for those
-                        awsome opus, if the hotScore of those that you staked rank in top 10%, you could share the
-                        TotalPoolSize.
+                        Reward is a kind of way to donate your offChainToken to someone else, the platform will take a percentage of 5%
                     </a-typography-paragraph>
                     <a-typography-paragraph>
                         <a-typography-text strong>
@@ -108,66 +109,73 @@
 <script lang="ts" setup>
 
 import { ref, onMounted, watch } from 'vue'
-import { getDailyStakingPool, stakeDailyStaking } from '../api/dailyStaking'
+import { rewardMe, pageRewardRecord } from '../api/reward'
 import { message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import {HighlightOutlined} from '@ant-design/icons-vue';
 const inputNum = ref(0)
 const offChainToken = ref(0)
+const totalRewardAmount = ref(0)
 const rewardRecord = ref([])
 const rewardLoading = ref(false)
 const spinning = ref(true)
 const router = useRouter()
-const memo = ref('leave your message')
+const memo = ref('Leave Your Message')
+const pageNo = ref(1)
+const pageSize = ref(5)
+const rewardable = ref(true)
 
 const columns = [
     {
         title: 'NickName',
-        dataIndex: 'nickName',
-        key: 'nickName',
+        dataIndex: 'fromUserName',
+        key: 'fromUserName',
     },
     {
-        title: 'StakedAmount',
-        dataIndex: 'stakingAmount',
-        key: 'stakingAmount',
+        title: 'RewardAmount',
+        dataIndex: 'amount',
+        key: 'amount',
     },
     {
-        title: 'StakedTime',
-        key: 'stakingTime',
-        dataIndex: 'stakingTime',
+        title: 'RewardTime',
+        key: 'gmtCreated',
+        dataIndex: 'gmtCreated',
     }
 ];
 
 const props = defineProps({
     toUserId: String,
+    toNickName: String
 });
 
-watch(
-    () => props.toUserId,
-    (newVal, oldVal) => {
-        console.log(props.toUserId)
-        if (newVal != oldVal) {
-            console.log(props.toUserId)
-            getRewardFunction()
-        }
-    },
-    {
-        deep: true
-    }
-)
+// watch(
+//     () => props.toUserId,
+//     (newVal, oldVal) => {
+//         console.log(props.toUserId)
+//         if (newVal != oldVal) {
+//             getRewardFunction()
+//         }
+//     },
+//     {
+//         deep: true
+//     }
+// )
 
 const getRewardFunction = () => {    
-    let param = { toUserId: props.toUserId }
-    getDailyStakingPool(param).then(res => {
+    let param = { toUserId: props.toUserId, pageNo:pageNo.value, pageSize:pageSize.value }
+    pageRewardRecord(param).then(res => {
         spinning.value = false
         offChainToken.value = res.offChainToken
+        totalRewardAmount.value = res.totalRewardAmount
+        rewardRecord.value = res.data
+        rewardable.value = res.rewardable
     })
 }
 
 const rewardFunction = () => {
     rewardLoading.value = true;
     let param = { toUserId: props.toUserId, amount: inputNum.value }
-    stakeDailyStaking(param).then(res => {
+    rewardMe(param).then(res => {
         rewardLoading.value = false;
         if (res) {
             message.success("reward success")

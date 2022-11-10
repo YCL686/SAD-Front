@@ -15,7 +15,7 @@
           :modules="data.modules" content-type="html" enable :content="desc" />
     </a-card>
     <a-result v-else status="success" title="Successfully Publish Your Awsome Opus!"
-      sub-title="Waiting For The Audited Result...">
+      sub-title="Don not forget to finish DailyTask for $SAD bonus...">
       <template #extra>
         <a-button key="console" type="primary" @click="createOneMore">Create One More</a-button>
         <a-button key="console" @click="goBack">Go Back</a-button>
