@@ -79,12 +79,6 @@
               </span>
             </a-tooltip>
 
-            <a-tooltip :title="$t('tooltips.reward')">
-              <span style="cursor: pointer;">
-                <ExclamationCircleOutlined />
-              </span>
-            </a-tooltip>
-
           </template>
           <a-badge-ribbon v-if="item.minted === 1" text="Minted"></a-badge-ribbon>
           <a-list-item-meta :description="item.characterSign">

@@ -1,7 +1,7 @@
 <template>
   <el-menu background-color="#545c64" text-color="#fff" active-text-color="#ffd04b" :default-active="activeIndex"
     class="el-menu-demo" mode="horizontal" :ellipsis="false">
-    <svg-icon style="margin-left:10px" name="LOGO2" color='red'></svg-icon>
+    <svg-icon style="margin-left:10px" name="LOGO2" width="100"></svg-icon>
     <div class="flex-grow-1"> </div>
 
     <el-menu-item index="1">

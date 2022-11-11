@@ -9,7 +9,11 @@ const props = defineProps({
     type: String,
     default: ''
   },
-  size: {
+  width: {
+    type:[Number,String],
+    default: 60
+  },
+  height:{
     type:[Number,String],
     default: 60
   }
@@ -27,8 +31,8 @@ const svgClass = computed(() => {
 </script>
 <template>
     <svg :class="svgClass" :style="{ 
-        width: size + 40 + 'px',
-        height: size + 'px'
+        width: width + 'px',
+        height: height + 'px'
     }"
     >
     <use :xlink:href="iconName" :fill="color" />

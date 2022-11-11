@@ -10,15 +10,23 @@
         </a-row>
         <a-divider>You are rewarding to <a @click="getUserProfile(props.toUserId)">{{$props.toNickName}}</a></a-divider>
         <a-row>
-            <a-col :span="16">
-                <el-input-number style="width: 90%;" v-model="inputNum" :min="1" :max="1000000" />
+            <a-col :span="24">
+                <a-slider @change="sliderChange" v-model:value="sliderPoint" :min="0" :max="100" :marks="marks">
+                    <template #mark="{ label, point }">
+                            <strong>{{ label }}</strong>
+                    </template>
+                </a-slider>            
             </a-col>
             <a-col :span="8">
-                <a-button type="primary" :disabled="!rewardable" :loading="rewardLoading" @click="rewardFunction">REWARD
+                
+            </a-col>
+            <a-col style="text-align: right;" :span="16">
+                <a-input-number @change="inputChange" v-model:value="inputNum" :min="1" :max="offChainToken" style="margin-left: 16px" />
+                <a-button type="primary" :disabled="!rewardable" :loading="rewardLoading" @click="rewardFunction" style="margin-left: 16px">REWARD
                 </a-button>
             </a-col>
         </a-row>
-        <a-row style="margin-top:15px">
+        <!-- <a-row style="margin-top:15px">
             <a-space size="large">
                 <a-tag style="cursor: pointer;" @click="inputNum = offChainToken / 10" color="green">10%</a-tag>
                 <a-tag style="cursor: pointer;" @click="inputNum = offChainToken / 4" color="blue">25%</a-tag>
@@ -26,7 +34,7 @@
                 <a-tag style="cursor: pointer;" @click="inputNum = offChainToken * 3 / 4" color="orange">75%</a-tag>
                 <a-tag style="cursor: pointer;" @click="inputNum = offChainToken" color="red">100%</a-tag>
             </a-space>
-        </a-row>
+        </a-row> -->
         <a-divider />
         <a-row style="margin-top: 10px;width:80%">
             <a-typography-paragraph v-model:content="memo" editable />
@@ -125,6 +133,15 @@ const pageNo = ref(1)
 const pageSize = ref(5)
 const rewardable = ref(true)
 
+const sliderPoint = ref(0)
+const marks = ref<Record<number, any>>({
+    10: '10%',
+    25: '25%',
+    50: '50%',
+    75: '75%',
+    100: '100%'
+});
+
 const columns = [
     {
         title: 'NickName',
@@ -160,6 +177,14 @@ const props = defineProps({
 //         deep: true
 //     }
 // )
+
+const sliderChange = () => {
+    inputNum.value = Number((sliderPoint.value * offChainToken.value / 100).toFixed(2))
+}
+
+const inputChange = () => {
+    sliderPoint.value = inputNum.value / offChainToken.value >= 1 ? 100 : inputNum.value / offChainToken.value * 100
+}
 
 const getRewardFunction = () => {    
     let param = { toUserId: props.toUserId, pageNo:pageNo.value, pageSize:pageSize.value }

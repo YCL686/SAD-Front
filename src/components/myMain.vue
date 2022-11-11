@@ -37,7 +37,7 @@
     </a-modal>
           </a-tooltip>
           <a-tooltip title="Auction">
-            <a-button type="primary" shape="circle" size="large"><CrownOutlined/></a-button>
+            <a-button type="primary" shape="circle" size="large"><svg-icon name="auction" height="20" width="20" ></svg-icon></a-button>
           </a-tooltip>
           
         </a-space>
