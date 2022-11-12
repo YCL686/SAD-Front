@@ -8,7 +8,7 @@ const store = createStore({
       isMobile: navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i),
       isLogined: localStorage.getItem('token') != null ? true : false,
       locale: localStorage.getItem('locale') || 'en',
-      userId:0,
+      userId: localStorage.getItem('userId') || 0,
       nickName:localStorage.getItem('nickName') || '',
       avatarUrl: localStorage.getItem('avatarUrl') || ''
     }
@@ -30,6 +30,10 @@ const store = createStore({
     SET_AVATAR_URL: (state, avatarUrl) => {
       state.avatarUrl = avatarUrl
       localStorage.setItem('avatarUrl', avatarUrl)
+    },
+    SET_USER_ID:(state, userId) => {
+      state.userId = userId
+      localStorage.setItem('userId', userId)
     }
   },
 
@@ -48,6 +52,9 @@ const store = createStore({
     },
     setAvatarUrl({commit}, avatarUrl){
       commit('SET_AVATAR_URL', avatarUrl)
+    },
+    setUserId({commit}, userId){
+      commit('SET_USER_ID', userId)
     }
   },
 

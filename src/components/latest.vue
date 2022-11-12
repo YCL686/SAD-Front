@@ -159,7 +159,7 @@
 </template>
 <script lang="ts" setup>
 import { onMounted, onUpdated } from 'vue'
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import { pageOpusList } from '../api/opus' //这里引入的就是刚刚添加的接口
 import { operateFocus } from '../api/focus'
 import { operateCollect } from '../api/collect'
@@ -189,6 +189,7 @@ const userId = ref()
 const toNickName = ref()
 const dailyStakingModalVisible = ref(false)
 const rewardModalVisible = ref(false)
+const orderType = ref(0)
 
 const handleOk = () => {
   dailyStakingModalVisible.value = false
@@ -254,7 +255,7 @@ const openComment = (id: any) => {
 
 function getPageOpusList(pageNo: number, pageSize: number) {
   loading.value = true
-  const param = { pageSize: pageSize, pageNo: pageNo, orderType: 0 }
+  const param = { pageSize: pageSize, pageNo: pageNo, orderType: orderType.value }
   pageOpusList(param).then((res) => {
     currentPageList = res;
     pageList.value = pageList.value.concat(currentPageList)
@@ -265,6 +266,20 @@ function getPageOpusList(pageNo: number, pageSize: number) {
 const backToTop = () =>{
   return document.getElementById('111')
 }
+
+watch(() =>router.currentRoute.value.name,(newValue,oldValue)=> {
+    if(newValue == "index"){
+    orderType.value = 0;
+  }
+  if(newValue == "hot"){
+    orderType.value = 1;
+  }
+  currentPageList.value = []
+  pageList.value = []
+  pageNo.value = 1;
+  pageSize.value = 5;
+ getPageOpusList(pageNo.value, pageSize.value)
+},{ immediate: true })
 
 onMounted(() => {
   getPageOpusList(pageNo.value, pageSize.value)

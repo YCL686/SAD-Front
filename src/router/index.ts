@@ -55,7 +55,7 @@ const routes = [{
 }, {
   path: '/hot',
   name: 'hot',
-  component: hot
+  component: isMobile? latestMobile :  latest
 }, {
   path: '/recommand',
   name: 'recommand',

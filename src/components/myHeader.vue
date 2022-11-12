@@ -54,7 +54,7 @@
           <router-link to="/admin"><CrownOutlined/> {{$t('menus.items.admin')}}</router-link>
         </el-menu-item>
         <el-menu-item index="9-1">
-          <router-link to="/MyCenter"><HomeOutlined/> {{$t('menus.items.myCenter')}}</router-link>
+          <router-link :to="'/profile/' + store.state.userId"><HomeOutlined/> {{$t('menus.items.myCenter')}}</router-link>
         </el-menu-item>
         <el-menu-item index="9-2">
           <router-link to="/MyToken"><DollarOutlined/> {{$t('menus.items.myToken')}}</router-link>
@@ -236,6 +236,7 @@ function logoutFunction() {
     localStorage.removeItem('token')
     localStorage.removeItem('nickName')
     localStorage.removeItem('avatarUrl')
+    localStorage.removeItem('userId')
     router.push('/index')
     //TODO 跳转首页
   })
@@ -280,6 +281,7 @@ onActivated(() => {
         store.dispatch('setNickName', res.nickName)
         store.dispatch('setAvatarUrl', res.avatarUrl)
         store.dispatch('setIsLogined', true)
+        store.dispatch('setUserId', res.userId)
       })
     })
     console.log(provider)
@@ -313,7 +315,6 @@ watch(selectedChainId, async (val, oldVal) => {
     console.error(e)
   }
 })
-
 
 
 </script>
