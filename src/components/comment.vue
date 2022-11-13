@@ -20,6 +20,7 @@
       </a-space>
     </div>
     <a-empty
+      style="margin-top:10px"
       v-if="pageCommentListResult == null || pageCommentListResult == undefined || pageCommentListResult.length == 0"
       :description="null" />
     <a-comment v-else v-for="(comment, index) in pageCommentListResult" :key="index">

@@ -16,7 +16,7 @@
         </a-space>
       </a-col>
       <a-col style="text-align: center;" :span="6">
-          <a-space >
+          <a-space>
             <a-button size="small" style="color: #b3c0d1;" type="link">About Us</a-button>
             <a-button size="small" style="color: #b3c0d1;" type="link">Community</a-button>
             <a-button size="small" style="color: #b3c0d1;" type="link">Help</a-button>

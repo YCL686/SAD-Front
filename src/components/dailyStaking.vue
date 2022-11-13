@@ -86,6 +86,7 @@
                 <a-typography>
                     <a-typography-title>Introduction</a-typography-title>
                     <a-typography-paragraph>
+                        Only thoes minted opus could join daily staking
                         Daily Staking is an activity aimed at encouraging creators to create high-quality content.Users
                         could use your offChainToken to stake for those
                         awsome opus, if the hotScore of those that you staked rank in top 10%, you could share the
