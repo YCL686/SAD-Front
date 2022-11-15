@@ -72,7 +72,7 @@
             </a-space>
         </a-row> -->
         <a-divider />
-        <a-collapse ghost>
+        <!-- <a-collapse ghost>
             <a-collapse-panel key="1" header="Daily Staking Record">
                 <a-table size="middle" :pagination="false" :dataSource="dailyStakingRecord" :columns="columns">
                     <template #bodyCell="{ column, text, record }">
@@ -145,7 +145,7 @@
                     </a-typography-paragraph>
                 </a-typography>
             </a-collapse-panel>
-        </a-collapse>
+        </a-collapse> -->
     </a-spin>
 </template>
 

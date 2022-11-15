@@ -1,10 +1,9 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import inject from '@rollup/plugin-inject'
-import postcsspxtoviewport from 'postcss-px-to-viewport'
 import path from 'path'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 
+const resolve = (dir) => path.resolve(__dirname, dir);
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -16,13 +15,35 @@ export default defineConfig({
         symbolId: 'icon-[name]',
       }),],
       base: './',
+      resolve: {
+        alias: {
+          '@': resolve('src'),//作为 entries 的选项
+        },
+        extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
+      },
+
   build: {
+    minify: 'esbuild',
+    // 服务端渲染
+    ssr: false,
+    outDir: 'dist',
+    chunkSizeWarningLimit: 10000,
+    emptyOutDir: true,
     rollupOptions: {
-      plugins: [inject({ Buffer: ['buffer', 'Buffer'] })],
+      // manualChunks(id) {
+      //   if (id.includes('node_modules')) {
+      //     return id.toString().split('node_modules/')[1].split('/')[0].toString()
+      //   }
+      // },
+      output: {
+        chunkFileNames: 'js/[name]-[hash].js',
+        entryFileNames: 'js/[name]-[hash].js',
+        assetFileNames: '[ext]/[name]-[hash].[ext]',
+      },
     },
-    commonjsOptions: {
-      transformMixedEsModules: true,
-    },
+    // commonjsOptions: {
+    //   transformMixedEsModules: true,
+    // },
   },
 
   // ...

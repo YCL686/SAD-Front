@@ -22,7 +22,7 @@
             </a-col>
             <a-col style="text-align: right;" :span="16">
                 <a-input-number @change="inputChange" v-model:value="inputNum" :min="1" :max="offChainToken" style="margin-left: 16px" />
-                <a-button type="primary" :disabled="!rewardable" :loading="rewardLoading" @click="rewardFunction" style="margin-left: 16px">REWARD
+                <a-button type="primary" :disabled="!rewardable" :loading="rewardLoading" @click="rewardFunction" >REWARD
                 </a-button>
             </a-col>
         </a-row>
@@ -42,7 +42,7 @@
         </a-row>
         <!-- <a-divider /> -->
         <a-collapse ghost>
-            <!-- <a-collapse-panel key="1" header="Reward Record">
+            <a-collapse-panel key="1" header="Reward Record">
                 <a-table size="middle" :pagination="false" :dataSource="rewardRecord" :columns="columns">
                     <template #bodyCell="{ column, text, record }">
                         <template v-if="column.dataIndex === 'fromUserName'">
@@ -50,7 +50,7 @@
                         </template>
                     </template>
                 </a-table>
-            </a-collapse-panel> -->
+            </a-collapse-panel>
             <a-collapse-panel key="2" header="Reward Rule">
                 <a-typography>
                     <a-typography-title>Introduction</a-typography-title>
