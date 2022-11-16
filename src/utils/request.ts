@@ -12,7 +12,7 @@ const { open } = useBoard()
 const { isActivated } = useEthers()
 
 const instance = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL,
+  baseURL: import.meta.env.VITE_BASE_SERVER + import.meta.env.VITE_BASE_URL,
   timeout: 50000, // 请求超时时间毫秒
   withCredentials: true, // 异步请求携带cookie
   headers: {
@@ -22,6 +22,8 @@ const instance = axios.create({
     'X-Requested-With': 'XMLHttpRequest'
   }
 })
+
+console.log(instance)
 
 instance.interceptors.request.use(
   config => {

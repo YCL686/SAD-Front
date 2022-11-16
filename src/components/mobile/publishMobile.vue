@@ -32,7 +32,7 @@
   import { getMentionedList } from '../../api/user'
   import { useRouter } from 'vue-router'
   import { message } from 'ant-design-vue';
-  import BlotFormatter from 'quill-blot-formatter/dist/index'
+  //import BlotFormatter from 'quill-blot-formatter/dist/index'
   import { QuillEditor, Quill } from '@vueup/vue-quill'
   import '@vueup/vue-quill/dist/vue-quill.snow.css';
   import Video from '../../utils/video'
@@ -139,9 +139,9 @@
       }
     },
     modules: [{
-      name: 'blotFormatter',
-      module: BlotFormatter,
-      options: {/* options */ }
+      // name: 'blotFormatter',
+      // module: BlotFormatter,
+      // options: {/* options */ }
     }]
   })
   

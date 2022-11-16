@@ -12,7 +12,7 @@
     </el-upload>
     
       <QuillEditor ref="quillRef" v-model="content" style="min-height: 900px" theme="snow" :options="data.editorOption"
-        :modules="data.modules" content-type="html" enable :content="desc" />
+         content-type="html" enable :content="desc" />
     
   </a-card>
   <a-result v-else status="success" title="Successfully Publish Your Awsome Opus!"
@@ -33,7 +33,7 @@ import { publish, getOpusByIdForPublish } from '../api/opus'
 import { getMentionedList } from '../api/user'
 import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue';
-import BlotFormatter from 'quill-blot-formatter/dist/index'
+//import BlotFormatter from 'quill-blot-formatter/dist/index'
 import { QuillEditor, Quill } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import Video from '../utils/video'
@@ -68,11 +68,11 @@ const toolbarOptions = [
   // [{ 'align': [] }],
   ['code-block'],
   [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-  // [{ 'indent': '-1' }, { 'indent': '+1' }],
+  [{ 'indent': '-1' }, { 'indent': '+1' }],
   [{ 'header': 1 }, { 'header': 2 }],
   ['link', 'image'],
   ['emoji'],
-  //[{'direction': 'rtl' }],    //文字编辑方向，从左到右还是从右到左
+  [{'direction': 'rtl' }],    //文字编辑方向，从左到右还是从右到左
   [{ 'color': [] }]
 ]
 const data = reactive({
@@ -115,7 +115,7 @@ const data = reactive({
         }
       },
       "emoji-toolbar": true,
-      // "emoji-textarea": true,
+      //"emoji-textarea": true,
       "emoji-shortname": true,
       mention: {  // 重点： 提醒功能配置项
         allowedChars: /^[A-Za-z\s]*$/, // 正则匹配
@@ -147,9 +147,9 @@ const data = reactive({
     }
   },
   modules: [{
-    name: 'blotFormatter',
-    module: BlotFormatter,
-    options: {/* options */ }
+    // name: 'blotFormatter',
+    // module: BlotFormatter,
+    // options: {/* options */ }
   }]
 })
 
