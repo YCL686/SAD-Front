@@ -274,6 +274,9 @@ watch(() =>router.currentRoute.value.name,(newValue,oldValue)=> {
   if(newValue == "hot"){
     orderType.value = 1;
   }
+  if(newValue == "focus"){
+    orderType.value = 2;
+  }
   currentPageList.value = []
   pageList.value = []
   pageNo.value = 1;

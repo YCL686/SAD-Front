@@ -136,6 +136,7 @@ import { useI18n } from "vue-i18n"
 import { useRoute } from 'vue-router'
 import { login, logout } from '../api/user'
 import { ElMessage } from 'element-plus'
+import { message } from 'ant-design-vue'
 
 
 
@@ -282,11 +283,13 @@ onActivated(() => {
         store.dispatch('setAvatarUrl', res.avatarUrl)
         store.dispatch('setIsLogined', true)
         store.dispatch('setUserId', res.userId)
+        message.success("Wallet Connect Success")
       })
     })
     console.log(provider)
     console.log(signer)
   }else{
+    message.success("Wallet Connect Success")
     console.log("123")
     console.log(provider)
     console.log(signer)

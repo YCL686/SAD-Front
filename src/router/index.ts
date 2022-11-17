@@ -23,6 +23,8 @@ import admin from '../components/admin/index.vue'
 
 import profile from '../components/profile.vue'
 
+import ADAuction from "../components/ADAuction.vue";
+
 //移动端
 import myCenterMobile from '../components/mobile/myCenterMobile.vue'
 
@@ -53,8 +55,16 @@ const routes = [{
   name: 'publish',
   component: isMobile? publishMobile : publish
 }, {
+  path: '/auction',
+  name: 'auction',
+  component: ADAuction
+}, {
   path: '/hot',
   name: 'hot',
+  component: isMobile? latestMobile :  latest
+},{
+  path: '/focus',
+  name: 'focus',
   component: isMobile? latestMobile :  latest
 }, {
   path: '/recommand',

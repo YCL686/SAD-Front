@@ -37,7 +37,7 @@
     </a-modal>
           </a-tooltip>
           <a-tooltip title="Auction">
-            <a-button type="primary" shape="circle" size="large"><svg-icon name="auction" height="20" width="20" ></svg-icon></a-button>
+            <a-button @click="goToAuction()" type="primary" shape="circle" size="large"><svg-icon name="auction" height="20" width="20" ></svg-icon></a-button>
           </a-tooltip>
           
         </a-space>
@@ -120,7 +120,7 @@
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import { defineComponent } from 'vue'
 import { ref } from 'vue'
-import ad from './ad.vue'
+import ad from './AD.vue'
 import dailyTask from '../components/dailyTask.vue'
 import 'element-plus/theme-chalk/display.css'
 import store from '../store/index'
@@ -152,6 +152,13 @@ export default defineComponent({
       dailyTaskModalVisible.value = true
     }
 
+    const goToAuction = () => {
+      const auctionPage = router.resolve({
+    path: '/auction'
+  })
+      window.open(auctionPage.href, '_blank') 
+    }
+
     const goToPublish = () =>{
       const publishPage = router.resolve({
     path: '/publish'
@@ -165,6 +172,7 @@ export default defineComponent({
       data: store.state,
       top,
       goToPublish,
+      goToAuction,
       dailyTaskModalVisible,
       handleOk,
       showDailyTaskModal

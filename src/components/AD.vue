@@ -1,20 +1,36 @@
 <template>
-    <el-carousel  :interval="4000"  height="150px">
-    <el-carousel-item  trigger="click" v-for="item in imgList" :key="item">
-      <img style="width: 100%;" :src="item" alt=""/>
-      <div class="carousel-mask">
-      <p style="text-align: left;color:aliceblue; width: 100%; height: 100%;">测试描述文字</p>
+    <a-spin style="background: linear-gradient(90deg, rgba(190, 190, 190, 0.2) 25%, rgba(129, 129, 129, 0.24) 37%, rgba(190, 190, 190, 0.2) 63%);" :spinning="loading">
+    <el-carousel :interval="4000"  height="150px">
+    <el-carousel-item @click="openLink(item.link)"  trigger="click" v-for="item in list" :key="item">
+      <img style="width: 100%;cursor: pointer;" :src="item.resourceUrl" alt=""/>
+      <div  class="carousel-mask">
+      <p style="text-align: left;color:aliceblue; width: 100%; height: 100%;">{{item.label}}</p>
     </div>
     </el-carousel-item>
   </el-carousel>
+</a-spin>
 </template>
 
 <script lang="ts" setup>
-  const imgList = ["https://img1.baidu.com/it/u=3009731526,373851691&fm=253&fmt=auto&app=138&f=JPEG",
-                   "https://img2.baidu.com/it/u=3596352791,3086982929&fm=253&fmt=auto&app=120&f=JPEG",
-                   "https://img1.baidu.com/it/u=2214465636,2130809688&fm=253&fmt=auto&app=138&f=JPEG",
-                   "https://img1.baidu.com/it/u=1822663465,2904205942&fm=253&fmt=auto&app=138&f=JPEG",
-                   "https://img2.baidu.com/it/u=1893470775,4143435497&fm=253&fmt=auto&app=138&f=JPEG"]
+import {ref, onMounted} from 'vue'
+import { getAdList } from "../api/ad";
+  const list = ref([])
+  const loading = ref(true)
+
+  const getAdListFunction = () =>{
+    getAdList().then(res=>{
+      list.value = res
+      loading.value = false
+    })
+  }
+
+  const openLink = (link:string) => {
+    window.open(link, "target_blank")
+  }
+
+  onMounted(() =>{
+    getAdListFunction()
+  })
 </script>
 
 <style scoped>
@@ -47,3 +63,4 @@
   --el-carousel-indicator-height: 5px
 }
 </style>
+

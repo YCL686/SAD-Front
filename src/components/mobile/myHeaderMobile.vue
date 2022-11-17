@@ -50,12 +50,12 @@
   >
   <a-list size="small">
       <a-list-item><CrownOutlined/> {{$t('menus.items.admin')}}</a-list-item>
-      <a-list-item><HomeOutlined/> {{$t('menus.items.myCenter')}}</a-list-item>
-      <a-list-item><DollarOutlined/> {{$t('menus.items.myToken')}}</a-list-item>
+      <a-list-item @click="getUserProfile()"><HomeOutlined/> {{$t('menus.items.myCenter')}}</a-list-item>
+      <a-list-item @click="getMyToken()"><DollarOutlined/> {{$t('menus.items.myToken')}}</a-list-item>
       <a-list-item><FileImageOutlined/> {{$t('menus.items.myNFT')}}</a-list-item>
       <a-list-item><BankOutlined/> {{$t('menus.items.myDeFi')}}</a-list-item>
       <a-list-item><SettingOutlined/> {{$t('menus.items.setting')}}</a-list-item>
-      <a-list-item><LogoutOutlined/> {{$t('menus.items.logout')}}</a-list-item>
+      <a-list-item @click="logoutFunction()"><LogoutOutlined/> {{$t('menus.items.logout')}}</a-list-item>
   </a-list>
   </a-drawer>
 </template>
@@ -121,6 +121,7 @@ import { ElMessage } from 'element-plus'
 
 import { Wallet, Search, Switch } from '@element-plus/icons-vue'
 import {TranslationOutlined, BellOutlined, CrownOutlined, HomeOutlined,DollarOutlined, FileImageOutlined, BankOutlined, SettingOutlined, LogoutOutlined} from '@ant-design/icons-vue'
+import { message } from 'ant-design-vue'
 
 import router from '../../router'
 
@@ -179,15 +180,38 @@ const { wallet, disconnect, onDisconnect, onAccountsChanged, onChainChanged } = 
 const { address, balance, chainId, isActivated, dnsAlias, signer } = useEthers()
 
 function logoutFunction() {
-  logout().then(res => {
+  disconnect()
+  if (localStorage.getItem('token') == null) {
+    return;
+  }
+  logout().then((res) => {
+    myProfileVisible.value = false;
     isActivated.value = false
-    isLogined.value = false
+    isLogined.value = false;
     store.dispatch('setIsLogined', false)
     localStorage.removeItem('token')
+    localStorage.removeItem('nickName')
+    localStorage.removeItem('avatarUrl')
+    localStorage.removeItem('userId')
     router.push('/index')
     //TODO 跳转首页
   })
 }
+
+const getMyToken = () => {
+  const myTokenPage = router.resolve({
+    path: '/myToken/'
+  })
+  window.open(myTokenPage.href, '_blank') // 打开新的窗口(跳转路径，跳转类型)
+}
+
+const getUserProfile = () => {
+  const profilePage = router.resolve({
+    path: '/profile/' + store.state.userId
+  })
+  window.open(profilePage.href, '_blank') // 打开新的窗口(跳转路径，跳转类型)
+}
+
 const { onActivated, onChanged } = useEthersHooks()
 onDisconnect(() => {
   logoutFunction()
@@ -228,19 +252,24 @@ onActivated(() => {
     })
     return
   }
-  signer.value.signMessage(import.meta.env.VITE_SIGN_MESSAGE).then(signature => {
-    console.log(signature)
-    const param = {
-      address: address.value,
-      signature: signature,
-      message: import.meta.env.VITE_SIGN_MESSAGE
-    }
-    login(param).then(res => {
-      localStorage.setItem('token', res.token)
-      isLogined.value = true
-      store.dispatch('setIsLogined', true)
+  if (localStorage.getItem("token") == null) {
+    signer.value.signMessage(import.meta.env.VITE_SIGN_MESSAGE).then(signature => {
+      console.log(signature)
+      const param = { address: address.value, signature: signature, message: import.meta.env.VITE_SIGN_MESSAGE }
+      login(param).then((res) => {
+        localStorage.setItem("token", res.token)
+        isLogined.value = true
+        store.dispatch('setNickName', res.nickName)
+        store.dispatch('setAvatarUrl', res.avatarUrl)
+        store.dispatch('setIsLogined', true)
+        store.dispatch('setUserId', res.userId)
+        message.success("Wallet Connect Success")
+      })
     })
-  })
+    
+  }else{
+    message.success("Wallet Auto Connect Success")
+  }
 })
 const isChainChanged = ref(false)
 onChanged(() => {

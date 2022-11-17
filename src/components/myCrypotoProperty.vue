@@ -39,7 +39,7 @@
     <a-card title="MyToken" :bordered="false">
       <template #extra>
         <a-space>
-          <a-button shape="round" :loading="depositing" @click="depositModalVisible = true" type="primary">Deposit</a-button>
+          <a-button :disabled="getOnChainTokenLoading" shape="round" :loading="depositing" @click="depositModalVisible = true" type="primary">Deposit</a-button>
           <a-button shape="round" :loading="withdrawing" @click="withdrawModalVisible = true" >Withdraw</a-button>
           <QuestionCircleOutlined @click="questionVisible = true" style="cursor: pointer;"/>
         </a-space>
@@ -47,13 +47,15 @@
   <a-row :gutter="8">
       <a-col :span="12">
         <a-card>
-          <a-statistic title="OffChainToken" :value="offChainToken" />        
+          <a-statistic title="OffChainToken" :value="offChainToken" />
         </a-card>
       </a-col>
       <a-col :span="12" :bordered="false">
+        <a-spin :spinning="getOnChainTokenLoading" tip="BlockChain Querying, This May Take a Little Time...">
         <a-card>
           <a-statistic title="OnChainToken" :value="onChainToken" />
         </a-card>
+      </a-spin>
       </a-col>
       <!-- <a-col :span="8">
         <a-card title="BNB" :bordered="false">
@@ -103,10 +105,10 @@
 
 </template>
 <script lang="ts" setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { CountTo } from 'vue3-count-to'
 import { ElMessage } from 'element-plus'
-import {QuestionCircleOutlined} from '@ant-design/icons-vue'
+import {QuestionCircleOutlined, LoadingOutlined} from '@ant-design/icons-vue'
 import {
   useBoard,
   useEthers,
@@ -143,6 +145,7 @@ const pageNo = ref(1)
 const currentNo = ref(1)
 const total = ref(0)
 const tableData = ref([])
+const getOnChainTokenLoading = ref(true)
 
 
 
@@ -157,8 +160,10 @@ const getOnChainToken = (provider: Provider) => {
  import.meta.env.VITE_CONTRACT_ABI,
  provider)
  contract.balanceOf(address.value).then(res => {
+  getOnChainTokenLoading.value = false
   onChainToken.value = Number(res) / Math.pow(10, 18)
 }).catch(()=>{
+  getOnChainTokenLoading.value = false
   message.error('Failed To Get Your OnChainToken, Please Check Your Network!')
 })
 }
@@ -190,7 +195,7 @@ signer.value?.signMessage(import.meta.env.VITE_WITHDRAW_MESSAGE).then(signature 
   })
 }).catch(() => {
   withdrawing.value = false;
-  message.error('Failed To Get Your Wallet, Please Check Your Network!')
+  message.error('Failed To Connect Your Wallet, Please Check Your Network!')
 })
 }
  
@@ -240,7 +245,7 @@ onMounted(async () => {
   await getAccountFunction()
   let param = { pageSize: pageSize.value, pageNo: pageNo.value }
   await pageAccountEntryFunction(param)
-  getOnChainToken(provider.value)
+  //getOnChainToken(provider.value)
 })
 
 
