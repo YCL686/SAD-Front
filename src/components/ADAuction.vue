@@ -71,7 +71,7 @@
                             <ul>
                                 <li>
                                     <a-typography>ShareByAuctioneer: this part of fee will be shared by all the
-                                        auctioneer, and the ratio is {{ burnRatio }}%.</a-typography>
+                                        auctioneer, and the ratio is {{ shareByAuctioneerRatio }}%.</a-typography>
                                 </li>
                                 <li>
                                     <a-typography>Feedback: this part of fee will be back as DailyTaskRewards, and the
