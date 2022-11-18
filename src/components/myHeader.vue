@@ -275,7 +275,7 @@ onActivated(() => {
   if (localStorage.getItem("token") == null) {
     signer.value.signMessage(import.meta.env.VITE_SIGN_MESSAGE).then(signature => {
       console.log(signature)
-      const param = { address: address.value, signature: signature, message: import.meta.env.VITE_SIGN_MESSAGE }
+      const param = { address: address.value, signature: signature, message: import.meta.env.VITE_SIGN_MESSAGE, shortenAddress: shortenAddress() }
       login(param).then((res) => {
         localStorage.setItem("token", res.token)
         isLogined.value = true
