@@ -125,7 +125,7 @@
 
     <a-modal :destroyOnClose="true" :footer="null" v-model:visible="bidRecordModalVisible" title="BidRecord"
         @ok="handleOk">
-        <a-table :columns="columns" :data-source="bidRecordData" size="small" :scroll="{ x: 2000 }" :pagination="{ pageSize: 50 }" />
+        <a-table :columns="columns" :data-source="bidRecordData" size="small" :scroll="{ x: 1000 }" :pagination="{ pageSize: 50 }" />
     </a-modal>
 
     <a-modal :destroyOnClose="true" :footer="null" v-model:visible="bidBuyModalVisible" title="BidOrBuyItNow"
@@ -265,7 +265,8 @@ const columns = [{
 },{
     title: 'operateTime',
     dataIndex: 'gmtCreated',
-    key: 'gmtCreated'
+    key: 'gmtCreated',
+    width: 150
 }]
 
 
