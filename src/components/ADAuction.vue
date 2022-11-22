@@ -1,6 +1,7 @@
 <template>
     <a-collapse v-model:activeKey="activeKey" accordion>
         <a-collapse-panel key="1" header="Auction Sales">
+            <a-skeleton :loading="oneLoading" active />
             <a-card v-for="adAuction in adAuctionList" hoverable
                 style="width: 100%; border-radius: 10px; margin-top: 10px;">
                 <template #cover>
@@ -21,10 +22,20 @@
                     </a-space>
                 </template>
                 <a-badge-ribbon :text="adAuction.auctionStatusName" :color="colorList[adAuction.auctionStatus]">
-                    <a-card-meta :title="'#' + adAuction.adIndex">
-                        <!-- <template #avatar>
-                        <a-avatar src="https://joeschmoe.io/api/v1/random" />
-                    </template> -->
+                    <a-card-meta
+                        v-if="adAuction.currentHolderId == '0' || adAuction.currentHolderId == null || adAuction.currentHolderId == undefined"
+                        :title="'#' + adAuction.adIndex">
+                    </a-card-meta>
+                    <a-card-meta v-else :title="'#' + adAuction.adIndex + adAuction.currentHolderName"
+                        :description="adAuction.currentHolderMemo">
+                        <template #avatar>
+                            <a-avatar
+                                v-if="adAuction.currentHolderAvatarUrl != null && adAuction.currentHolderAvatarUrl != '' && adAuction.currentHolderAvatarUrl != undefined"
+                                :size="32" :src="adAuction.currentHolderAvatarUrl" />
+                            <a-avatar v-else :size="32">
+                                {{ adAuction.currentHolderName }}
+                            </a-avatar>
+                        </template>
                     </a-card-meta>
                 </a-badge-ribbon>
                 <a-divider></a-divider>
@@ -44,14 +55,14 @@
                             :duration="3000"></count-to>
                     </a-col>
                     <a-col v-if="adAuction.auctionStatus == 0" :span="12">
-                        <a-statistic-countdown :value="deadline">
+                        <a-statistic-countdown :value="Number(adAuction.auctionStartCountDown)">
                             <template #title>
                                 <span>StartIn:</span>
                             </template>
                         </a-statistic-countdown>
                     </a-col>
                     <a-col v-if="adAuction.auctionStatus == 1" :span="12">
-                        <a-statistic-countdown :value="deadline">
+                        <a-statistic-countdown :value="Number(adAuction.auctionEndCountDown)">
                             <template #title>
                                 <span>EndIn:</span>
                             </template>
@@ -59,22 +70,47 @@
                     </a-col>
                 </a-row>
 
-                <a-row v-if="adAuction.userId != '0' && adAuction.userId != null && adAuction.userId != undefined">
+                <a-row
+                    v-if="adAuction.currentBidderId != '0' && adAuction.currentBidderId != null && adAuction.currentBidderId != undefined">
                     <a-divider></a-divider>
-                    <a-col>
-                        <p style="color: rgba(0, 0, 0, 0.45);font-size: 14px;margin-bottom: 4px">CurrentBidder:</p>
+                    <a-col :span="12">
+                        <p style="color: rgba(0, 0, 0, 0.45);font-size: 14px;margin-bottom: 4px">NowBidder:</p>
                         <a-avatar
-                            v-if="adAuction.resourceUrl != null && item.resourceUrl != '' && item.resourceUrl != undefined"
-                            :size="32" :src="item.resourceUrl" />
+                            v-if="adAuction.currentBidderAvatarUrl != null && adAuction.currentBidderAvatarUrl != '' && adAuction.currentBidderAvatarUrl != undefined"
+                            :size="32" :src="adAuction.currentBidderAvatarUrl" />
                         <a-avatar v-else :size="32">
-                            {{ adAuction.nickName }}
+                            {{ adAuction.currentBidderName }}
                         </a-avatar>
+                    </a-col>
+                    <a-col :span="12">
+                        <a-row>
+                            <a style="font-size: 14px;margin-bottom: 4px">{{ adAuction.currentBidderName }}</a>
+                        </a-row>
+                        <a-row>
+                            <p>{{ adAuction.currentBidderMemo }}</p>
+                        </a-row>
                     </a-col>
                 </a-row>
             </a-card>
         </a-collapse-panel>
         <a-collapse-panel key="2" header="My Auction">
-            2
+            <a-skeleton :loading="twoLoading" active />
+            <a-card v-for="myAd in myAdList" hoverable style="width: 100%; border-radius: 10px; margin-top: 10px;">
+                <template #cover>
+                    <img alt="example" :src="myAd.resourceUrl" />
+                </template>
+                <template #actions>
+                    <a-space style="float: right; padding: 10px">
+                        <a-button
+                            @click="showEditMyModalVisibleFunction(myAd.adIndex, myAd.id, myAd.editCount, myAd.label, myAd.link, myAd.resourceUrl)"
+                            size="small" type="primary" shape="round">
+                            Edit Now</a-button>
+                    </a-space>
+                </template>
+                <a-card-meta :title= "'#' + myAd.adIndex" :description="myAd.label">
+                </a-card-meta>
+            </a-card>
+
         </a-collapse-panel>
         <a-collapse-panel key="3" header="AD Introduce">
             <a-card title="Auction Introduce" hoverable :bordered="false" style="width: 100%; border-radius: 10px;">
@@ -125,7 +161,8 @@
 
     <a-modal :destroyOnClose="true" :footer="null" v-model:visible="bidRecordModalVisible" title="BidRecord"
         @ok="handleOk">
-        <a-table :columns="columns" :data-source="bidRecordData" size="small" :scroll="{ x: 1000 }" :pagination="{ pageSize: 50 }" />
+        <a-table :columns="columns" :data-source="bidRecordData" size="small" :scroll="{ x: 1000 }"
+            :pagination="{ pageSize: 50 }" />
     </a-modal>
 
     <a-modal :destroyOnClose="true" :footer="null" v-model:visible="bidBuyModalVisible" title="BidOrBuyItNow"
@@ -181,17 +218,114 @@
             </a-col>
         </a-row>
     </a-modal>
+
+    <a-modal :destroyOnClose="true" :footer="null" v-model:visible="editMyAdModalVisible" title="EditMyAd"
+        @ok="handleOk">
+        <a-card hoverable>
+            <a-space direction="vertical">
+                <a-row style="text-align: center;">
+                    <a-col v-if="!resourceUrlValue" :span="24">
+                        <a-upload accept="image/png, image/jpeg" v-model:file-list="fileList" name="file" list-type="picture-card"
+                            style="width: 100%;" :show-upload-list="false" :action="uploadUrl" :headers=headers
+                            :before-upload="beforeUpload" @change="handleChange">
+                            <div>
+                                <loading-outlined v-if="loading"></loading-outlined>
+                                <plus-outlined v-else></plus-outlined>
+                                <div class="ant-upload-text">Upload</div>
+                            </div>
+                        </a-upload>
+                        
+                        
+
+                    </a-col>
+                    <a-col v-else :span = "24">
+                        <img style="width: 100%; height: 90%" :src="resourceUrlValue" alt="avatar" />
+                        <a-button @click="fileList=[]; resourceUrlValue=''" type="text">Delete</a-button>
+                    </a-col>
+                </a-row>
+
+                <a-row style="text-align: center;">
+                    <a-col :span="24">
+                        <a-input v-model:value="labelValue" addon-before="Label:"></a-input>
+                    </a-col>
+                </a-row>
+                <a-row style="text-align: center;">
+                    <a-col :span="24">
+                        <a-input addon-before="Link:" v-model:value="linkValue">
+                            <!-- <template #addonBefore>
+                            Link:
+                            <a-select v-model:value="linkPrefixValue" style="width: 90px">
+                                <a-select-option value="http://">Http://</a-select-option>
+                                <a-select-option value="https://">Https://</a-select-option>
+                            </a-select>
+                        </template> -->
+                        </a-input>
+                    </a-col>
+                </a-row>
+                <a-row style="text-align: right;">
+                    <a-col :span="12">
+                        <p>editCount: {{ editCountValue }}</p>
+                    </a-col>
+                    <a-col :span="12">
+                        <a-space>
+                            <a-button size="small" shape="round" type="primary" @click="editMyAdFunction">Edit</a-button>
+                            <a-button size="small" shape="round" @click="resetMyAdFunction">Reset</a-button>
+                        </a-space>
+                    </a-col>
+                </a-row>
+                <a-row>
+                    <a-col :span="24">
+                        <a-typography>
+                            <a-typography-title :level="4">Tips:</a-typography-title>
+                            <a-typography-paragraph>
+                                You are editing the ad content which will be shown on the ad carousel chart.
+                            </a-typography-paragraph>
+                            <a-typography-paragraph>
+                                <ul>
+                                    <li>
+                                        <a-typography-text keyboard>Upload</a-typography-text>
+                                        <a-typography>You can chose an image to upload as the background of the ad
+                                            carousel chart, and the image size is not larger than 3MB and it will be
+                                            resize as 350*250, please attention the image size.</a-typography>
+                                    </li>
+                                    <li>
+                                        <a-typography-text keyboard>Label</a-typography-text>
+                                        <a-typography>You can edit the label as a slogan which will alse be shown on the
+                                            ad carousel chart, the maximum character is 20.</a-typography>
+                                    </li>
+                                    <li>
+                                        <a-typography-text keyboard>Link</a-typography-text>
+                                        <a-typography>You can edit the link which could jump to when others click the ad
+                                            carousel chart, the maximum character is 30.</a-typography>
+                                    </li>
+                                </ul>
+                            </a-typography-paragraph>
+                        </a-typography>
+                    </a-col>
+                </a-row>
+            </a-space>
+        </a-card>
+    </a-modal>
 </template>
 <script lang="ts" setup>
 import { ref, onMounted, watch } from "vue";
 import { getAdAuctionInfo, getAdAuctionList } from '../api/adAuction'
+import { getMyAdList, editMyAd } from "../api/ad";
 import { getAccount } from "../api/account";
 import { pageBidRecord, bidBuy } from "../api/adAuctionRecord"
 import * as echarts from 'echarts'
 import { CountTo } from 'vue3-count-to'
-import { from } from "rxjs";
 import { message } from "ant-design-vue";
+import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue';
+import type { UploadChangeParam, UploadProps } from 'ant-design-vue';
 
+const oneLoading = ref(true)
+const twoLoading = ref(true)
+
+const headers = {
+    token: localStorage.getItem('token')
+}
+const uploadUrl = import.meta.env.VITE_BASE_SERVER + import.meta.env.VITE_BASE_URL + '/resource/uploadAd'
 const colorList = ['blue', 'volcano', 'green', 'gray']
 const activeKey = ref("1")
 const pie = ref<HTMLElement>()
@@ -214,7 +348,7 @@ const singleStartPrice = ref(0)
 const singleBuyItNowPrice = ref(0)
 const singleBidPrice = ref(0)
 const singleMinPrice = ref(0)
-const auctionDays = ref(0)
+const auctionDays = ref(1)
 const inputBidPrice = ref(0)
 const singleMemo = ref('Leave Your Message')
 
@@ -226,43 +360,55 @@ const total = ref(0)
 const totalPages = ref(0)
 const bidRecordData = ref([])
 
+const myAdList = ref([])
+const editMyAdModalVisible = ref(false)
+const fileList = ref<UploadProps['fileList']>([])
+const editCountValue = ref(0)
+const loading = ref(false)
+const adIndexValue = ref()
+const adIdValue = ref()
+const resourceUrlValue = ref('')
+const labelValue = ref('')
+const linkValue = ref('')
+const linkPrefixValue = ref('https://')
+
 const columns = [{
     title: 'User',
     dataIndex: 'nickName',
     key: 'nickName',
     fixed: true,
     width: 120
-},{
+}, {
     title: 'BidPrice',
     dataIndex: 'auctionUnitPrice',
     key: 'auctionUnitPrice',
-    width:100
-},{
+    width: 100
+}, {
     title: 'Days',
     dataIndex: 'auctionDays',
     key: 'auctionDays',
-    width:80
-},{
+    width: 80
+}, {
     title: 'TotalPrice',
     dataIndex: 'auctionTotalPrice',
     key: 'auctionTotalPrice',
-    width:100
-},{
+    width: 100
+}, {
     title: 'AuctionType',
     dataIndex: 'auctionTypeName',
     key: 'auctionTypeName',
-    width:120
-},{
+    width: 120
+}, {
     title: 'memo',
     dataIndex: 'memo',
     key: 'memo',
-    width:100
-},{
+    width: 100
+}, {
     title: 'status',
     dataIndex: 'statusName',
     key: 'statusName',
-    width:100
-},{
+    width: 100
+}, {
     title: 'operateTime',
     dataIndex: 'gmtCreated',
     key: 'gmtCreated',
@@ -272,7 +418,11 @@ const columns = [{
 
 watch(activeKey, (newVal, oldVal) => {
     if (oldVal != "3" && newVal == "3") {
-        generatePieFunction(myEcharts);
+        // myEcharts.value = echarts.init(pie.value!)
+        // generatePieFunction(myEcharts);
+    }
+    if (oldVal != "2" && newVal == "2") {
+        getMyAdListFunction()
     }
 });
 
@@ -283,7 +433,45 @@ onMounted(() => {
 
 const handleOk = () => {
     bidRecordModalVisible.value = false
-    bidModalVisible.value = false
+    editMyAdModalVisible.value = false
+}
+
+const getMyAdListFunction = () => {
+    twoLoading.value = true
+    getMyAdList().then(res => {
+        twoLoading.value = false
+        myAdList.value = res
+    })
+}
+
+const showEditMyModalVisibleFunction = (adIndex: any, id: any, editCount: number, label: any, link: any, resourceUrl: any) => {
+    adIdValue.value = adIndex;
+    adIdValue.value = id;
+    editCountValue.value = editCount;
+    labelValue.value = label;
+    linkValue.value = link;
+    resourceUrlValue.value = resourceUrl
+    editMyAdModalVisible.value = true;
+}
+
+const beforeUpload = () => {
+
+}
+
+const handleChange = (info: UploadChangeParam) => {
+    if (info.file.status === 'uploading') {
+        loading.value = true;
+        return;
+    }
+    if (info.file.status === 'done') {
+        // debugger
+        resourceUrlValue.value = info.file.response.data;
+        loading.value = false;
+    }
+    if (info.file.status === 'error') {
+        loading.value = false;
+        message.error('upload error');
+    }
 }
 
 const showBidRecordModalFunction = (adAuctionId: any) => {
@@ -309,7 +497,7 @@ const getAdAuctionInfoFunction = () => {
     })
 }
 
-const showBidBuyModalFunction = (type: number, startPrice: any, buyItNowPrice: any, bidPrice: any, id: any, adIndex: any) => {
+const showBidBuyModalFunction = (type: number, startPrice: number, buyItNowPrice: number, bidPrice: number, id: any, adIndex: any) => {
 
     getAccount().then(res => {
         offChainToken.value = res.balance;
@@ -319,9 +507,15 @@ const showBidBuyModalFunction = (type: number, startPrice: any, buyItNowPrice: a
         singleBidPrice.value = bidPrice
         singleBuyItNowPrice.value = buyItNowPrice
         singleAdIndex.value = adIndex
-        singleMinPrice.value = singleBidPrice.value == 0.00 ? singleStartPrice.value : singleBidPrice.value * (100 + minimumBidRatio.value) / 100
-        bidBuyModalVisible.value = true
 
+        if (type == 0) {
+            singleMinPrice.value = singleBidPrice.value == 0.00 ? singleStartPrice.value : singleBidPrice.value * (100 + minimumBidRatio.value) / 100
+            inputBidPrice.value = singleMinPrice.value
+        }
+        if (type == 1) {
+            inputBidPrice.value = singleBuyItNowPrice.value
+        }
+        bidBuyModalVisible.value = true
     })
 }
 
@@ -335,15 +529,51 @@ const bidBuyFunction = (type: number) => {
     }
 
     bidBuy(param).then(res => {
-        message.success("bid success")
+        message.success("Bid Success")
         bidBuyModalVisible.value = false;
         getAdAuctionListFunction()
     })
 }
 
 const getAdAuctionListFunction = () => {
+    oneLoading.value = true
     getAdAuctionList().then(res => {
+        oneLoading.value = false
         adAuctionList.value = res
+    })
+}
+
+const editMyAdFunction = () => {
+    if(resourceUrlValue.value == '' || resourceUrlValue.value == null || resourceUrlValue.value == undefined){
+        message.error("Please Upload")
+        return;
+    }
+
+    if(labelValue.value.length == 0 || linkValue.value.length == 0){
+        message.error("Please Input Label Or Link")
+        return;
+    }
+
+    if(labelValue.value.length > 20){
+        message.error("Label character is less than 20")
+        return;
+    }
+    if(linkValue.value.length > 30){
+        message.error("Link character is less than 30")
+    }
+
+    const param = {
+        adId: adIdValue.value,
+        link: linkValue.value,
+        label: labelValue.value,
+        resourceUrl: resourceUrlValue.value
+    }
+    editMyAd(param).then(res=>{
+        if(res){
+            message.success("Edit Success")
+            editMyAdModalVisible.value = false;
+            getMyAdListFunction()
+        }
     })
 }
 
@@ -351,7 +581,6 @@ const generatePieFunction = (myEcharts: any) => {
     if (myEcharts.value != null && myEcharts.value != undefined && myEcharts.value != '') {
         return;
     }
-    myEcharts.value = echarts.init(pie.value!)
     let option = {
         title: {
             text: 'Auction Fee Seperate Pie',
@@ -390,5 +619,7 @@ const generatePieFunction = (myEcharts: any) => {
 }
 </script>
 <style scoped>
-
+.ant-upload.ant-upload-select-picture-card {
+    width: 100% !important;
+}
 </style>

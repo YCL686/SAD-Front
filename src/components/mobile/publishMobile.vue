@@ -55,7 +55,7 @@
   const router = useRouter()
   const opusId = ref('')
   const uploadLoading = ref(false)
-  const uploadResourceUrl = import.meta.env.VITE_BASE_URL + 'resource/upload'
+  const uploadResourceUrl = import.meta.env.VITE_BASE_SERVER + import.meta.env.VITE_BASE_URL + '/resource/upload'
   const headers = {
     token: localStorage.getItem('token')
   }
