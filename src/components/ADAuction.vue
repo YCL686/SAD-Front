@@ -577,6 +577,13 @@ const editMyAdFunction = () => {
     })
 }
 
+const resetMyAdFunction = () =>{
+    linkValue.value = ''
+    resourceUrlValue.value = '';
+    fileList.value = []
+    labelValue.value = ''
+}
+
 const generatePieFunction = (myEcharts: any) => {
     if (myEcharts.value != null && myEcharts.value != undefined && myEcharts.value != '') {
         return;
