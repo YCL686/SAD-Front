@@ -27,6 +27,9 @@
       </el-col>
       <a-affix style="position: absolute;right: 5%;" :offset-top="top">
         <a-space direction="vertical">
+          <a-tooltip title="Public">
+            <a-button @click="goToPublic()" shape="circle" size="large"><SyncOutlined /></a-button>
+          </a-tooltip>
           <a-tooltip :title="$t('tooltips.publish')">
           <a-button @click="goToPublish" type="primary" shape="circle" size="large"><PlusOutlined/></a-button>
           </a-tooltip>
@@ -124,14 +127,14 @@ import ad from './AD.vue'
 import dailyTask from '../components/dailyTask.vue'
 import 'element-plus/theme-chalk/display.css'
 import store from '../store/index'
-import { PlusOutlined, VerticalAlignTopOutlined, FieldTimeOutlined, ClockCircleOutlined, CrownOutlined } from '@ant-design/icons-vue'
+import { PlusOutlined, VerticalAlignTopOutlined, FieldTimeOutlined, ClockCircleOutlined, CrownOutlined, SyncOutlined } from '@ant-design/icons-vue'
 import { useRouter } from 'vue-router'
 
 
 
 
 export default defineComponent({
-  components: { ad, PlusOutlined, VerticalAlignTopOutlined, FieldTimeOutlined, dailyTask, ClockCircleOutlined, CrownOutlined },
+  components: { ad, PlusOutlined, VerticalAlignTopOutlined, FieldTimeOutlined, dailyTask, ClockCircleOutlined, CrownOutlined, SyncOutlined },
   name: 'myMain',
   setup() {
     const top = ref<number>(550);
@@ -166,6 +169,13 @@ export default defineComponent({
       window.open(publishPage.href, '_blank') 
     }
 
+    const goToPublic = () =>{
+      const publicPage = router.resolve({
+    path: '/public'
+  })
+      window.open(publicPage.href, '_blank') 
+    }
+
 
     return {
       tableData,
@@ -173,6 +183,7 @@ export default defineComponent({
       top,
       goToPublish,
       goToAuction,
+      goToPublic,
       dailyTaskModalVisible,
       handleOk,
       showDailyTaskModal

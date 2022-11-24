@@ -25,6 +25,8 @@ import profile from '../components/profile.vue'
 
 import ADAuction from "../components/ADAuction.vue";
 
+import Public from "../components/public.vue"
+
 //移动端
 import myCenterMobile from '../components/mobile/myCenterMobile.vue'
 
@@ -59,6 +61,10 @@ const routes = [{
   name: 'auction',
   component: ADAuction
 }, {
+  path: '/public',
+  name: 'public',
+  component: Public
+},{
   path: '/hot',
   name: 'hot',
   component: isMobile? latestMobile :  latest
