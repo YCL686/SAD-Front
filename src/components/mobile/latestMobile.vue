@@ -148,22 +148,22 @@
               </a-tooltip>
               <a-divider type="vertical" style="float: right;height:100%;"></a-divider>
             </a-col>
-            <a-col :span="6">
+            <!-- <a-col :span="6">
               <a-tooltip :title="$t('tooltips.reward')">
                 <span
                   style="cursor: pointer;">
                   <EllipsisOutlined />
                 </span>
               </a-tooltip>
-            </a-col>
-            <!-- <a-col :span="6">
+            </a-col> -->
+            <a-col :span="6">
               <a-tooltip :title="$t('tooltips.reward')">
                 <span @click="rewardModalVisible = true; userId = item.userId, toNickName = item.nickName"
                   style="cursor: pointer;">
                   <GiftOutlined />
                 </span>
               </a-tooltip>
-            </a-col> -->
+            </a-col>
           </a-row>
         </a-list-item>
 
