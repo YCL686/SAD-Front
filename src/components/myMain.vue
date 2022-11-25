@@ -137,7 +137,7 @@ export default defineComponent({
   components: { ad, PlusOutlined, VerticalAlignTopOutlined, FieldTimeOutlined, dailyTask, ClockCircleOutlined, CrownOutlined, SyncOutlined },
   name: 'myMain',
   setup() {
-    const top = ref<number>(500);
+    const top = ref<number>(480);
     const item = {
       date: '2016-05-02',
       name: 'Tom',
