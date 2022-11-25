@@ -36,16 +36,14 @@ app.use(VueDapp, {
    networks: {
      97: {
        chainId: ethers.utils.hexValue(97),
-       blockExplorerUrls: ['https://mumbai.polygonscan.com/'],
+       blockExplorerUrls: ['https://testnet.bscscan.com/'],
        chainName: 'BSC-TEST',
-       rpcUrls: ['https://rpc-mumbai.maticvigil.com/'],
+       rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545/'],
        nativeCurrency: {
          name: 'TBNB',
          decimals: 18,
          symbol: 'TBNB',
        },
-     },
-     42161: {
      }
    },
  })
