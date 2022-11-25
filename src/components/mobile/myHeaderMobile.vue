@@ -61,7 +61,7 @@
 </template>
 <style scoped>
 .connect-wallet {
-  padding-left: 5px;
+  padding-right: 5px;
   justify-content: center; /*子元素水平居中*/
   align-items: center; /*子元素垂直居中*/
 }
