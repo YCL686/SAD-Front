@@ -226,17 +226,6 @@ onChainChanged((chainId: any) => {
 const connectors = [
   new MetaMaskConnector({
     appUrl: 'http://192.168.1.4:5173'
-  }),
-  new WalletConnectConnector({
-    qrcode: true,
-    rpc: {
-      1: `https://mainnet.infura.io/v3/${infuraId}`,
-      4: `https://rinkeby.infura.io/v3/${infuraId}`
-    }
-  }),
-  new CoinbaseWalletConnector({
-    appName: 'Vue Dapp',
-    jsonRpcUrl: `https://mainnet.infura.io/v3/${infuraId}`
   })
 ]
 const { availableNetworks } = useEthers()
