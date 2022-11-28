@@ -27,6 +27,9 @@
       </el-col>
       <a-affix style="position: absolute;right: 5%;" :offset-top="top">
         <a-space direction="vertical">
+          <a-tooltip title="Launch">
+            <a-button @click="goToLaunch()" type="primary" shape="circle" size="large"><ThunderboltOutlined /></a-button>
+          </a-tooltip>
           <a-tooltip title="Public">
             <a-button @click="goToPublic()" shape="circle" size="large"><SyncOutlined /></a-button>
           </a-tooltip>
@@ -127,17 +130,17 @@ import ad from './AD.vue'
 import dailyTask from '../components/dailyTask.vue'
 import 'element-plus/theme-chalk/display.css'
 import store from '../store/index'
-import { PlusOutlined, VerticalAlignTopOutlined, FieldTimeOutlined, ClockCircleOutlined, CrownOutlined, SyncOutlined } from '@ant-design/icons-vue'
+import { PlusOutlined, VerticalAlignTopOutlined, FieldTimeOutlined, ClockCircleOutlined, CrownOutlined, SyncOutlined,ThunderboltOutlined } from '@ant-design/icons-vue'
 import { useRouter } from 'vue-router'
 
 
 
 
 export default defineComponent({
-  components: { ad, PlusOutlined, VerticalAlignTopOutlined, FieldTimeOutlined, dailyTask, ClockCircleOutlined, CrownOutlined, SyncOutlined },
+  components: { ad, PlusOutlined, VerticalAlignTopOutlined, FieldTimeOutlined, dailyTask, ClockCircleOutlined, CrownOutlined, SyncOutlined,ThunderboltOutlined },
   name: 'myMain',
   setup() {
-    const top = ref<number>(480);
+    const top = ref<number>(420);
     const item = {
       date: '2016-05-02',
       name: 'Tom',
@@ -176,6 +179,13 @@ export default defineComponent({
       window.open(publicPage.href, '_blank') 
     }
 
+    const goToLaunch = () =>{
+      const launchPage = router.resolve({
+    path: '/launch'
+  })
+      window.open(launchPage.href, '_blank') 
+    }
+
 
     return {
       tableData,
@@ -184,6 +194,7 @@ export default defineComponent({
       goToPublish,
       goToAuction,
       goToPublic,
+      goToLaunch,
       dailyTaskModalVisible,
       handleOk,
       showDailyTaskModal

@@ -27,6 +27,8 @@ import ADAuction from "../components/ADAuction.vue";
 
 import Public from "../components/public.vue"
 
+import launch from "../components/launch.vue"
+
 //移动端
 import myCenterMobile from '../components/mobile/myCenterMobile.vue'
 
@@ -64,6 +66,10 @@ const routes = [{
   path: '/public',
   name: 'public',
   component: Public
+},{
+  path: '/launch',
+  name: 'launch',
+  component: launch
 },{
   path: '/hot',
   name: 'hot',
