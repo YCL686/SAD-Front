@@ -225,7 +225,7 @@
             <a-space direction="vertical">
                 <a-row style="text-align: center;">
                     <a-col v-if="!resourceUrlValue" :span="24">
-                        <a-upload accept="image/png, image/jpeg" v-model:file-list="fileList" name="file" list-type="picture-card"
+                        <a-upload :accept="null" v-model:file-list="fileList" name="file" list-type="picture-card"
                             style="width: 100%;" :show-upload-list="false" :action="uploadUrl" :headers=headers
                             :before-upload="beforeUpload" @change="handleChange">
                             <div>
@@ -315,7 +315,7 @@ import { getAccount } from "../api/account";
 import { pageBidRecord, bidBuy } from "../api/adAuctionRecord"
 import * as echarts from 'echarts'
 import { CountTo } from 'vue3-count-to'
-import { message } from "ant-design-vue";
+import { message, Upload } from "ant-design-vue";
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue';
 import type { UploadChangeParam, UploadProps } from 'ant-design-vue';
 
@@ -454,9 +454,17 @@ const showEditMyModalVisibleFunction = (adIndex: any, id: any, editCount: number
     editMyAdModalVisible.value = true;
 }
 
-const beforeUpload = () => {
-
-}
+const beforeUpload: UploadProps['beforeUpload'] = file => {
+      const isImg = (file.type === 'image/png' || file.type === 'image/jpeg');
+      if (!isImg) {
+        message.error(`only image supported`);
+      }
+      if(file.size > 25165824){
+        message.error(`maximum size is 3M`);
+        return false || Upload.LIST_IGNORE
+      }
+      return isImg || Upload.LIST_IGNORE;
+    };
 
 const handleChange = (info: UploadChangeParam) => {
     if (info.file.status === 'uploading') {

@@ -8,13 +8,13 @@
         <ad style="margin-bottom: 10px"></ad>
         <el-menu :default-active="1" class="el-menu-demo" mode="horizontal" v-if="data.isMobile">
           <el-menu-item index="1">
-            <router-link to="/index">{{$t('menus.index')}}</router-link>
+            <router-link to="/index">{{ $t('menus.index') }}</router-link>
           </el-menu-item>
           <el-menu-item index="2">
-            <router-link to="/hot">{{$t('menus.hot')}}</router-link>
+            <router-link to="/hot">{{ $t('menus.hot') }}</router-link>
           </el-menu-item>
           <el-menu-item index="3">
-            <router-link to="/focus">{{$t('menus.focus')}}</router-link>
+            <router-link to="/focus">{{ $t('menus.focus') }}</router-link>
           </el-menu-item>
           <el-menu-item index="4">
             <router-link to="/nft">NFT</router-link>
@@ -27,27 +27,46 @@
       </el-col>
       <a-affix style="position: absolute;right: 5%;" :offset-top="top">
         <a-space direction="vertical">
-          <a-tooltip title="Launch">
-            <a-button @click="goToLaunch()" type="primary" shape="circle" size="large"><ThunderboltOutlined /></a-button>
-          </a-tooltip>
-          <a-tooltip title="Public">
-            <a-button @click="goToPublic()" shape="circle" size="large"><SyncOutlined /></a-button>
-          </a-tooltip>
+          
+          
           <a-tooltip :title="$t('tooltips.publish')">
-          <a-button @click="goToPublish" type="primary" shape="circle" size="large"><PlusOutlined/></a-button>
+            <a-button @click="goToPublish" type="primary" shape="circle" size="large">
+              <PlusOutlined />
+            </a-button>
           </a-tooltip>
           <a-tooltip :title="$t('tooltips.dailyTask')">
-          <a-button @click="showDailyTaskModal"  shape="circle" size="large"><ClockCircleOutlined/></a-button>
-          <a-modal :destroyOnClose="true" :footer="null" v-model:visible="dailyTaskModalVisible" title="DailyTask" @ok="handleOk">
-      <daily-task></daily-task>
-    </a-modal>
-          </a-tooltip>
-          <a-tooltip title="Auction">
-            <a-button @click="goToAuction()" type="primary" shape="circle" size="large"><svg-icon name="auction" height="20" width="20" ></svg-icon></a-button>
+            <a-button @click="showDailyTaskModal" shape="circle" size="large">
+              <ClockCircleOutlined />
+            </a-button>
+            <a-modal :destroyOnClose="true" :footer="null" v-model:visible="dailyTaskModalVisible" title="DailyTask"
+              @ok="handleOk">
+              <daily-task></daily-task>
+            </a-modal>
           </a-tooltip>
           
+          <a-collapse style="padding-right: 0;padding-left: 0;padding: 0px;" ghost>
+            <a-collapse-panel style="padding: 0px!important;" key="1">
+              <a-space direction="vertical">
+              <a-tooltip title="Launch">
+            <a-button @click="goToLaunch()" type="primary" shape="circle" size="large">
+              <ThunderboltOutlined />
+            </a-button>
+          </a-tooltip>
+          <a-tooltip title="Public">
+            <a-button @click="goToPublic()" shape="circle" size="large">
+              <SyncOutlined />
+            </a-button>
+          </a-tooltip>
+          <a-tooltip title="Auction">
+            <a-button @click="goToAuction()" type="primary" shape="circle" size="large">
+              <svg-icon name="auction" height="20" width="20"></svg-icon>
+            </a-button>
+          </a-tooltip>
         </a-space>
-      </a-affix> 
+            </a-collapse-panel>
+          </a-collapse>
+        </a-space>
+      </a-affix>
       <el-col :xs="2" :sm="4" :md="4" :lg="3" :xl="3" class="hidden-sm-and-down">
         <div class="grid-content ep-bg-purple" />
       </el-col>
@@ -70,10 +89,10 @@
         </el-card>
       </el-col> -->
 
-      
+
     </el-row>
   </div>
-  
+
 </template>
 <style scoped>
 .el-row {
@@ -130,14 +149,14 @@ import ad from './AD.vue'
 import dailyTask from '../components/dailyTask.vue'
 import 'element-plus/theme-chalk/display.css'
 import store from '../store/index'
-import { PlusOutlined, VerticalAlignTopOutlined, FieldTimeOutlined, ClockCircleOutlined, CrownOutlined, SyncOutlined,ThunderboltOutlined } from '@ant-design/icons-vue'
+import { PlusOutlined, VerticalAlignTopOutlined, FieldTimeOutlined, ClockCircleOutlined, CrownOutlined, SyncOutlined, ThunderboltOutlined } from '@ant-design/icons-vue'
 import { useRouter } from 'vue-router'
 
 
 
 
 export default defineComponent({
-  components: { ad, PlusOutlined, VerticalAlignTopOutlined, FieldTimeOutlined, dailyTask, ClockCircleOutlined, CrownOutlined, SyncOutlined,ThunderboltOutlined },
+  components: { ad, PlusOutlined, VerticalAlignTopOutlined, FieldTimeOutlined, dailyTask, ClockCircleOutlined, CrownOutlined, SyncOutlined, ThunderboltOutlined },
   name: 'myMain',
   setup() {
     const top = ref<number>(420);
@@ -160,30 +179,30 @@ export default defineComponent({
 
     const goToAuction = () => {
       const auctionPage = router.resolve({
-    path: '/auction'
-  })
-      window.open(auctionPage.href, '_blank') 
+        path: '/auction'
+      })
+      window.open(auctionPage.href, '_blank')
     }
 
-    const goToPublish = () =>{
+    const goToPublish = () => {
       const publishPage = router.resolve({
-    path: '/publish'
-  })
-      window.open(publishPage.href, '_blank') 
+        path: '/publish'
+      })
+      window.open(publishPage.href, '_blank')
     }
 
-    const goToPublic = () =>{
+    const goToPublic = () => {
       const publicPage = router.resolve({
-    path: '/public'
-  })
-      window.open(publicPage.href, '_blank') 
+        path: '/public'
+      })
+      window.open(publicPage.href, '_blank')
     }
 
-    const goToLaunch = () =>{
+    const goToLaunch = () => {
       const launchPage = router.resolve({
-    path: '/launch'
-  })
-      window.open(launchPage.href, '_blank') 
+        path: '/launch'
+      })
+      window.open(launchPage.href, '_blank')
     }
 
 

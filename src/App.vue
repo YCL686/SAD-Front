@@ -70,9 +70,16 @@ body,
 
 .el-main {
   --el-main-padding: 3px!important;
-  background-color: #e9eef3;
+  background-color: var(--theme_bg_color);
   color: #333;
   /* //text-align: center; */
+}
+
+:root {
+  /* 背景色 */
+  --theme_bg_color: #e9eef3;
+  /* 按钮颜色 */
+  --theme_button_color: #1890ff;
 }
 </style>
 

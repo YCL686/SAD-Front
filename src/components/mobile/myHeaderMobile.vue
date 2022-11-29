@@ -27,6 +27,10 @@
         {{ item.label }}
       </el-menu-item>
     </el-sub-menu>
+    <a-switch style="vertical-align: center;" @change="themeChangeFunction" v-model:checked="isLight" checked-children="Dark" un-checked-children="Light">
+      
+    </a-switch>
+    
 
     <li class="connect-wallet">
       <el-button v-if="!store.state.isLogined" type="primary" @click="open" round size="small">
@@ -126,6 +130,9 @@ import { message } from 'ant-design-vue'
 
 import router from '../../router'
 
+import themeChange from '../../utils/theme'
+
+const isLight = ref(false)
 const myProfileVisible = ref(false)
 const route = useRoute()
 const searchKey = ref('')
@@ -172,6 +179,11 @@ const lanOptions = [
     label: 'Deutsch'
   }
 ]
+
+const themeChangeFunction = () => {
+  themeChange(isLight.value)
+  //isLight.value = !isLight.value
+}
 
 const isDev = window.location.host === 'localhost:5173'
 const infuraId = isDev ? 'fd5dad2d869c4b20a703ea9f100333f7' : 'ff6a249a74e048f1b413cba715f98d07'
