@@ -1,7 +1,5 @@
 <template>
   <el-menu
-    background-color="#545c64"
-    text-color="#fff"
     active-text-color="#ffd04b"
     :default-active="activeIndex"
     mode="horizontal"
@@ -64,6 +62,27 @@
   </a-drawer>
 </template>
 <style scoped>
+
+.el-menu{
+  background-color: var(--theme_header_bg_color);
+  color: var(--theme_header_text_color);
+}
+
+.el-menu--horizontal>.el-menu-item a, .el-menu--horizontal>.el-menu-item a:hover {
+  background-color: var(--theme_header_bg_color);
+  color: var(--theme_header_text_color);
+}
+
+.el-menu-item {
+  background-color: var(--theme_header_bg_color);
+  color: var(--theme_header_text_color);
+}
+
+.el-sub-menu{
+  background-color: var(--theme_header_bg_color);
+  color: var(--theme_header_text_color);
+}
+
 .connect-wallet {
   padding-right: 5px;
   justify-content: center; /*子元素水平居中*/
@@ -181,7 +200,7 @@ const lanOptions = [
 ]
 
 const themeChangeFunction = () => {
-  themeChange(isLight.value)
+  themeChange(!isLight.value)
   //isLight.value = !isLight.value
 }
 

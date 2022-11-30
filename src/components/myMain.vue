@@ -44,7 +44,7 @@
             </a-modal>
           </a-tooltip>
           
-          <a-collapse style="padding-right: 0;padding-left: 0;padding: 0px;" ghost>
+          <a-collapse style="padding-right: 0;padding-left: 0;" ghost>
             <a-collapse-panel style="padding: 0px!important;" key="1">
               <a-space direction="vertical">
               <a-tooltip title="Launch">
@@ -95,6 +95,17 @@
 
 </template>
 <style scoped>
+
+.el-menu--horizontal>.el-menu-item a, .el-menu--horizontal>.el-menu-item a:hover {
+  background-color: var(--theme_header_bg_color);
+  color: var(--theme_header_text_color);
+}
+
+.el-menu {
+  background-color: var(--theme_header_bg_color);
+  color: var(--theme_header_text_color);
+}
+
 .el-row {
   margin-bottom: 20px;
 }

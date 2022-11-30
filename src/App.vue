@@ -61,8 +61,8 @@ body,
 
 .el-header,
 .el-footer {
-  background-color: #333;
-  color: #b3c0d1;
+  background-color: var(--theme_header_bg_color);
+  color: var(--theme_header_text_color);
   /* text-align: center; */
   line-height: 60px;
   --el-header-padding: 0 0px!important
@@ -78,8 +78,14 @@ body,
 :root {
   /* 背景色 */
   --theme_bg_color: #e9eef3;
+  --theme_header_bg_color: #778899;
+  --theme_header_text_color: #b3c0d1;
   /* 按钮颜色 */
   --theme_button_color: #1890ff;
+  --theme_card_bg_color: #fff;
+  --theme_card_text_color: rgba(0, 0, 0, 0.45);
+  --theme_card_action_text_color: rgba(0, 0, 0, 0.85);
+  --theme_divider_color: rgba(0, 0, 0, 0.85)
 }
 </style>
 

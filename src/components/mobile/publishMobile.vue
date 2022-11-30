@@ -1,6 +1,6 @@
 <template>
         <a-spin :spinning="uploadLoading">
-    <a-card v-if="!publishSuccess" id="upload" title="Create Your Opus">
+    <a-card class="myCard" v-if="!publishSuccess" id="upload" title="Create Your Opus">
       <template #extra>
         <a-button size="small" type="primary" @click="pubilshFunction(0)">{{ $t('buttons.publish') }}</a-button>
         <a-button size="small" @click="pubilshFunction(1)">{{ $t('buttons.stage') }}</a-button>
@@ -255,3 +255,13 @@
   
   
   </script>
+  <style scoped>
+  .ant-card {
+    background-color: var(--theme_card_bg_color);
+  color: var(--theme_card_text_color);
+  }
+
+  .myCard{
+    color: var(--theme_card_text_color);
+  }
+</style>

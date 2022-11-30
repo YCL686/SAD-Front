@@ -1,16 +1,16 @@
 <template>
-  <a-skeleton v-if="whileLoading" v-for="i in 10" :key="i"
-    style="padding: 20px;background-color: #fff;border-radius: 10px; margin-bottom: 5px;" :loading="loading" active
+  <a-skeleton class="mySkeletion" v-if="whileLoading" v-for="i in 10" :key="i"
+   :loading="loading" active
     avatar></a-skeleton>
   <div v-else infinite-scroll-distance="1" v-infinite-scroll="load">
-    <a-list id="111" style="background-color: #fff;border-radius: 10px" item-layout="vertical" size="large"
+    <a-list class="myList" id="111" item-layout="vertical" size="large"
       :data-source="pageList">
       <template #renderItem="{ item }">
         <a-list-item v-if="item.id != null && item.id != undefined && item.id != ''" key="item.title">
           <!-- <template #actions>
             </template> -->
           <a-badge-ribbon v-if="item.minted === 1" text="Minted"></a-badge-ribbon>
-          <a-list-item-meta :description="item.characterSign">
+          <a-list-item-meta class="myMeta" :description="item.characterSign">
             <template #title>
               <a-space>
                 <a-tooltip :title="$t('tooltips.profile')">
@@ -34,7 +34,7 @@
                 </a-tooltip>
                 <!-- <template #datetime> -->
                 <a-tooltip :title="item.publishTime">
-                  <span style="color: #ccc;font-size: 8px;line-height: 12px;white-space: nowrap;">{{
+                  <span style="font-size: 8px;line-height: 12px;white-space: nowrap;">{{
                       item.publishTimeString
                   }}</span>
                 </a-tooltip>
@@ -68,7 +68,7 @@
               :preview-src-list="item.resourceUrls" :initial-index="index" fit="cover">
             </el-image>
           </div>
-          <a-row style="color: rgba(0, 0, 0, 0.45); text-align: center;margin-top: 10px;">
+          <a-row style="text-align: center;margin-top: 10px;">
             <a-col :span="6"><span style="cursor: pointer;"
                 @click="item.collected = !item.collected; item.collectNum++; operateCollectFunction(item.id)"
                 v-if="!item.collected">
@@ -78,7 +78,7 @@
               </span>
 
 
-              <span style="cursor: pointer; "
+              <span style="cursor: pointer;"
                 @click="item.collected = !item.collected; item.collectNum--; operateCollectFunction(item.id)"
                 v-if="item.collected">
                 <a-tooltip :title="$t('tooltips.collected')">
@@ -122,7 +122,7 @@
 
           </a-row>
           <a-divider style="margin: 10px 0;"></a-divider>
-          <a-row style="color: rgba(0, 0, 0, 0.45); text-align: center;">
+          <a-row style="text-align: center;">
             <a-col :span="6"><span style="cursor: pointer;">
                 <a-tooltip :title="$t('tooltips.share')">
                   <ShareAltOutlined style="margin-right: 2px" />
@@ -182,11 +182,11 @@
                   :src="item.launchUrl"></a-image>
               </a-col>
               <a-col style="cursor: pointer;" :span="16">
-                <p style="color: rgba(0, 0, 0, 0.45); font-size: 10px; text-indent: 2em;">{{ item.launchDescription }}</p>
+                <p style="font-size: 10px; text-indent: 2em;">{{ item.launchDescription }}</p>
               </a-col>
             </a-row>
             <!-- <a-divider></a-divider> -->
-            <a-row style="color: rgba(0, 0, 0, 0.45);font-size: 12px; margin-top: 10px">
+            <a-row style="font-size: 12px; margin-top: 10px">
               <a-col :span="12">Want <a>Launch</a> ?</a-col>
               <a-col :span="12" >Launched By <a>{{ item.nickName }}</a></a-col>
             </a-row>
@@ -347,6 +347,40 @@ onUpdated(() => {
 })
 </script>
 <style scoped>
+
+.mySkeletion{
+  padding: 20px;
+  background-color: var(--theme_card_bg_color);
+  color: var(--theme_card_text_color);
+  border-radius: 10px; 
+  margin-bottom: 5px;
+}
+
+.myList{
+  border-radius: 10px;
+  background-color: var(--theme_card_bg_color);
+  color: var(--theme_card_text_color);
+}
+
+.a-list-item-meta{
+  color: var(--theme_card_action_text_color);
+}
+
+.ant-typography {
+  color: var(--theme_card_action_text_color);
+}
+
+.myMeta {
+  color: var(--theme_card_action_text_color);
+}
+
+.ant-list-item{
+  color: var(--theme_card_action_text_color);
+}
+
+.ant-divider{
+  color: var(--theme_divider_color);
+}
 .opus-card {
   text-align: left;
   line-height: 30px;
