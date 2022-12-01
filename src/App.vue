@@ -80,12 +80,16 @@ body,
   --theme_bg_color: #e9eef3;
   --theme_header_bg_color: #778899;
   --theme_header_text_color: #b3c0d1;
+  --theme_header_active_bg_color: #7788ff;
+  --theme_header_active_text_color: #1890ff;
   /* 按钮颜色 */
   --theme_button_color: #1890ff;
   --theme_card_bg_color: #fff;
   --theme_card_text_color: rgba(0, 0, 0, 0.45);
   --theme_card_action_text_color: rgba(0, 0, 0, 0.85);
-  --theme_divider_color: rgba(0, 0, 0, 0.85)
+  --theme_divider_color: rgba(0, 0, 0, 0.85);
+  --theme_a_modal_bg_color: #fff;
+  --theme_a_modal_text_color: rgba(0, 0, 0, 0.85)
 }
 </style>
 

@@ -38,7 +38,7 @@
             <a-button @click="showDailyTaskModal" shape="circle" size="large">
               <ClockCircleOutlined />
             </a-button>
-            <a-modal :destroyOnClose="true" :footer="null" v-model:visible="dailyTaskModalVisible" title="DailyTask"
+            <a-modal :get-container = "false" class="myModal" :destroyOnClose="true" :footer="null" v-model:visible="dailyTaskModalVisible" title="DailyTask"
               @ok="handleOk">
               <daily-task></daily-task>
             </a-modal>
@@ -106,6 +106,11 @@
   color: var(--theme_header_text_color);
 }
 
+.el-menu--horizontal>.el-menu-item.is-active {
+  background-color: var(--theme_header_bg_color)!important;
+  color: var(--theme_header_text_color)!important;
+}
+
 .el-row {
   margin-bottom: 20px;
 }
@@ -121,6 +126,18 @@
 .grid-content {
   border-radius: 4px;
 }
+
+ .myModal {
+  color: var(--theme_a_modal_text_color);
+  background: var(--theme_a_modal_bg_color);
+  background-color: var(--theme_a_modal_bg_color);
+ }
+ :deep() .ant-modal-header .ant-modal-body .ant-modal-content {
+    color: var(--theme_a_modal_text_color)!important;
+    background: var(--theme_a_modal_bg_color)!important;
+    background-color: var(--theme_a_modal_bg_color)!important;
+}
+
 
 
 

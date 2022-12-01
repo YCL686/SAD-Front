@@ -1,20 +1,19 @@
 <template>
   <el-menu
-    active-text-color="#ffd04b"
     :default-active="activeIndex"
     mode="horizontal"
     :ellipsis="false"
   >
   <svg-icon name="LOGO2"></svg-icon>
     <div class="flex-grow-1"/>
-    <el-menu-item style="padding:0 3px" index="3">
+    <el-menu-item style="padding:0 0px" index="3">
       <router-link to="/hot"><el-icon><Search /></el-icon></router-link>
     </el-menu-item> 
     <el-sub-menu style="padding-left: 0px;"  index="1">
       <template #title><TranslationOutlined/>
       </template>
       <el-menu-item
-      style="padding:0 3px"
+      style="padding:0 0px"
         @click.native="handleLocaleChange(item.value)"
         v-for="item in lanOptions"
         :key="item.value"
@@ -25,9 +24,11 @@
         {{ item.label }}
       </el-menu-item>
     </el-sub-menu>
-    <a-switch style="vertical-align: center;" @change="themeChangeFunction" v-model:checked="isLight" checked-children="Dark" un-checked-children="Light">
-      
-    </a-switch>
+    <li style="padding: 0 3px;"><a-switch style="line-height: 0px;" @change="themeChangeFunction" v-model:checked="isLight">
+      <template #checkedChildren><svg-icon name="dark" height="20" width="20" ></svg-icon></template>
+      <template #unCheckedChildren><svg-icon name="light" height="20" width="20" ></svg-icon></template>
+    </a-switch></li>
+    
     
 
     <li class="connect-wallet">

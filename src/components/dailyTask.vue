@@ -1,5 +1,5 @@
 <template>
-    <a-list :loading="initLoading" item-layout="horizontal" :data-source="data">
+    <a-list class="myList" :loading="initLoading" item-layout="horizontal" :data-source="data">
     <template #renderItem="{ item,index }">
       <a-list-item>
           <template #actions>
@@ -61,3 +61,13 @@ onMounted(() =>{
 })
 
 </script>
+
+<style scoped>
+
+.myList {
+  color: var(--theme_a_modal_text_color);
+  background: var(--theme_a_modal_bg_color);
+  background-color: var(--theme_a_modal_bg_color);
+}
+
+</style>
