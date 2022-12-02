@@ -5,7 +5,7 @@
         <!-- <a-card> -->
         <a-row>
             <a-col :span="12">
-                <p style="color: rgba(0, 0, 0, 0.45);font-size: 15px;margin-bottom: 4px">SyncVOL: <CaretUpFilled v-if="synchronizeAmount > 0" style="color: green"/> <CaretDownFilled v-else style="color: red"/>{{synchronizeAmountGrowthRate}}%</p>
+                <p style="color: rgba(0, 0, 0, 0.45);font-size: 15px;margin-bottom: 4px">SyncVOL: <CaretUpFilled v-if="synchronizeAmountGrowthRate > 0" style="color: green"/> <CaretDownFilled v-else style="color: red"/>{{synchronizeAmountGrowthRate}}%</p>
                 <count-to style="font-size: 24px;" :startVal="0" :endVal="synchronizeAmount" :decimals="2" :duration="3000"></count-to>
             </a-col>
             <a-col :span="12">
