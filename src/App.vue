@@ -86,7 +86,7 @@ body,
   --theme_button_color: #1890ff;
   --theme_card_bg_color: #fff;
   --theme_card_text_color: rgba(0, 0, 0, 0.45);
-  --theme_card_action_text_color: rgba(0, 0, 0, 0.85);
+  --theme_card_action_text_color: rgba(0, 0, 0, 0.45);
   --theme_divider_color: rgba(0, 0, 0, 0.85);
   --theme_a_modal_bg_color: #fff;
   --theme_a_modal_text_color: rgba(0, 0, 0, 0.85)
