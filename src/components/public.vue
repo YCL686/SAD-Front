@@ -1,7 +1,7 @@
 <template>
 
 <a-collapse v-model:activeKey="activeKey" accordion>
-        <a-collapse-panel key="0" header="Sync View">
+        <a-collapse-panel key="0" header="VOL View">
         <!-- <a-card> -->
         <a-row>
             <a-col :span="12">
@@ -29,9 +29,9 @@
         </a-row>
     <!-- </a-card> -->
 </a-collapse-panel>
-        <a-collapse-panel key="1" header="TVL Detail"></a-collapse-panel>
-        <a-collapse-panel key="2" header="TVL History"></a-collapse-panel>
-        <a-collapse-panel key="3" header="TVL Introduce"></a-collapse-panel>
+        <a-collapse-panel key="1" header="VOL Detail"></a-collapse-panel>
+        <a-collapse-panel key="2" header="VOL History"></a-collapse-panel>
+        <a-collapse-panel key="3" header="VOL Introduce"></a-collapse-panel>
         </a-collapse>
 
     
