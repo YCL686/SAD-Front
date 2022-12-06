@@ -7,10 +7,10 @@ const LightMap = {
     '--theme_header_text_color': '#b3c0d1',
     '--theme_card_bg_color': '#fff',
     '--theme_card_text_color': 'rgba(0, 0, 0, 0.45)',
-    '--theme_card_action_text_color': 'rgba(0, 0, 0, 0.85)',
-    '--theme_divider_color': 'rgba(0, 0, 0, 0.85)',
+    '--theme_card_action_text_color': 'rgba(0, 0, 0, 0.45)',
+    '--theme_divider_color': 'rgba(0, 0, 0, 0.45)',
     '--theme_a_modal_bg_color': '#fff',
-    '--theme_a_modal_text_color': 'rgba(0, 0, 0, 0.85)',
+    '--theme_a_modal_text_color': 'rgba(0, 0, 0, 0.45)',
     '--theme_header_active_bg_color': '#7788ff',
     '--theme_header_active_text_color': '#1890ff'
   };
@@ -22,10 +22,10 @@ const LightMap = {
     '--theme_header_text_color': '#778899',
     '--theme_card_bg_color': '#4F4F4F',
     '--theme_card_text_color': 'rgba(255, 255, 255, 0.45)',
-    '--theme_card_action_text_color': 'rgba(255, 255, 255, 0.85)',
+    '--theme_card_action_text_color': 'rgba(255, 255, 255, 0.45)',
     '--theme_divider_color': 'rgba(255, 255, 255, 0.85)',
     '--theme_a_modal_bg_color': '#4F4F4F',
-    '--theme_a_modal_text_color': 'rgba(255, 255, 255, 0.85)',
+    '--theme_a_modal_text_color': 'rgba(255, 255, 255, 0.45)',
     '--theme_header_active_bg_color': '#696969',
     '--theme_header_active_text_color': '#363636'
   };

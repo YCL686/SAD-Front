@@ -50,6 +50,8 @@
     class="custom-class"
     title="MyProfile"
     placement="right"
+    width="60%"
+    :closable="false"
   >
   <a-list size="small">
       <a-list-item><CrownOutlined/> {{$t('menus.items.admin')}}</a-list-item>

@@ -375,6 +375,8 @@ onUpdated(() => {
 }
 
 .ant-list-item{
+  border-radius: 10px;
+  margin-top: 5px;
   color: var(--theme_card_action_text_color);
 }
 

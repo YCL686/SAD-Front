@@ -27,8 +27,6 @@
       </el-col>
       <a-affix style="position: absolute;right: 5%;" :offset-top="top">
         <a-space direction="vertical">
-          
-          
           <a-tooltip :title="$t('tooltips.publish')">
             <a-button @click="goToPublish" type="primary" shape="circle" size="large">
               <PlusOutlined />
@@ -44,17 +42,15 @@
             </a-modal>
           </a-tooltip>
           
-          <a-collapse style="padding-right: 0;padding-left: 0;" ghost>
-            <a-collapse-panel style="padding: 0px!important;" key="1">
-              <a-space direction="vertical">
-              <a-tooltip title="Launch">
-            <a-button @click="goToLaunch()" type="primary" shape="circle" size="large">
-              <ThunderboltOutlined />
+          <a-button @click="isActive = !isActive" type="primary" shape="circle" size="large">
+              <DownOutlined v-if="!isActive" />
+              <UpOutlined v-else/>
             </a-button>
-          </a-tooltip>
-          <a-tooltip title="Public">
-            <a-button @click="goToPublic()" shape="circle" size="large">
-              <SyncOutlined />
+          <collapse>
+            <a-space direction="vertical" v-show="isActive">
+            <a-tooltip title="Launch">
+            <a-button @click="goToLaunch()" shape="circle" size="large">
+              <ThunderboltOutlined />
             </a-button>
           </a-tooltip>
           <a-tooltip title="Auction">
@@ -62,9 +58,15 @@
               <svg-icon name="auction" height="20" width="20"></svg-icon>
             </a-button>
           </a-tooltip>
+          <a-tooltip title="Public">
+            <a-button @click="goToPublic()" shape="circle" size="large">
+              <SyncOutlined />
+            </a-button>
+          </a-tooltip>
+          
         </a-space>
-            </a-collapse-panel>
-          </a-collapse>
+          </collapse>
+
         </a-space>
       </a-affix>
       <el-col :xs="2" :sm="4" :md="4" :lg="3" :xl="3" class="hidden-sm-and-down">
@@ -177,14 +179,15 @@ import ad from './AD.vue'
 import dailyTask from '../components/dailyTask.vue'
 import 'element-plus/theme-chalk/display.css'
 import store from '../store/index'
-import { PlusOutlined, VerticalAlignTopOutlined, FieldTimeOutlined, ClockCircleOutlined, CrownOutlined, SyncOutlined, ThunderboltOutlined } from '@ant-design/icons-vue'
+import { PlusOutlined, VerticalAlignTopOutlined, FieldTimeOutlined, ClockCircleOutlined, CrownOutlined, SyncOutlined, ThunderboltOutlined, DownOutlined, UpOutlined } from '@ant-design/icons-vue'
 import { useRouter } from 'vue-router'
+import collapse from "../utils/collapse";
 
 
 
 
 export default defineComponent({
-  components: { ad, PlusOutlined, VerticalAlignTopOutlined, FieldTimeOutlined, dailyTask, ClockCircleOutlined, CrownOutlined, SyncOutlined, ThunderboltOutlined },
+  components: { ad, PlusOutlined, VerticalAlignTopOutlined, FieldTimeOutlined, dailyTask, ClockCircleOutlined, CrownOutlined, SyncOutlined, ThunderboltOutlined, DownOutlined, UpOutlined },
   name: 'myMain',
   setup() {
     const top = ref<number>(420);
@@ -193,6 +196,9 @@ export default defineComponent({
       name: 'Tom',
       address: 'No. 189, Grove St, Los Angeles',
     }
+
+    const isActive = ref(false)
+
     const tableData = ref(Array.from({ length: 100 }).fill(item))
     const dailyTaskModalVisible = ref(false)
     const router = useRouter()
@@ -238,6 +244,7 @@ export default defineComponent({
       tableData,
       data: store.state,
       top,
+      isActive,
       goToPublish,
       goToAuction,
       goToPublic,
