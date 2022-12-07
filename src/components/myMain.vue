@@ -72,26 +72,6 @@
       <el-col :xs="2" :sm="4" :md="4" :lg="3" :xl="3" class="hidden-sm-and-down">
         <div class="grid-content ep-bg-purple" />
       </el-col>
-      <!-- <el-col :xs="2" :sm="4" :md="6" :lg="6" :xl="6" class="hidden-sm-and-down">
-        <el-card class="box-card">
-          <template #header>
-            <div class="card-header">
-              <div style="width:100%;float:left">MyBalance: 1000000</div>
-              <div style="width:100%;float:left">
-                <el-button class="button">Deposit</el-button>
-                <el-button class="button">Withdraw</el-button>
-                <el-button class="button">Entry</el-button>
-              </div>
-            </div>
-          </template>
-          <div class="text item">My Opus</div>
-          <div class="text item">My Collect</div>
-          <div class="text item">My Foucus</div>
-          <div class="text item">My Message</div>
-        </el-card>
-      </el-col> -->
-
-
     </el-row>
   </div>
 
