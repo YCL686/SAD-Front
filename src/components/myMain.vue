@@ -171,15 +171,9 @@ export default defineComponent({
   name: 'myMain',
   setup() {
     const top = ref<number>(420);
-    const item = {
-      date: '2016-05-02',
-      name: 'Tom',
-      address: 'No. 189, Grove St, Los Angeles',
-    }
 
     const isActive = ref(false)
 
-    const tableData = ref(Array.from({ length: 100 }).fill(item))
     const dailyTaskModalVisible = ref(false)
     const router = useRouter()
 
@@ -221,7 +215,6 @@ export default defineComponent({
 
 
     return {
-      tableData,
       data: store.state,
       top,
       isActive,
