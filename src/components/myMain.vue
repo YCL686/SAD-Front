@@ -32,16 +32,18 @@
               <PlusOutlined />
             </a-button>
           </a-tooltip>
+          
           <a-tooltip :title="$t('tooltips.dailyTask')">
+            <a-badge :count="data.unfinishedDailyTaskCount">
             <a-button @click="showDailyTaskModal" shape="circle" size="large">
               <ClockCircleOutlined />
             </a-button>
+          </a-badge>
             <a-modal :get-container = "false" class="myModal" :destroyOnClose="true" :footer="null" v-model:visible="dailyTaskModalVisible" title="DailyTask"
               @ok="handleOk">
               <daily-task></daily-task>
             </a-modal>
           </a-tooltip>
-          
           <a-button @click="isActive = !isActive" type="primary" shape="circle" size="large">
               <DownOutlined v-if="!isActive" />
               <UpOutlined v-else/>
@@ -143,8 +145,7 @@
 }
 
 .opus-card {
-  width: 100%;
-  ;
+  width: 100%;;
   line-height: 30px;
   text-align: left;
 }
@@ -154,7 +155,7 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import { defineComponent } from 'vue'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import ad from './AD.vue'
 import dailyTask from '../components/dailyTask.vue'
 import 'element-plus/theme-chalk/display.css'
@@ -165,7 +166,6 @@ import collapse from "../utils/collapse";
 
 
 
-
 export default defineComponent({
   components: { ad, PlusOutlined, VerticalAlignTopOutlined, FieldTimeOutlined, dailyTask, ClockCircleOutlined, CrownOutlined, SyncOutlined, ThunderboltOutlined, DownOutlined, UpOutlined },
   name: 'myMain',
@@ -173,7 +173,6 @@ export default defineComponent({
     const top = ref<number>(420);
 
     const isActive = ref(false)
-
     const dailyTaskModalVisible = ref(false)
     const router = useRouter()
 
@@ -212,7 +211,6 @@ export default defineComponent({
       })
       window.open(launchPage.href, '_blank')
     }
-
 
     return {
       data: store.state,

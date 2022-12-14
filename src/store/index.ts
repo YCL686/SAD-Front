@@ -10,7 +10,9 @@ const store = createStore({
       locale: localStorage.getItem('locale') || 'en',
       userId: localStorage.getItem('userId') || 0,
       nickName:localStorage.getItem('nickName') || '',
-      avatarUrl: localStorage.getItem('avatarUrl') || ''
+      avatarUrl: localStorage.getItem('avatarUrl') || '',
+      unreadMessageCount: 0,
+      unfinishedDailyTaskCount: 0
     }
   },
   mutations: {
@@ -34,7 +36,13 @@ const store = createStore({
     SET_USER_ID:(state, userId) => {
       state.userId = userId
       localStorage.setItem('userId', userId)
-    }
+    },
+    SET_UNREAD_MESSAGE_COUNT: (state, unreadMessageCount) => {
+      state.unreadMessageCount = unreadMessageCount
+    },
+    SET_UNFINISHED_DAILY_TASK_COUNT: (state, unfinishedDailyTaskCount) => {
+      state.unfinishedDailyTaskCount = unfinishedDailyTaskCount
+    } 
   },
 
   actions: {
@@ -55,6 +63,12 @@ const store = createStore({
     },
     setUserId({commit}, userId){
       commit('SET_USER_ID', userId)
+    },
+    setUnreadMessageCount({commit}, unreadMessageCount){
+      commit('SET_UNREAD_MESSAGE_COUNT', unreadMessageCount)
+    },
+    setUnfinishedDailyTaskCount({commit}, unfinishedDailyTaskCount){
+      commit('SET_UNFINISHED_DAILY_TASK_COUNT', unfinishedDailyTaskCount)
     }
   },
 

@@ -25,6 +25,7 @@
 import { message } from 'ant-design-vue'
 import {ref, onMounted} from 'vue'
 import { getDailyTask, getDailyTaskReward } from '../api/dailyTask'
+import store from '../store/index'
 
 const data = ref([])
 const getLoadings = ref([])
@@ -52,6 +53,7 @@ const getDailyTaskRewardFunction = (taskId: any, index: any) =>{
             message.success("get success")
             getLoadings.value[index] = false
             getDailyTaskFunction()
+            store.dispatch('setUnfinishedDailyTaskCount', store.state.unfinishedDailyTaskCount - 1)
         }
     })
 }

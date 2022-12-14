@@ -29,3 +29,10 @@ export function getMentionedList(param: any){
     method: 'get'
   })
 }
+
+export function getDotCount(){
+  return request({
+    url: '/user/getDotCount',
+    method: 'get'
+  })
+}

@@ -16,7 +16,7 @@
 <script lang="ts">
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted } from 'vue'
 import  myHeader  from './components/myHeader.vue'
 import myHeaderMobile from './components/mobile/myHeaderMobile.vue'
 import myMain from './components/myMain.vue'
@@ -24,6 +24,7 @@ import myFooter from './components/myFooter.vue'
 import zhCn from 'element-plus/lib/locale/lang/zh-cn'
 import en from 'element-plus/lib/locale/lang/en'
 import  store  from './store' //store存放语言配置
+import {getDotCount} from './api/user'
 
 
 
@@ -32,6 +33,14 @@ export default defineComponent({
   name:'App',
   components: { myHeader, myMain, myFooter, myHeaderMobile},
   setup() {
+
+    onMounted(() => {
+      getDotCount().then(res => {
+        store.dispatch('setUnreadMessageCount', res.unreadMessageCount)
+        store.dispatch('setUnfinishedDailyTaskCount', res.unfinishedDailyTaskCount)
+      })
+    })
+
     return{
       data: store.state
     }
