@@ -12,6 +12,10 @@ interface ImportMetaEnv {
   readonly VITE_CONTRACT_ABI: string
   readonly VITE_DEPOSIT_MESSAGE: string
   readonly VITE_WITHDRAW_MESSAGE: string
+  readonly VITE_MINT_AVATAR_NFT_MESSAGE: string
+  readonly VITE_AVATAR_NFT_CONTRACT_ADDRESS: string
+  readonly VITE_AVATAR_NFT_OWNER_ADDRESS: string
+  readonly VITE_AVATAR_NFT_ABI: string
 }
 
 
