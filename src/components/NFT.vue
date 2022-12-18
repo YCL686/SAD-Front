@@ -24,7 +24,7 @@
         <a-row>
           <a-col :span="24" style="text-align: center;"><a-button
               :disabled="(!isActivated || !saleIsActive || (whitelistIsActive && !userInWhiteList))" type="primary"
-              shape="round">Mint</a-button>
+              shape="round" @click="mintModalVisible = true">Mint</a-button>
             </a-col>
         </a-row>
         <a-alert style="margin-top: 10px;" v-if="(!isActivated || !saleIsActive || (whitelistIsActive && !userInWhiteList))" :message="generateWariningInfo()" type="warning" show-icon />
@@ -62,6 +62,8 @@
       3
     </a-collapse-panel>
   </a-collapse>
+<a-modal :destroyOnClose="true" :footer="null" v-model:visible="mintModalVisible" title="Mint Your Customize Avatar" @ok="handleOk">
+    </a-modal>
 </template>
 
 <script lang="ts" setup>
@@ -93,6 +95,7 @@ const maxMint = ref(0)
 const saleIsActive = ref(true)
 const whitelistIsActive = ref(true)
 const userInWhiteList = ref(true)
+const mintModalVisible = ref(false)
 
 
 const { onActivated, onChanged } = useEthersHooks()
@@ -150,9 +153,15 @@ const generateWariningInfo = () => {
   }
 }
 
+const handleOk = () => {
+  mintModalVisible.value = false
+}
+
 
 onMounted(() => {
-
+  if(isActivated.value){
+        getContractInfo((provider))
+  }
 })
 
 </script>
