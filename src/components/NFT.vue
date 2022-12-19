@@ -24,7 +24,7 @@
         <a-row>
           <a-col :span="24" style="text-align: center;"><a-button
               :disabled="(!isActivated || !saleIsActive || (whitelistIsActive && !userInWhiteList))" type="primary"
-              shape="round" @click="mintModalVisible = true">Mint</a-button>
+              shape="round" @click="mintModalVisible = true">Mint Your Customize Avatar</a-button>
             </a-col>
         </a-row>
         <a-alert style="margin-top: 10px;" v-if="(!isActivated || !saleIsActive || (whitelistIsActive && !userInWhiteList))" :message="generateWariningInfo()" type="warning" show-icon />
@@ -62,13 +62,47 @@
       3
     </a-collapse-panel>
   </a-collapse>
-<a-modal :destroyOnClose="true" :footer="null" v-model:visible="mintModalVisible" title="Mint Your Customize Avatar" @ok="handleOk">
+<a-modal :destroyOnClose="true" :footer="null" v-model:visible="mintModalVisible" title="Mint Your Customize Avatar">
+  <a-space direction="vertical" style="width: 100%;">
+            <a-row style="text-align: center;">
+                    <a-col v-if="!mintUrl" :span="24">
+                        <a-upload :accept="null" v-model:file-list="fileList" name="file" list-type="picture-card"
+                            style="width: 100%;" :max-count="1" :action="uploadUrl" :headers=headers
+                            :before-upload="beforeUpload" @change="handleChange">
+                            <div>
+                                <plus-outlined></plus-outlined>
+                                <div class="ant-upload-text">Upload</div>
+                            </div>
+                        </a-upload>
+                        
+                        
+
+                    </a-col>
+                    <a-col v-else :span = "24">
+                        <img style="width: 100%; height: 90%" :src="mintUrl" alt="avatar" />
+                        <a-button @click="fileList=[]; mintUrl=''" type="text">Delete</a-button>
+                    </a-col>
+                </a-row>        
+        <a-input-number style="width: 100%;" v-model:value="mintPrice" :disabled="true" addon-before="MintPrice:" addon-after="$BNB" :step="0.01" string-mode></a-input-number>    
+        <a-input addon-before="Name:" v-model:value="mintName" show-count :maxlength="30" />
+        <a-input addon-before="Title:" v-model:value="mintTitle" show-count :maxlength="30" />
+        <a-input addon-before="Attributes:" v-model:value="mintAttributes" :disabled="true" />
+        <a-textarea placeholder="Descrption..." :row="4" v-model:value="mintDescription" show-count :maxlength="300" />
+        <a-space style="float: right">
+        <a-button type="primary" size="small" shape="round" :loading="mintLoading" @click="mintFunction">MINT</a-button>
+        <a-button size="small" shape="round">Reset</a-button>
+    </a-space>
+    </a-space>
+
     </a-modal>
 </template>
 
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import { CountTo } from 'vue3-count-to'
+import type { UploadChangeParam, UploadProps } from 'ant-design-vue';
+import { message, Upload } from 'ant-design-vue';
+import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue';
 import { ContractFactory, ethers, utils } from 'ethers'
 import {
   useBoard,
@@ -96,6 +130,19 @@ const saleIsActive = ref(true)
 const whitelistIsActive = ref(true)
 const userInWhiteList = ref(true)
 const mintModalVisible = ref(false)
+
+const mintUrl = ref('')
+const fileList = ref<UploadProps['fileList']>([])
+const headers = {
+    token: localStorage.getItem('token')
+}
+const uploadUrl = import.meta.env.VITE_BASE_SERVER + import.meta.env.VITE_BASE_URL + '/resource/uploadToPinata'
+const uploadLoading = ref(false)
+const mintName = ref('')
+const mintTitle = ref('')
+const mintAttributes = ref('#Unknown')
+const mintDescription = ref('')
+const mintLoading = ref(false)
 
 
 const { onActivated, onChanged } = useEthersHooks()
@@ -153,8 +200,59 @@ const generateWariningInfo = () => {
   }
 }
 
-const handleOk = () => {
-  mintModalVisible.value = false
+
+const beforeUpload: UploadProps['beforeUpload'] = file => {
+      const isImg = (file.type === 'image/png' || file.type === 'image/jpeg');
+      if (!isImg) {
+        message.error(`only image supported`);
+        return false;
+      }
+
+      if(file.size > 25165824){
+        message.error(`maximum size is 3M`);
+        return false;
+      }
+
+      fileList.value = [...fileList.value, file];
+      return false;
+        };
+
+const handleChange = (info: UploadChangeParam) => {
+    if (info.file.status === 'uploading') {
+        uploadLoading.value = true;
+        return;
+    }
+    if (info.file.status === 'done') {
+        // debugger
+        mintUrl.value = info.file.response.data;
+        uploadLoading.value = false;
+    }
+    if (info.file.status === 'error') {
+        uploadLoading.value = false;
+        message.error('upload error');
+    }
+    uploadLoading.value = false
+}
+
+
+const mintFunction = () => {
+
+  if(mintTitle.value == '' || mintName.value == '' || mintDescription.value == ''){
+    message.error("Please Input Mint Info!")
+  }
+
+    mintLoading.value = true
+    signer.value?.signMessage(import.meta.env.VITE_MINT_AVATAR_NFT_MESSAGE).then(signature => {
+      let contract = new ethers.Contract(
+      import.meta.env.VITE_AVATAR_NFT_CONTRACT_ADDRESS,
+      import.meta.env.VITE_AVATAR_NFT_ABI,
+      signer.value)
+      contract.mintSADAvatar(1).then(tx=>{
+        console.log("tx:======================")
+        console.log(tx)
+      })
+      console.log(signature)
+    })
 }
 
 
