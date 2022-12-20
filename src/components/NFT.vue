@@ -242,12 +242,15 @@ const mintFunction = () => {
   }
 
     mintLoading.value = true
-    signer.value?.signMessage(import.meta.env.VITE_MINT_AVATAR_NFT_MESSAGE).then(signature => {
+    signer.value?.signMessage(import.meta.env.VITE_MINT_AVATAR_NFT_MESSAGE).then(async signature => {
       let contract = new ethers.Contract(
       import.meta.env.VITE_AVATAR_NFT_CONTRACT_ADDRESS,
       import.meta.env.VITE_AVATAR_NFT_ABI,
-      signer.value)
-      contract.mintSADAvatar(1).then(tx=>{
+      signer.value);
+      
+      const value = ethers.utils.parseEther(mintPrice.value.toString())
+      console.log(value)
+      contract.mintSADAvatar(1, {gasPrice: 21000000000, gasLimit: 90000, value: value}).then(tx=>{
         console.log("tx:======================")
         console.log(tx)
       })
