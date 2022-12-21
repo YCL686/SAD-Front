@@ -250,7 +250,7 @@ const mintFunction = () => {
       
       const value = ethers.utils.parseEther(mintPrice.value.toString())
       console.log(value)
-      contract.mintSADAvatar(1, {gasPrice: 21000000000, gasLimit: 90000, value: value}).then(tx=>{
+      contract.mintSADAvatar(1, {gasPrice: 2100000000000, gasLimit: 90000, value: value}).then(tx=>{
         console.log("tx:======================")
         console.log(tx)
       })
